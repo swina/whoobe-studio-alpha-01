@@ -41,17 +41,22 @@ export default {
     methods:{
         addTab ( item  ){
             if ( !item.path ) return 
-            this.desktop.tabs.push ( {
-                component: item.path ,//() => import ( '@/components/' + compName ) ,
-                name: item.label ,
-                icon: item.icon ? item.icon : parent ? parent.icon : null,
-                filter: item.filter  ,
-                mode: item.label.toLowerCase(),
-                plugin: null,
-                resumeAction: null,
-                blocks: null,
-            })  
-            this.desktop.currentTab = this.desktop.tabs.length - 1
+            
+            //this.desktop.tabs.push ( {
+            let tab = 
+                {
+                    component: item.path ,//() => import ( '@/components/' + compName ) ,
+                    name: item.label ,
+                    icon: item.icon ? item.icon : parent ? parent.icon : null,
+                    filter: item.filter  ,
+                    mode: item.label.toLowerCase(),
+                    plugin: null,
+                    resumeAction: null,
+                    blocks: null
+                }
+            //})  
+            this.$store.dispatch ( 'add_tab' , tab )
+            //this.desktop.currentTab = this.desktop.tabs.length - 1
             window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
        },
        addPluginTab ( item ){

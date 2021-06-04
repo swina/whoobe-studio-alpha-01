@@ -56,6 +56,7 @@ const desktop =  {
         },
         add_tab ( { commit } , payload  ){
             commit ( 'add_tab' , payload )
+            //commit ( 'currentTab' , state.tabs.lenght-1)
         },
         cloudinary_image ( { commit } , payload ){
             commit ( 'cloudinary_image' , payload )
@@ -65,7 +66,7 @@ const desktop =  {
         },
         currentTab ( { commit } , payload ){
             payload < 0 ?
-                payload = 0 : null
+                payload = 0 : null 
             commit ( 'currentTab' , payload )
         },
         loading ( { commit } , payload ){

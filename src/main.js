@@ -18,6 +18,9 @@ Vue.component ( 'icon' , Icon )
 import BtIcon from '@/components/common/bt.icon.vue'
 Vue.component ( 'bt-icon' , BtIcon )
 
+import Chip from '@/components/common/chip.vue'
+Vue.component ( 'chip' , Chip )
+
 import Radio from '@/components/common/radio.vue'
 Vue.component ( 'radio' , Radio )
 

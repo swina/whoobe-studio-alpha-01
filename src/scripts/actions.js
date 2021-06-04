@@ -161,7 +161,7 @@ const actions = {
         component: 'plugins/plugins.settings'
     },
     block_plugin_setting: {
-        size: 'lg',
+        size: 'md',
         position: 'modal',
         title: 'Plugin Settings',
         component: 'blocks/actions/block.plugin.setting'

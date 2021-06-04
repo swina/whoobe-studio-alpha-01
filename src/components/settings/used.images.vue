@@ -38,6 +38,13 @@ export default {
                         this.images.push(img) : null
                 )
             })
+            this.$api.service('products').find ( { query: { $limit: 200 } }).then ( res => {
+                let products_images = res.data.filter ( product => {
+                    return product.assets 
+                })
+                console.log ( products_images )
+            })
+
             this.$emit('images',[...new Set(this.images)],[...new Set(usedFonts) ] )
             
         })

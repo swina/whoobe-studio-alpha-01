@@ -79,6 +79,10 @@ button.sm {
     @apply px-2 py-1 text-sm;
 }
 
+button.lg {
+  @apply text-base px-2 py-2;
+}
+
 button.round {
   @apply rounded-full w-20;
 }
