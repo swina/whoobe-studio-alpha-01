@@ -253,7 +253,7 @@ export default {
         start(){
             //this.scrollTop()
                 this.search ? 
-                    this.productSearch() :
+                    this.qrySearch(null) :
                         this.filter ?
                             this.filter.field === 'category' ?
                                 this.qryByCategory ( this.filter.value , true ) : 
@@ -316,12 +316,16 @@ export default {
             return parseFloat(discount).toFixed(2) + '%'
         },
         productSearch(e){
-            if ( e.keyCode === 13 ){
-                if ( e.target.value.length > 2 ){
-                    this.start = 0
-                    this.qrySearch()
-                } else {
-                    this.qry()
+            if ( !e ){
+                this.qrySearch()
+            } else { 
+                if ( e.keyCode === 13 ){
+                    if ( e.target.value.length > 2 ){
+                        this.start = 0
+                        this.qrySearch()
+                    } else {
+                        this.qry()
+                    }
                 }
             }
         },
