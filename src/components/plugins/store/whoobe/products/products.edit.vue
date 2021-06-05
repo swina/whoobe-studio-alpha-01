@@ -37,14 +37,21 @@
                             <option v-for="category in categories" :value="category">{{ category.name }}</option>
                         </select>
                     </div>
-                    <div v-if="field==='facets'" class="flex flex-row flex-wrap">
-                        <select v-model="productFacet" class="p-2 bg-white" @change="addFacet()">
-                            <option v-for="facet in collectionFacets" :value="facet">{{ facet.name }}</option>
-                        </select>
-                        <template v-if="Array.isArray(editor.current.facets)" v-for="(facet,i) in editor.current.facets">
-                            <chip v-if="facet" css="text-base bg-teal-400 rounded text-white mr-2" :content="facet" icon="close" @click="editor.current.facets.splice(i,1)"/>
-                            <!--<div v-if="facet" class="flex items-center p-1 text-base bg-teal-400 rounded text-white mr-2">{{ facet }} <icon name="close" @click="editor.current.facets.splice(i,1)"/></div>-->
-                        </template>
+                    <div v-if="field==='facets'" class="flex flex-col">
+                        <div class="flex flex-row flex-wrap">
+                            <!-- <template v-for="facet in collectionFacets">
+                                <chip css="text-base border bg-white text-black rounded mr-2" :content="facet.name" icon="add" @click="addFacet(facet)"/>
+                            </template> -->
+                            <select v-model="productFacet" class="p-2 bg-white border rounded" @change="addFacet()">
+                                <option v-for="facet in collectionFacets" :value="facet">{{ facet.name }}</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-row flex-wrap mt-4">
+                            <template v-if="Array.isArray(editor.current.facets)" v-for="(facet,i) in editor.current.facets">
+                                <chip v-if="facet" css="text-base bg-teal-400 rounded text-white mr-2" :content="facet" icon="close" @click="editor.current.facets.splice(i,1)"/>
+                                <!--<div v-if="facet" class="flex items-center p-1 text-base bg-teal-400 rounded text-white mr-2">{{ facet }} <icon name="close" @click="editor.current.facets.splice(i,1)"/></div>-->
+                            </template>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -137,7 +144,7 @@ export default {
     },
     methods:{
         saveProduct(){
-            this.editor.current.optionValues = this.editor.current.optionValues.replaceAll('|',' ')
+            this.editor.current.optionValues ? this.editor.current.optionValues = this.editor.current.optionValues.replaceAll('|',' ') : null
             this.editor.current.category = this.collection.name
             this.editor.current.category_id = this.collection._id
             this.$api.service ( 'products' ).patch ( this.editor.current._id , this.editor.current ).then ( res => {
@@ -158,7 +165,9 @@ export default {
                  this.collectionFacets = res.data
             })
         },
-        addFacet(){
+        addFacet(facet){
+            console.log ( facet )
+            this.productFacet = facet
             console.log ( this.productFacet )
             !Array.isArray(this.editor.current.facets) ? 
                 this.editor.current.facets = [ this.productFacet.name ] : 

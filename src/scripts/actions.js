@@ -162,7 +162,7 @@ const actions = {
     },
     block_plugin_setting: {
         size: 'md',
-        position: 'modal',
+        position: 'modal-top-right',
         title: 'Plugin Settings',
         component: 'blocks/actions/block.plugin.setting'
     },

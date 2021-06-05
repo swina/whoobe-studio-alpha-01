@@ -1,5 +1,6 @@
 <template>
     <div v-if="categories" class="m-2">
+        <h4>Categories</h4>
         <div class="flex flex-row flex-wrap p-2 bg-gray-200 text-black border" title="click to add a new category">
             <template v-for="category in categories">
                 <div title="click to manage facets" class="flex flex-row items-center mr-2 bg-purple-500 text-white rounded my-2 text-lg px-2 py-1">{{ category.name }} <icon name="edit" class="ml-2" @click="selected=category,getFacets(category._id)"/> <icon name="close" class="ml-2"/></div>
@@ -9,9 +10,12 @@
         <div v-if="selected" class="bg-purple-500 text-white text-lg p-2">{{ selected.name }} Facets</div>
         <div v-if="facets" class="flex flex-row flex-wrap p-2 bg-gray-200 text-black border" title="click to add a new facet">
             <template v-for="category in facets">
-                <div title="click to manage facets" class="flex flex-row items-center mr-2 bg-teal-400 text-white rounded my-2 text-lg px-2 py-1">{{ category.name }} <icon name="close" class="ml-2"/></div>
+                <div title="click to manage facets" class="flex flex-row items-center mr-2 bg-teal-500 text-white rounded my-2 text-lg px-2 py-1">{{ category.name }} <icon name="close" class="ml-2"/></div>
             </template>
             <input type="text" class="new_facet text-lg bg-gray-200" title="Enter to save" placeholder="click to add" v-model="newFacet" @keydown="addFacet($event)"/>
+        </div>
+        <div class="p-4 m-10 mt-24 m-auto bg-gray-100 text-black text-center text-2xl">
+            Removal of categories/facets can affect the product search and display. Before to remove checkout your products settings.
         </div>
     </div>
 </template>

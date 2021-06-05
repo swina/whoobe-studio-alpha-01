@@ -1,17 +1,18 @@
 <template>
 <div class="m-1 p-2 theme-dark relative">
     <div class="flex w-full items-center flex-row justify-start text-lg">
-    <button class="text-lg py-2" @click="edit=false,loopEditor=false">Products</button>    
+    <button class="text-lg py-2" @click="edit=false,loopEditor=false,categories=false">Products</button>    
     <button class="text-lg py-2" v-if="!edit" @click="categories=!categories">Categories</button>
     <button class="text-lg py-2" v-if="!edit" @click="productCreate()">Create </button>
     <button class="text-lg py-2" v-if="edit && editor.current" @click="productSave()">&raquo; {{ editor.current.name }}</button>
     <button class="text-lg py-2" v-if="!edit" @click="importFile=!importFile">Import</button>
     <button class="text-lg py-2" v-if="!edit" @click="exportFile=!exportFile">Export</button>
     <button class="text-lg py-2" v-if="!edit" @click="loopEditor=!loopEditor" :class="loopEditor?'bg-white text-black':''">Loop Editor</button>
+    <input v-if="!edit" type="text" class="bg-transparent text-lg ml-2" placeholder="search" v-model="search" @keydown="productSearch($event)"/>
     <!-- <button v-if="!edit" @click="slugify">Slugify</button> -->
     </div>
     
-    <div class="flex flex-col bg-gray-100  text-sm" v-if="!edit && !loopEditor && products">
+    <div class="flex flex-col bg-gray-100  text-sm" v-if="!edit && !loopEditor && products && !categories">
         
         <div :class="'w-full bg-gray-900 grid grid-cols-' + cols">
         <template v-for="field in Object.keys(schema)">
@@ -63,6 +64,7 @@
     </div>
     <product-edit v-if="edit" :id="editor.current._id" @close="edit=!edit"/>
     <products-loop-editor v-if="loopEditor" :plugin="plugin"/>
+    <products-categories v-if="categories"/>
     <!-- <modal
         size="lg"
         position="modal"
@@ -94,7 +96,7 @@
         <div slot="title">Export Products</div>
         <moka-products-export slot="content"/>
     </modal>
-    <modal
+    <!-- <modal
         class="h-screen"
         v-if="categories"
         size="md"
@@ -103,7 +105,7 @@
         @close="categories=!categories">
         <div slot="title">Categories</div>
         <products-categories slot="content"/>
-    </modal>
+    </modal> -->
 </div>
 </template>
 
@@ -125,6 +127,7 @@ export default {
         current: null,
         limit: 10,
         skip:0,
+        search: '',
         cols: 0,
         images: false,
         total:0,
@@ -151,8 +154,13 @@ export default {
         }
     },
     watch:{
-        skip(){
-            this.qry()
+        skip(v){
+            if ( !this.search ){
+                this.qry()
+            } else {
+                this.qrySearch()
+            }
+
         }
     },
     methods: {
@@ -164,6 +172,12 @@ export default {
                     !product.hasOwnProperty('image') ?
                         product.image = null : null
                 })
+            })
+        },
+        qrySearch(){
+            this.$api.service ( 'products' ).find ( { query :  { $limit: this.limit , $skip: this.skip , $search : this.search  } } ).then ( res => {
+                this.products = res.data
+                this.total = res.total 
             })
         },
         importData(){
@@ -190,6 +204,28 @@ export default {
         },
         productCreate(){
             let fields = Object.keys(this.schema)
+            let product = {}
+            fields.forEach ( field => {
+                product[field] = null
+            })
+            product.name = 'New product'
+            product.assets = []
+            product.facets = []
+            product.type = 'product'
+            delete product._id
+            this.$api.service ( 'products' ).create ( product ).then ( res => {
+                this.products.unshift ( res )
+            })
+        },
+        productSearch(e){
+            if ( e.keyCode === 13 ){
+                if ( e.target.value.length > 2 ){
+                    this.skip = 0
+                    this.qrySearch()
+                } else {
+                    this.qry()
+                }
+            }
         }
     },
     mounted(){

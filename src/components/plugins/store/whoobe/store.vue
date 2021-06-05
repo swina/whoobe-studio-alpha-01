@@ -1,25 +1,28 @@
 <template>
     <div class="" v-if="products">
     <div class="relative" :class="settings.general.css">
-        <div class="absolute right-0 top-0 text-xs flex flex-row items-center snipcart-checkout">
+        <div v-if="settings.general.display.cart.enabled" class="w-full text-xs flex flex-row items-center justify-end snipcart-checkout">
             <span class="snipcart-items-count"></span>
-            <i class="material-icons">shopping_bag</i>
+            <icon :name="settings.general.display.cart.name||'shooping_bag'" :class="settings.general.display.cart.css"/>
+            <!--<i class="material-icons">shopping_bag</i>-->
             <span class="snipcart-total-price"></span>  
         </div>
-
+        <icon name="brush" title="Customize" @click="customize=!customize" v-if="$mapState().editor.action==='in_editor_preview' &&  $mapState().editor.current"  class="absolute left-0 rounded-full border p-2 -m-10 bg-white z-highest hover:bg-purple-500 hover:text-white text-purple-500 text-3xl"/>
 
         <!-- <div v-if="!apikey" class="text-center w-full border-4 bg-gray-300 text-lg text-red-500">Invalid License Key</div> -->
-        <h3 id="storeTop">Store</h3>
+        <!-- <h3 id="storeTop">Store</h3> -->
         
-        <store-categories v-if="!current && settings.loop.categories.enabled" :css="settings.loop.categories.css" @category="qryByCategory"/>
+        <store-categories v-if="!current && settings.loop.categories.enabled" :container="settings.loop.categories.container" :css="settings.loop.categories.css" @category="qryByCategory"/>
         
-        
-        <p v-if="lang">{{ lang.products }} {{total}}</p>
-        <div class="w-full text-center cursor-pointer">
-            <i class="mr-4 bi-chevron-left" @click="start > 0 ? start=start-limit : null"></i>
-            <small>{{start+1}}-{{start+limit}}</small>
-            <i class="ml-4 bi-chevron-right" @click="(start+limit)<=total?start=start+limit:null"></i>
+        <div class="flex flex-col md:flex-row" v-if="!current">
+            <p v-if="settings.general.display.total.enabled" :class="settings.general.display.total.css">{{ settings.general.display.total.name }} {{total}}</p>
+            <input v-if="settings.general.display.search.enabled" type="text" :class="settings.general.display.search.css" :placeholder="settings.general.display.search.name" v-model="search" @keydown="productSearch($event)"/><icon name="zoom" class="visible md:invisible"/>
         </div>
+        <!-- <div class="w-full flex flex-row items-center justify-center text-center cursor-pointer" v-if="settings.general.display.navigation">
+            <icon :class="settings.general.display.navigation.css" :name="settings.general.display.navigation.name.split(',')[0]||'chevron_left'" @click="start > 0 ? start=start-limit : null"/>
+            <div>{{start+1}}-{{ ((start+limit) < total) ? (start+limit) :total }}</div>
+            <icon :class="settings.general.display.navigation.css" :name="settings.general.display.navigation.name.split(',')[1]||'chevron_right'" @click="(start+limit)<=total?start=start+limit:null"/>
+        </div> -->
        
 
         
@@ -30,8 +33,11 @@
             <icon :name="!current?'web':'collections'" :title="!current?'View Single':'View Loop'" class="text-3xl mr-2" @click="!current?current=products[0]:current=null"/>
         </div> 
 
+        
+       
 
-        <div v-if="!current" class="flex flex-row flex-wrap items-center justify-center">
+            <div v-if="!products.length"><h3>No products found!</h3></div>
+        <div v-if="!current" class="flex flex-col items-center justify-center" :class="settings.loop.cols">
             <template v-for="(product,index) in products">
                 <div class="flex flex-col" :class="settings.loop.css" @click="current=product,currentPrice=product.price,currentOption=product.optionValues,variations(product.sku)">
                     <template v-for="field in settings.loop.fields">
@@ -49,14 +55,39 @@
             
             </template>
         </div>
-        <div v-if="!current" class="w-full text-center cursor-pointer">
+        <!-- PAGINATION -->
+        <div v-if="!current">
+            <div class="flex flex-row w-full items-center justify-center" v-if="settings.general.display.navigation">
+                {{ settings.general.display.navigation.name }} 
+                <template v-for="page in pages">
+                    <div :class="settings.general.display.navigation.css + ' ' + activePage(page)" @click="start=(page-1)*limit">{{ page }}</div>
+                </template>
+            </div>
+        </div>
+
+
+        <!-- <div v-if="!current" class="w-full text-center cursor-pointer">
             <i class="mr-4 bi-chevron-left" @click="start=start-limit,scrollTop()" v-if="start > 0"></i>
             <small>{{start+1}}-{{start+limit}}</small>
             <i class="ml-4 bi-chevron-right" @click="start=start+limit,scrollTop()" v-if="(start+limit)<=total"></i>
-        </div>
+        </div> -->
+
+        <!-- SINGLE VIEW -->
         <div v-if="current" class="fixed inset-0 overflow-y-auto h-screen md:relative md:h-auto">
             <div :class="settings.single.css + ' grid-cols-'  + settings.single.cols" class="flex flex-col md:grid relative">
                 <icon name="close" class="absolute right-0 top-0 text-3xl" @click="current=null"/>
+                <!-- <store-layout :layout="settings.single.layout">
+                        <div slot="slot_0">
+                            <div v-for="field in settings.single.fields" v-if="parseInt(field.col)===0" class="flex flex-col">
+                                <div :class="field.css">{{ renderContent(field)  }}</div>
+                            </div>
+                        </div>
+                        <div slot="slot_0">
+                            <div v-for="field in settings.single.fields" v-if="parseInt(field.col)===1" class="flex flex-col">
+                                <div :class="field.css">{{ current[field.name] }}</div>
+                            </div>
+                        </div>
+                </store-layout> -->
                 <div v-for="n in parseInt(settings.single.cols)">    
 
                     <template v-for="field in settings.single.fields">
@@ -77,8 +108,6 @@
                                     </div>
                                 </div>
 
-                                <!-- <div v-if="productVariations">{{ currentOption }}</div> -->
-                                
                             </div>
                             <div :class="field.css" v-if="schema[field.name].type==='currency'">
                                 <small class="mr-1">{{ settings.general.currency }}</small>
@@ -88,7 +117,7 @@
                                 {{ current[field.name] }}
                             </div>
                             <div :class="field.css" v-if="field.name==='facets'">
-                                &raquo; {{ current[field.name].join(' - ') }}
+                                {{ current[field.name].join(' - ') }}
                             </div>
                             <div v-if="schema[field.name].type==='image_uri'" class="flex flex-col"> 
                                 <img :src="productImage(current[field.name])" :class="field.css">
@@ -109,11 +138,8 @@
                             :data-item-description="currentOption"
                             :data-item-url="'/store/product/' + current._id"> 
                         Add to cart</button>
-                        <!-- <div :key="field.name" v-if="field.name != 'add_to_cart' && schema[field.name].type==='image_uri' && parseInt(field.col)===(n-1)"><img :src="$imageURL(current[field.name])" :class="field.css"></div> -->
-                        
                         
                     </template>
-                    <!--<img v-if="schema[field.name].type!='image'" :src="$imageURL(product.image)" :class="field.css"/> -->
                 </div>
             </div>
         </div>
@@ -154,11 +180,10 @@
         
     </div>
         <modal 
-            v-if="editor && customize"
+            v-if="!editor && customize"
             @close="customize=!customize"
-            size="lg"
-            class="fixed z-highest"
-            position="modal"
+            size="sm"
+            position="modal-bottom-right"
             buttons="none">
             <div slot="title">Customize</div>
             <div slot="content">
@@ -199,6 +224,7 @@ export default {
         },
         start: 0,
         total: 0,
+        search:'',
         current: null,
         products: null,
         productVariations: null,
@@ -216,14 +242,22 @@ export default {
         limit(){
             return parseInt(this.$attrs.plugin.settings.loop.limit)
         },
+        pages(){
+            let p = parseInt(( this.total / this.limit ))
+            p * this.limit < this.total ?
+                p++ : null 
+            return p
+        }
     },
     watch:{
         start(){
-            this.scrollTop()
-            this.filter ?
-                this.filter.field === 'category' ?
-                    this.qryByCategory ( this.filter.value , true ) : 
-                        this.qry() : this.qry()
+            //this.scrollTop()
+                this.search ? 
+                    this.productSearch() :
+                        this.filter ?
+                            this.filter.field === 'category' ?
+                                this.qryByCategory ( this.filter.value , true ) : 
+                                    this.qry() : this.qry()
         },
         
         current(v){
@@ -262,6 +296,12 @@ export default {
                 this.total = result.total
             })
         },
+        qrySearch(){
+            this.$api.service ( 'products' ).find ( { query :  { $limit: this.limit , $skip: this.start , $search : this.search  } } ).then ( res => {
+                this.products = res.data
+                this.total = res.total 
+            })
+        },
         randomImage(name){
             return 'https://source.unsplash.com/600x400?fashion&' + name
         },
@@ -274,6 +314,21 @@ export default {
         discount(price,sale){
             let discount = (parseFloat(price)-parseFloat(sale))
             return parseFloat(discount).toFixed(2) + '%'
+        },
+        productSearch(e){
+            if ( e.keyCode === 13 ){
+                if ( e.target.value.length > 2 ){
+                    this.start = 0
+                    this.qrySearch()
+                } else {
+                    this.qry()
+                }
+            }
+        },
+        activePage(page){
+            if ( (page-1) * this.limit === this.start ){
+                return 'animate-pulse'
+            }
         }
     },
     mounted(){

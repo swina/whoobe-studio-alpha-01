@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col md:flex-row" v-if="categories">
+    <div class="flex flex-col md:flex-row" :class="$attrs.container" v-if="categories">
         <template v-for="category in categories">
             <div :class="$attrs.css" @click="$emit('category',category.name,false)">
                 {{ category.name }}

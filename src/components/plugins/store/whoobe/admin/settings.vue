@@ -5,10 +5,10 @@
                 <button @click="mode=section,fieldIndex=null" class="capitalize text-base" :class="mode===section?'bg-indigo-500':''">{{ section }}</button>
             </template>
         </div>
-        <div class="w-full" v-if="mode==='single'" @click="layoutSelect=!layoutSelect">
+        <!-- <div class="w-full" v-if="mode==='single'" @click="layoutSelect=!layoutSelect">
             <label>Layout</label>
             <single-layouts class="w-full theme-dark" :layout="layout" @layout="setLayout"/>
-        </div>
+        </div> -->
         <div class="grid grid-cols-3 gap-2 w-full bg-gray-100 text-black text-base">
             <template v-for="field in Object.keys(settings[mode])">
                 
@@ -23,10 +23,18 @@
                 
                 <div v-if="isObject(settings[mode][field]) && !isArray(settings[mode][field])" class="col-span-3 grid grid-cols-3 justify-start"> 
                     <template v-for="f in Object.keys(settings[mode][field])">
+                        
                         <label class="font-bold capitalize">
                             {{ f }}
                         </label>
-                        <div class="col-span-2">    
+                        <div v-if="isObject(settings[mode][field][f])" class="col-span-2 flex flex-col">
+
+                            <template v-for="ff in Object.keys(settings[mode][field][f])">
+                                <label>{{ ff }} </label>
+                                <input :key="ff" :class="isType(settings[mode][field][f][ff]) != 'checkbox'?'w-full':''" v-if="isType(settings[mode][field][f][ff])" :type="isType(settings[mode][field][f][ff])" v-model="settings[mode][field][f][ff]"/>
+                            </template>
+                        </div>
+                        <div v-else class="col-span-2">    
                             <input :key="f" :class="isType(settings[mode][field][f]) != 'checkbox'?'w-full':''" v-if="isType(settings[mode][field][f])" :type="isType(settings[mode][field][f])" v-model="settings[mode][field][f]"/>
                         </div>
                     </template>
@@ -36,14 +44,15 @@
 
                 <div v-if="isArray(settings[mode][field])" class="col-span-3">
                         <!-- gap-2 grid grid-cols-' + (Object.keys(settings[mode][field][0]).length  + 1) -->
-                        <div :key="fn + '_' + i" v-for="(fn,i) in settings[mode][field]" class="border" :class="'p-1 flex flex-col mb-2'">
-                            <div @click="fieldIndex=i" class="w-full">
-                                <icon name="expand_less" @click="i > 0 ?moveUp(i):null"/>
+                        <div :key="fn + '_' + i" v-for="(fn,i) in settings[mode][field]" class="border p-1 flex flex-col mb-2" :class="fieldIndex===i?'border-black':''">
+                            <div @click="fieldIndex=i" class="w-full flex flex-row items-center flex-wrap">
                                 <input type="text" v-model="settings[mode][field][i].name"/>
                                 <input type="text" class="ml-2 w-8" v-model="settings[mode][field][i].col" title="Set the layout slot position"/>
+                                <icon name="expand_less" class="ml-4" @click="i > 0 ?moveUp(i):null"/>
                                 <icon name="brush" class="ml-2" @click="fieldIndex=i"/>
+                                <icon name="close" class="ml-2" @click="settings[mode][field].splice(i,1)"/>
                                 <transition name="fade">
-                                    <div v-if="fieldIndex===i" class="flex flex-col p-1">
+                                    <div v-if="fieldIndex===i" class="flex flex-col p-1 w-full">
                                         CSS <textarea v-model="settings[mode][field][i].css" class="w-full"/>
                                    </div>
                                 </transition>
@@ -137,12 +146,14 @@ export default {
             this.settings[this.mode].fields.splice(index-1,0,option)
         },
         setLayout(layout){
+            this.settings[this.mode].layout = layout
             this.layout = layout
         }
     },
     mounted(){
         this.schema = model
         this.settings = this.$mapState().editor.current.plugin.settings
+        this.layout = this.settings.single.layout
         this.mode = Object.keys(this.settings)[0]
         this.$attrs.customize ? this.mode = this.$attrs.customize : null
     }
