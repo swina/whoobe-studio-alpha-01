@@ -1,9 +1,9 @@
 <template>
-    <div class="fixed z-highest top-0 left-0 theme-dark w-screen whitespace-no-wrap flex flex-row flex-wrap cursor-pointer border-b border-gray-700 ml-10 desktop-tabs-container">
-        <div class="fixed top-0 left-0 h-8 w-10 text-center bg-purple-800 text-purple-300 flex items-center justify-center hover:text-white" @click="$emit('menu')" title="Menu">
+    <div class="fixed z-highest top-0 left-0 theme-dark whitespace-no-wrap flex flex-row flex-wrap cursor-pointer border-b border-gray-700 ml-10 desktop-tabs-container bg-gray-900" :class="displayMode">
+        <div class="fixed top-0 left-0 h-10 w-10 text-center bg-purple-800 text-purple-300 flex items-center justify-center hover:text-white" @click="$emit('menu')" title="Menu">
             <icon name="menu"/>
         </div>
-        <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-8 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,$action()">
+        <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-10 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,$store.dispatch('mode',desktop.tabs[index].mode),$action()">
             <div class="flex-row-center mr-2"><icon :name="tab.icon" class="mr-2"/><span class="capitalize">{{ tab.name }}</span></div>
             <icon name="close" class="text-xs ml-2 text-transparent hover:text-white" @click="removeTab(index),desktop.currentTab--"/>
         </div>
@@ -15,15 +15,20 @@ import { mapState } from 'vuex'
 export default {
     name: 'DesktopTabs',
     computed: {
-        ...mapState( ['desktop'] )
+        ...mapState( ['desktop'] ),
+       displayMode(){
+           return this.desktop.mode === 'editor' ? 'w-5/6' : 'w-full'
+       }
     },
     methods: {
         active(index){
+
             return index === this.desktop.currentTab ? 'bg-indigo-700 text-white' : ''
         },
         removeTab ( index ){
             this.desktop.tabs.splice ( index , 1 )
             this.desktop.currentTab = this.desktop.tabs.length - 1
+            this.$store.dispatch ( 'mode' , this.desktop.tabs[this.desktop.currentTab].mode )
             window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
             this.$action()
         },

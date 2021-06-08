@@ -3,9 +3,9 @@
 
         
         <!-- video -->
-        <div v-if="editor.current.type==='video' || editor.current.type === 'audio'" class="customizer-item" :class="group === 'video' ? 'bg-orange-400 text-white' : ''" @click="group='video'">
+        <div v-if="editor.current.type==='video' || editor.current.type === 'audio'" class="customizer-item border-gray-900 pl-2" :class="group === 'video' ? 'bg-orange-400 text-white' : ''" @click="group='video'">
             <span class="">Audio/Video</span>
-            <i class="material-icons absolute right-0 mr-2 text-gray-500">chevron_right</i>
+            <i class="material-icons absolute right-0 mr-2 text-gray-500">arrow_right</i>
         </div>
         <transition name="fade">
             <div  v-if="group==='video'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop">
@@ -25,13 +25,13 @@
         </transition>
 
          <!-- link and anchor -->
-        <div v-if="!$attrs.mode" key="itemLink" class="customizer-item" :class="group === 'link' ? 'bg-orange-400 text-white' : ''" @click="toggle('link')">
+        <div v-if="!$attrs.mode" key="itemLink" class="customizer-item border-gray-900 pl-2" :class="group === 'link' ? 'bg-orange-400 text-white' : ''" @click="toggle('link')">
                 <span class="">Link/Anchor</span>
-                <i class="material-icons absolute right-0 mr-2 text-gray-500">chevron_right</i>
+                <i class="material-icons absolute right-0 mr-2 text-gray-500">arrow_right</i>
         </div>
         <transition name="slideright">
             <div v-if="!$attrs.mode && group==='link'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop">
-                <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i>Link/Anchor</div>
+                <div class="bg-orange-400 text-black border-gray-900 flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">arrow_right</i>Link/Anchor</div>
                 <div class="p-1 flex flex-col">
                     <label>Link</label>
                     <input class="dark w-full" type="text" v-model="editor.current.link"/>
@@ -60,9 +60,9 @@
         </transition> 
 
         <!-- Semantic -->
-        <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'container' && editor.current.tag != 'document'" key="semantic" class="customizer-item" :class="group === 'semantic' ? 'bg-orange-400 text-white' : ''" @click="toggle('semantic')">
+        <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'container' && editor.current.tag != 'document'" key="semantic" class="customizer-item border-gray-900 pl-2" :class="group === 'semantic' ? 'bg-orange-400 text-white' : ''" @click="toggle('semantic')">
                  <span class="text-xs">Semantic</span>
-                 <i class="material-icons absolute right-0 mr-2 text-gray-400">chevron_right</i>
+                 <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
         </div>
         <transition name="slideright">
         <div v-if="!$attrs.mode && group==='semantic'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
@@ -81,13 +81,14 @@
         
 
         <template v-for="g in groups">
-             <div :key="g.attr" class="customizer-item" :class="g === group ? 'bg-orange-400 text-white' : ''" @click="toggle(g)">
+             <div :key="g.attr" class="customizer-item border-gray-900 pl-2" :class="g === group ? 'bg-orange-400 text-white' : ''" @click="toggle(g)">     
+                 
                  <span class="text-xs">{{ g.label }}</span>
-                 <i class="material-icons absolute right-0 mr-2 text-gray-500" v-if="g!= group">chevron_right</i>
+                 <i class="material-icons absolute right-0 mr-2 text-gray-500" v-if="g!= group">arrow_right</i>
                  <i class="material-icons absolute right-0 mr-2 text-gray-500" v-else>expand_less</i>
              </div>
              <transition name="slideright">
-             <div v-if="g === group" class="whoobe-editor-tw-options bg-gray-800 text-gray-500 border-b top-0 absolute w-full z-2xtop left-0 right-0 bottom-0">
+             <div v-if="g === group" class="whoobe-editor-tw-options bg-gray-800 text-gray-500 border-b border-gray-900 top-0 absolute w-full z-2xtop left-0 right-0 bottom-0">
                  <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i> {{ g.label }}</div>
                  <div :key="$randomID()" v-for="component in g.components" class="mb-1 p-1" :class="component.hasOwnProperty('group')? component.css :''">
                      <component 

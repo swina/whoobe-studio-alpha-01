@@ -9,7 +9,7 @@
             
             <svg v-if="el.tag === 'svg'" :viewBox="el.content.viewBox" width="100%" height="100%" v-html="el.content.g" :class="el.css + ' fill-current'"></svg>
 
-            <img v-if="el.element === 'img' && el.image && el.image.url && el.image.ext != '.svg'" 
+            <img :id="'image_' + el.id" v-if="el.element === 'img' && el.image && el.image.url && el.image.ext != '.svg'" 
                 :src="$imageURL(el.image)" :caption="el.image.caption" :alt="el.image.alternative_text" :class="$cssResponsive(el.css) + imageCSSDefault" :style="el.css?'':''" @dblclick="$emit('media')"/>
             
             <div v-if="(el.element === 'img')  && el.image && el.image.ext === '.svg'" :class="el.css + ' fill-current'">     
@@ -112,7 +112,7 @@
                 :editor="true"/>
 
 
-            <div v-if="$attrs.develop " :class="'absolute border-dashed top-0 left-0 bottom-0 right-0 scale-x-100 scale-y-100 transform z-' + $attrs.level + ' ' + active(el.id,el.css) + ' bg-transparent'" style="min-height:2rem" @click="select(el)">
+            <div :id="el.id" v-if="$attrs.develop " :class="'absolute border-dashed top-0 left-0 bottom-0 right-0 scale-x-100 scale-y-100 transform z-' + $attrs.level + ' ' + active(el.id,el.css) + ' bg-transparent'" style="min-height:2rem" @click="select(el)">
                 <div class="h-2 w-2 absolute top-0 right-0 bg-black rounded-full -m-1" @click="moveUp(el.id)"></div>
                 <div class="h-2 w-2 absolute top-0 left-0 bg-black rounded-full -m-1"></div>
                 <div class="h-2 w-2 absolute bottom-0 right-0 bg-black rounded-full -m-1"></div>
@@ -245,6 +245,17 @@ export default {
         select(el){
             this.$store.dispatch('selected',el.id)
             this.$emit('selected',el)
+            let element = document.querySelector('#' + this.$attrs.element.id).getBoundingClientRect()
+            if ( document.querySelector('#image_' + this.$attrs.element.id) ) {
+                element = document.querySelector('#image_' + this.$attrs.element.id).getBoundingClientRect()
+            }
+            this.coords = { 
+                x: element.x -57 + window.pageXOffset,
+                y: element.y - 66 + window.pageYOffset,
+                width: element.width,
+                height: element.height
+            },
+            this.editor.current.coords = this.coords
         },
         layer(){
             
@@ -265,6 +276,7 @@ export default {
         },
         active(id,css){
             let translate = ''
+            
             if ( css && css.length ){
                 let classi = css.split(' ')
                 classi.forEach ( classe => {

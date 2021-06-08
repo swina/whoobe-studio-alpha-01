@@ -1,5 +1,5 @@
 <template>
-    <div v-if="editor.current" class="z-highest" :key="$randomID()" :id="$randomID()">
+    <div v-if="editor.current" class="rounded-xl z-highest" :key="$randomID()" :id="$randomID()">
         <div class="editor-context-menu-item bg-black hover:bg-black border-l-0 border-b hover:border-gray-600 border-gray-600 capitalize">
             <icon :name="editor.current.icon" v-if="editor.current.icon"/>
             <span v-if="editor.current.type">{{ editor.current.type }}</span>
@@ -25,7 +25,7 @@
             <div class="editor-context-menu-item" @click="$action('component_export')">
                 <icon name="file_download" class="mr-4"/>Export 
             </div>
-            <div class="editor-context-menu-item" @click="$action('block_add_element')">
+            <div class="editor-context-menu-item flex flex-row justify-between" @click="$action('block_add_element')">
                 <i class="material-icons mr-4">add</i>Add element <span class="text-right ml-4">(Alt + i)</span>
             </div>
             <div class="editor-context-menu-item" @click="$action('media')">
@@ -64,7 +64,7 @@
             <div v-if="editor.current.hasOwnProperty('gallery') && editor.current.gallery" class="editor-context-menu-item" @click="$action('slidersettings')">
                 <i class="material-icons mr-4">photo</i>Carousel settings
             </div>
-            <div v-if="editor.current.type==='element' || editor.current.type==='button'" class="editor-context-menu-item" @click="$action('block_edit')">
+            <div v-if="editor.current.type==='element' || editor.current.type==='button'" class="editor-context-menu-item justify-between" @click="$action('block_edit')">
                 <i class="material-icons mr-4">edit</i>Edit content <span class="text-right ml-4">(Alt + w)</span>
             </div>
 
@@ -76,8 +76,11 @@
                 <i class="material-icons mr-4">menu</i>Menu Style<span class="text-right ml-4"></span>
             </div>
 
-            <div class="editor-context-menu-item" @click="$action('customize')">
-                <i class="material-icons mr-4">brush</i>Customize element  <span class="text-right ml-4">(Alt + z)</span>
+            <div class="editor-context-menu-item justify-between" @click="$action('customize')">
+                <div class="flex flex-row items-center">
+                    <i class="material-icons mr-4">brush</i>Customize element</div>  
+                    <div class="text-right">Alt + Z</div>
+                    
             </div>
             <div class="editor-context-menu-item" @click="$block_duplicate($attrs.component,$attrs.current)">
                 <i class="material-icons mr-4">file_copy</i>Duplicate  <span class="text-right ml-4">(Alt + d)</span>
@@ -88,6 +91,10 @@
             <div class="editor-context-menu-item" @click="$block_paste()">
                 <i class="material-icons mr-4">content_paste</i>Paste from clipboard  <span class="text-right ml-4">(Alt + v)</span>
             </div>
+            <div class="editor-context-menu-item" @click="$emit('delete')">
+                <i class="material-icons mr-4">delete</i>Delete  <span class="text-right ml-4">(Alt + r)</span>
+            </div>
+            <div class="h-1 border-t border-gray-900 w-full"></div>
             <div class="editor-context-menu-item" @click="$action('addreusable')">
                 <i class="material-icons mr-4">widgets</i>Add reusable component  <span class="text-right ml-4">(Alt + u)</span>
             </div>
@@ -112,9 +119,7 @@
             <div v-if="editor.current.hasOwnProperty('blocks')" class="editor-context-menu-item" @click="$action('tree')">
                 <i class="material-icons mr-4">account_tree</i>Block tree  <span class="text-right ml-4">(Alt + t)</span>
             </div>
-            <div class="editor-context-menu-item" @click="$emit('delete')">
-                <i class="material-icons mr-4">delete</i>Remove element  <span class="text-right ml-4">(Alt + r)</span>
-            </div>
+            
                     
         </template>
 

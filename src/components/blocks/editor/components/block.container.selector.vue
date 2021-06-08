@@ -1,5 +1,5 @@
 <template>
-    <div :class="'absolute transform border-2 border-dashed top-0 left-0 bottom-0 right-0 z-' + $attrs.zindex + ' ' + active(doc.id,doc)" @click="setCurrent(doc,$event),$action()" v-if="doc" @contextmenu="setCurrent(doc)">
+    <div :class="'absolute transform border top-0 left-0 bottom-0 right-0 z-' + $attrs.zindex + ' ' + active(doc.id,doc)" @click="setCurrent(doc,$event),$action()" :id="doc.id" v-if="doc" @contextmenu="setCurrent(doc)">
             
         
         <span v-if="doc && doc.hasOwnProperty('loop') && doc.loop" class="text-xs"><i class="material-icons">article</i> 
@@ -22,7 +22,6 @@
             <i class="material-icons hover:bg-indigo-700 text-white" title="Move down" @click="moveDown()">expand_more</i>
         </div> -->
            
-            
     </div>
 </template>
 
@@ -32,15 +31,19 @@ import jp from 'jsonpath'
 export default {
     name: 'BlockContainerSelector',
     props: [ 'doc' ],
+    data:()=>({
+        coords: null
+    }),
     computed:{
         ...mapState ( ['editor'] )
     },
     methods:{
         tooltip(){
 
-        },
+            },
         active(id,doc){
             if ( !doc ) return 
+            
             let color = 'border-blue-500 '
             doc && !doc.hasOwnProperty('type') ? color = 'border-red-500 ' : null
             doc && doc.hasOwnProperty('slider') ? color = 'border-yellow-500 ' : null
@@ -62,6 +65,18 @@ export default {
             this.$store.dispatch( 'selected' , this.doc.id )
             //this.$store.dispatch('setLevel',level)
             this.$store.dispatch ( 'setCurrent' , this.doc )
+            if ( document.querySelector('#' + this.doc.id) ){
+                let element = document.querySelector('#' + this.doc.id).getBoundingClientRect()
+                this.coords = { 
+                    x: element.x -57 + window.pageXOffset - parseInt(this.$attrs.root*8),
+                    y: element.y - 66 + window.pageYOffset - parseInt(this.$attrs.root*8),
+                    width: element.width,
+                    height: element.height
+                },
+                this.editor.current.coords = this.coords
+            } else {
+                this.editor.current.coords = null
+            }
             //this.$emit('selected',el)
         },
         moveUp(up){

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col m-2 p-2 bg-gray-200 text-black">
+    <div class="flex flex-col theme-dark">
         <block-attributes/>
         <!-- <h4>Attributes</h4>
         <div class="grid grid-cols-3 gap-3 items-center">

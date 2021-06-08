@@ -1,41 +1,54 @@
 <template>
-    <div class="fixed bottom-0 left-0 pl-4 w-full theme-dark flex flex-row items-center h-10 text-gray-300 p-1 z-highest flex flex-row items-center justify-around border-t border-gray-700">
-        <div class="lg:w-1/4 md:w-1/3 w-1/2 flex justify-around flex-row items-center">
+    <div class="fixed bottom-0 left-0 pl-2 w-5/6 theme-dark flex flex-row items-center h-10 text-gray-300 p-1 z-highest flex flex-row items-center border-t border-gray-700">
+        <div class="flex flex-row items-start ml-8">
         
-        <icon name="more_vert" class="text-orange-400" title="Options" 
-        @click="docOptions=!docOptions"/>
+        <div class="h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="more_vert" class="text-orange-400" title="Options" @click="docOptions=!docOptions"/>
+        </div>
         
         <!-- <i class="material-icons text-orange-400" title="Document">description</i> -->
 
 
         <!-- CLEAR SELECTION -->
-        <icon name="border_clear" class="text-gray-300 hover:text-indigo-500" @click="$store.dispatch('setCurrent',doc),$store.dispatch('selected',doc.id)" title="Select document"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="border_clear" class="text-gray-300 hover:text-indigo-500" @click="$store.dispatch('setCurrent',doc),$store.dispatch('selected',doc.id)" title="Select document"/>
+        </div>
 
 
         <!-- ADD EMPTY BLOCK (GRID) -->
         <!-- <icon name="grid_on" v-if="editor.current && editor.current.tag==='document'" class="text-gray-300 hover:text-indigo-500" @click="$action('grids')" title="Add Grid"/> -->
 
         <!-- ADD ELEMENT -->
-
-        <icon name="add" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('block_add_element')" title="Add block"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="add" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('block_add_element')" title="Add block"/>
+        </div>
 
         <!-- IMPORT A BLOCK -->
-        <icon name="widgets" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('addreusable'),addBlock=true" title="Add reusable block"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="widgets" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('addreusable'),addBlock=true" title="Add reusable block"/>
+        </div>
 
+        <div class="ml-8 h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black">
         <!-- PREVIEW IN A NEW WINDOW -->
-        <icon name="preview" class="text-gray-300 hover:text-indigo-500" @click="openPreview()" title="Preview in a new window"/>
-
+            <icon name="preview" class="text-gray-300 hover:text-indigo-500" @click="openPreview()" title="Preview in a new window"/>
+        </div>
         <!-- PREVIEW DOCUMENT -->
-        <icon name="laptop" class="text-gray-300 hover:text-indigo-500" @click="previewTab('laptop')" title="Preview"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="laptop" class="text-gray-300 hover:text-indigo-500" @click="previewTab('laptop')" title="Preview"/>
+        </div>
 
-        <icon name="smartphone" class="text-gray-300 hover:text-indigo-500" @click="previewTab('mobile')" title="Preview"/>
-        
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="smartphone" class="text-gray-300 hover:text-indigo-500" @click="previewTab('mobile')" title="Preview"/>
+        </div>
 
         <!-- PREVIEW SLIDER
         <i class="material-icons nuxpresso-icon-circle ml-2 text-gray-300 bg-green-400 " v-if="component && component.category==='slider'" title="Preview" @click="slider=!slider,disable=false">remove_red_eye</i>
          -->
         <!-- SAVE DOCUMENT -->
-        <icon name="save" class="hover:text-indigo-500 cursor-pointer" @click="$action('savecomponent')" title="Save document"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+            <icon name="save" class="hover:text-indigo-500 cursor-pointer" @click="savePage()" title="Save page"/><!--$action('savecomponent')-->
+        </div>
+
         <!-- <i class="material-icons moka-icons nuxpresso-icon-circle text-gray-300 ml-2 divide-x divide-gray-200" @click="$action('savecomponent')"
 title="Save document">save</i> -->
         </div>
@@ -53,12 +66,16 @@ title="Save document">save</i> -->
 
             <span class="capitalize ml-2 cursor-pointer" title="Edit CSS/Style" @click="$action('edit_css')">CSS</span>
             
-            <input v-if="editor.current && !editor.current.css.hasOwnProperty('css')" type="text" class="bg-gray-900 ml-2 w-4/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
+            <input v-if="editor.current && !editor.current.css.hasOwnProperty('css')" type="text" class="bg-gray-900 ml-2 w-3/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
             
-            <input v-else type="text" class="ml-2 w-4/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
+            <input v-else type="text" class="ml-2 w-3/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
 
             <i class="material-icons moka-icons ml-2" title="Edit CSS classes" @click="$action('edit_css')">edit</i>
-
+            <div class="flex flex-row bg-purple-600 text-white mx-2 h-5 rounded px-1 text-sm items-center" @click="$action('seo')">SEO</div>
+            <div v-if="editor.current.coords" class="absolute right-0 mr-1 text-xs md:text-sm text-gray-600 p-1">
+                {{ editor.current.coords.width.toFixed(2) }} x {{ editor.current.coords.height.toFixed(2) }} |
+                x: {{ editor.current.coords.x.toFixed(2) }} y: {{ editor.current.coords.y.toFixed(2) }}
+            </div>
             <!--
             <i class="material-icons moka-icons ml-2" title="Customize" @click="$action('customize')">brush</i>
             <i class="material-icons moka-icon-circle ml-2" title="Preview in new window" @click="openPreview()">preview</i>
@@ -71,6 +88,7 @@ title="Save document">save</i> -->
             <div class="p-1 hover:bg-gray-900" @click="editor.export='single',$action('component_export')">Export</div>
             <div class="p-1 hover:bg-gray-900" @click="$action('component_settings')">Settings</div>
         </div>
+        
     </div>
 </template>
 
@@ -93,8 +111,28 @@ export default {
         }
     },
     methods:{
-        saveComponent(){
-            return
+        savePage(){
+            //this.$loading ( true )
+            let component = this.editor.component
+            window.localStorage.setItem('whoobe-component',JSON.stringify(component) )
+            delete component.autosave
+            component.blocks_id ?
+                component.blocks_id === component.json.id ?
+                    null :
+                        component.blocks_id = component.json.id 
+                            : component.blocks_id = component.json.id
+                            
+            this.$saveComponent ( component ).then ( res => {
+                this.$loading(false)
+                this.$message('Block saved')
+                this.$action()
+                console.log ( res )
+            }).catch ( err => {
+                this.$loading(false)
+                this.$message('An error occured. Check you console log.')
+                this.$action()
+                console.log ( err )
+            })
         },
         openPreview(){
             this.$mapState().editor.preview = this.component

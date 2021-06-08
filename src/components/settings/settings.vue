@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 bg-gray-200">
+    <div class="p-4">
         <div class="flex flex-row text-sm cursor-pointer">
             <template v-for="t in tabs">
                 <div @click="tab=t.tag" :class="tab===t.tag?'bg-black':''" class="px-2 desktop-tab capitalize border-0">{{t.label}}</div>    

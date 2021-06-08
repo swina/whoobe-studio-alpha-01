@@ -51,7 +51,11 @@
                 :doc="$attrs.component"
             /> -->
 
-            <div @click="selectDoc(doc)" class="absolute top-0 right-0 -mr-2 -mt-8" v-if="doc.id!=editor.selected"><icon name="select_all" class="text-3xl" :class="doc.id===editor.selected?'text-purple-500':'text-gray-500'" title="Select block component"/></div>
+            <div @click="selectDoc(doc)" class="absolute top-0 -mr-2 -mt-8 w-full text-center flex flex-row items-center justify-start" v-if="doc.id!=editor.selected">
+                <button>Page 
+                <icon name="select_all" :class="doc.id===editor.selected?'text-purple-500':'text-gray-500'" title="Select block component"/>
+                </button>
+            </div>
         </div>
         
     </div> 
@@ -65,7 +69,7 @@
     <block-status-bar :component="component"/>
 
     <!-- context menu -->
-    <div class="editor-context-menu z-highest" ref="contextMenu" id="contextMenu" style="left:-1000px" @mouseleave="hideContextMenu" @click="hideContextMenu">
+    <div class="editor-context-menu z-highest rounded border-gray-900 border shadow-lg text-xs" ref="contextMenu" id="contextMenu" style="left:-1000px" @mouseleave="hideContextMenu" @click="hideContextMenu">
         <context-menu 
             @delete="confirmModal=!confirmModal" 
             :current="current" 
@@ -160,7 +164,7 @@ export default {
             return true
         },
         docCss(){
-            return this.doc.id === this.editor.selected ? 'border-4 border-dotted border-purple-500' : 'border border-purple-300'
+            return this.doc.id === this.editor.selected ? 'border border-red-500' : 'border border-red-300'
         },
         gsapAnimations(){
             return gsapEffects

@@ -119,6 +119,19 @@ const schema = {
             edit: true,
             separator: '|',
             label: 'Used fonts'
+        },
+        mode: {
+            type: 'select',
+            options: ['website','landing'], 
+            list: false,
+            edit: true,
+            label: 'Mode'
+        },
+        landing: {
+            type: 'string',
+            list: false,
+            edit:true,
+            label: 'Landing Page'
         }
     },
     articles: { 

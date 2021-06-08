@@ -1,11 +1,11 @@
 <template>
-<div class="w-full overflow-y-auto z-2xtop h-screen theme-dark p-1 flex flex-col">
+<div class="w-full overflow-y-auto z-2xtop h-screen text-xs theme-dark p-1 flex flex-col">
     <!--<i class="material-icons z-2xtop absolute top-0 right-0 m-1" @click="$emit('close')">close</i>-->
-    <div v-if="components" class="mb-10 flex flex-row flex-wrap justify-around p-1">
-        
+    <div v-if="components" class="mb-10 flex flex-row flex-wrap justify-around p-1 pb-48">
+        Click on a item to add to the current block
         <template v-for="(template,index) in components">
             <div class="w-1/2 flex flex-col mb-4 h-36 cursor-pointer relative p-1 justify-center items-center" @click="addReusable(template)" :title="template.name">
-                <span class="text-sm p-1">{{ template.name.substring(0,20) }}</span>
+                <span class="text-xs p-1">{{ template.name.substring(0,15) }}</span>
                 <div v-if="template.image" :style="'background-image:url(' + $imageURL(template.image) + ')'" class="w-full h-24 bg-top bg-no-repeat bg-cover shadow-lg" ></div>
                 <div v-if="template.image_uri && !template.image" :style="'background-image:url(' + $imageURL(template.image_uri) + ')'" class="w-full h-24 bg-top bg-no-repeat bg-cover shadow" ></div>
                 <icon v-if="!template.image && !template.image_uri" name="view_quilt" class="text-8xl text-gray-700"/>
@@ -13,19 +13,19 @@
             </div>
         </template>
     </div>
-    <div class="fixed bottom-0 w-1/3 theme-dark p-2 flex flex-row justify-around items-center text-center">
+    <div class="fixed bottom-0 w-1/6 theme-dark h-10 p-2 flex flex-row justify-around items-center text-center">
         <i class="material-icons mx-2 text-2xl" @click="prev">chevron_left</i>
-        <select v-model="filter">
+        <select v-model="filter" class="dark">
             <option v-for="cat in $mapState().datastore.components_categories" :value="cat.filter">{{ cat.filter }}</option>
         </select>
         <i class="material-icons" @click="search=!search">search</i>
         <i class="material-icons mx-2 text-2xl" @click="next">chevron_right</i>
     </div>
     <transition name="fade">
-        <div v-if="search" class="fixed z-2xtop bottom-0 mb-10 w-1/3 bg-white p-2 flex flex-row flex-wrap">
-             <button class="mr-2 mt-1 capitalize w-24 border hover:bg-blue-400 hover:text-white border-blue-400 bg-white text-blue-400 focus:bg-gray-600 focus:text-white focus:outline-none rounded-none" @click="start=0,tags=''">all</button>
+        <div v-if="search" class="fixed z-2xtop bottom-0 w-1/6 mb-10 theme-dark p-2 grid grid-cols-2 gap-2">
+             <button class="w-full capitalize text-xs border" @click="start=0,tags=''">all</button>
             <template v-for="tipo in datastore.dataset.elements[0].types.types">
-                <button class="mr-2 mt-1 capitalize w-24 border hover:bg-blue-400 hover:text-white border-blue-400 bg-white text-blue-400 focus:bg-gray-600 focus:text-white focus:outline-none rounded-none" @click="tags=tipo">{{ tipo }}</button>
+                <button class="w-full text-xs capitalize " @click="tags=tipo">{{ tipo }}</button>
             </template>
         </div>
     </transition>

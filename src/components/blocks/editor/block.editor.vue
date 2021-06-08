@@ -1,15 +1,16 @@
 <template>
 <div>
     <div :class="'editor-container min-h-screen top-0 right-0 left-0 bottom-0 flex flex-row'" v-if="hasblocks">
-        <div class="w-full overflow-y-auto overflow-x-hidden">
+        <div class="w-full overflow-y-hidden overflow-x-hidden pb-64">
             
             <!-- MAIN CONTAINER -->
-            <div :class="'relative mt-8 ml-4 mr-4 cursor-pointer'">
+            <div main-editor-container :class="'relative mt-8 ml-4 mr-4 cursor-pointer'">
                 <div :class="'main absolute top-0 left-0 bottom-0 right-0 z-max '" v-if="disable"></div>
                 <!-- BLOCKS MAIN EDITOR -->
-                <div :class="'mt-4 mb-10 ' + pageCss" :style="background" data-container-tag="block component">
+                <div :class="'mt-4 mb-10 ' + pageCss" :style="background + ';' + height">
                     
                     <block-selectors
+                        class="h-full"
                         :key="doc.id"
                         :doc="doc"
                         :component="component"
@@ -36,9 +37,9 @@
                         :doc="doc"/> 
                 </div>
                 
-                <div class="absolute inset-0 flex flex-row p-1">
+                <div class="invisible absolute inset-0 flex flex-row p-1">
                     <template v-for="n in 12">
-                        <div class="w-1/12 bg-opacity-75" :class="'bg-opacity-50 bg-gray-' + (((n%2)+1)*100)">
+                        <div class="w-1/12" :class="'bg-opacity-50 bg-gray-' + (((n%2)+1)*100)">
 
                         </div>
 
@@ -124,6 +125,10 @@ export default {
     }),
     computed:{
         ...mapState ( ['moka','editor','datastore'] ),
+        height(){
+            console.log ( window.innerHeight )
+            return 'min-height:' + (window.innerHeight - 120) + 'px'
+        },
         //body settings in preview mode
         show(){
             return '' //return this.editor.action === 'in_editor_preview' ? 'hidden' : ''

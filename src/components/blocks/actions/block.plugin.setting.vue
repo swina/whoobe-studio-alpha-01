@@ -15,6 +15,7 @@ export default {
     computed:{
         component(){
             if ( this.$mapState().editor.current.plugin.component.config.hasOwnProperty('settings') ){
+                console.log ( this.$mapState().editor.current.plugin.component.config.settings )
                 return () => import ( '@/components/plugins/' + this.$mapState().editor.current.plugin.component.config.settings )
             } else {
                 return false

@@ -177,6 +177,12 @@ const actions = {
         position: 'modal-top-right',
         title: 'Data Link',
         component: 'blocks/actions/block.data.link.vue'
+    },
+    seo: {
+        size: 'md',
+        position: 'modal',
+        title: 'SEO',
+        component: 'plugins/seo/index.settings.vue'
     }
 }
 

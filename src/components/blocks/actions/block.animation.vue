@@ -4,28 +4,28 @@
         <!-- Element animation settings -->
         <div class="p-2">
             <label>Animation</label>
-            <select class="w-full" v-model="current.gsap.animation" @change="animate(current,current.id)">
+            <select class="dark w-full" v-model="current.gsap.animation" @change="animate(current,current.id)">
                 <option value="">none</option>
                 <option v-for="(ani,i) in gsapAnimations.gsapEffects" :value="ani.replace('-','')"><span class="capitalize">{{ ani.replace('-' , ' ')}}</span></option>
             </select>
             <label>Easing</label>
-            <select class="w-full " v-model="current.gsap.ease">
+            <select class="dark w-full" v-model="current.gsap.ease">
                 <option value="">none</option>
                 <option v-for="(ease,i) in gsapAnimations.gsapEase" :value="ease"><span class="capitalize">{{ ease.replace('.out','')}}</span></option>
             </select>
             <div class="grid grid-cols-2 gap-4">
                 <label>Duration (secs)</label>
-                <input class="w-full" type="number" min=".1" max="100" step=".1" v-model="current.gsap.duration"/>
+                <input class="dark w-full" type="number" min=".1" max="100" step=".1" v-model="current.gsap.duration"/>
                 <label>Delay (secs)</label>
-                <input class="w-full" type="number" min="0" max="100" step=".1" v-model="current.gsap.delay"/>
+                <input class="dark w-full" type="number" min="0" max="100" step=".1" v-model="current.gsap.delay"/>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <label>Trigger Over</label>
-                <input class="w-full" type="checkbox" v-model="current.gsap.trigger"/>
+                <input class="dark w-full" type="checkbox" v-model="current.gsap.trigger"/>
             </div>
-            <div ref="aniDemo" class="text-center text-4xl bg-black w-1/2 text-gray-400 m-auto p-4">animation</div>
+            <div ref="aniDemo" class="text-center text-2xl my-4 bg-black w-1/2 text-gray-400 m-auto p-4">animation</div>
             <a href="#" @click="animate()">Run</a>
-            <!-- <select class="w-full" v-model="$attrs.value.gsap.animation" @change="animate(current,current.id)">
+            <!-- <select class="dark w-full" v-model="$attrs.value.gsap.animation" @change="animate(current,current.id)">
                 <option value="">none</option>
                 <option v-for="(ani,i) in gsapAnimations.gsapEffects" :value="ani.replace('-','')"><span class="capitalize">{{ ani.replace('-' , ' ')}}</span></option>
             </select>
@@ -35,7 +35,7 @@
                 <option v-for="(ease,i) in gsapAnimations.gsapEase" :value="ease"><span class="capitalize">{{ ease.replace('.out','')}}</span></option>
             </select>
             <label>Duration (secs)</label>
-            <input class="w-full" type="number" min=".1" max="100" step=".1" v-model="$attrs.value.gsap.duration"/>
+            <input class="dark w-full" type="number" min=".1" max="100" step=".1" v-model="$attrs.value.gsap.duration"/>
             <label>Delay (secs)</label>
             <input class="w-full" type="number" min="0" max="100" step=".1" v-model="$attrs.value.gsap.delay"/>
             <h1 ref="aniDemo" class="text-gray-800 m-auto p-10">DEMO</h1>

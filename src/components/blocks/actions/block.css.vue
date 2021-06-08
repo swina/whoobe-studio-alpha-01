@@ -1,11 +1,11 @@
 <template>
-    <div class="p-2">
+    <div class="p-2 text-xs">
         <div>CSS</div>
-        <textarea v-if="editor.current" class="w-full h-40 text-gray-800" v-model="css"/>
+        <textarea v-if="editor.current" class="dark w-full h-40" v-model="css"/>
         <div v-if="editor.current && isContainer">Container CSS</div>
-        <textarea v-if="editor.current && isContainer" class="w-full h-24 text-gray-800" v-model="container"/>
+        <textarea v-if="editor.current && isContainer" class="dark w-full h-24" v-model="container"/>
         <div>Style</div>
-        <textarea class="w-full h-24 text-gray-800" v-model="stile"/>
+        <textarea class="w-full h-24 dark" v-model="stile"/>
     </div>
 </template>
 

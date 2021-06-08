@@ -289,6 +289,7 @@ export default {
             })
         },
         qryByCategory ( category , skip ){
+            this.search = ''
             !skip ? this.start = 0 : null
             this.filter = { field: 'category' , value: category }
             this.$api.service('products').find ( { query : { $limit: this.limit , $skip : this.start , type: 'product' , category : category }}).then ( result => {

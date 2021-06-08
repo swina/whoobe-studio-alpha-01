@@ -1,5 +1,5 @@
 .theme-dark {
-    @apply from-bluegray-700 to-gray-900 bg-gradient-to-tr text-gray-500 border-gray-500;
+    @apply from-gray-800 to-gray-800 bg-gradient-to-tr text-gray-500 border-gray-500;
 }
 .theme-color {
     @apply bg-indigo-500 text-white;

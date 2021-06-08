@@ -156,7 +156,7 @@ export default {
         },
         setLimit(width){
             width > 1450 ?
-                this.limit = 18 :
+                this.limit = 32 :
                     width > 1266 ? 
                         this.limit = 18 :
                             width > 1170 ?

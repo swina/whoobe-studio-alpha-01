@@ -10,7 +10,7 @@
       <div v-for="comp in objects" class="mx-4 my-4 w-48" :title="comp.name + '-' + comp.description + ' ' + comp.updatedAt" :key="comp._id">
         <!-- <div v-if="comp && comp.hasOwnProperty('name')"> -->
           <div class="pl-1 h-7 text-xs text-gray-400">
-            {{ comp.name }} 
+            {{ comp.name.substring(0,20) }} 
           </div>
 
           <div class="w-48 h-32 flex flex-col items-center justify-center border border-gray-700" @click="selectComponent(comp.id, 'component', comp)">
@@ -113,6 +113,7 @@ export default {
                   blocks: block,
               }
           )
+          this.$store.dispatch ( 'mode' , 'editor' )
           this.$mapState().editor.current = block.json
           this.$mapState().editor.component = block
           this.$mapState().desktop.currentTab = this.$mapState().desktop.tabs.length - 1

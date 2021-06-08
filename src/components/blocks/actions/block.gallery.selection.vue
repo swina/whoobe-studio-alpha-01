@@ -79,39 +79,8 @@ export default {
             }
             
         },
-        setTemplate(template){
-            this.$api.service ( 'components' ).get ( template._id ).then ( result => {
-                console.log ( result )
-                delete result.autosave
-                this.article.blocks = result
-                this.article.component = result._id
-                this.article.template_id = result._id 
-                this.article.template_preview = result.image 
-                this.$api.service ( 'articles' ).find ( ).then ( res => {
-                    let count = 0
-                    res.data.forEach ( (arts,i) => {
-                        if ( arts.template_id === result._id ){
-                            arts.template_preview = result.image
-                            arts.blocks = result
-                            console.log ( arts )
-                            this.$api.service ( 'articles' ).patch ( arts._id , arts ).then ( res => {
-                                console.log ( 'updated template for ' , res )
-                            })
-                            count++
-                        }
-                    })
-                    this.$message ( 'Updated ' + count + ' articles' )
-                })
-                // this.$mapState().datastore.dataset.articles.map ( arts => {
-                //     if ( arts._id === this.article._id ){
-                //         arts.template_id = this.article.template_id
-                //         arts.template_preview = result.image
-                //     }
-                // })
-                //this.$action()
-            })
-            //this.$mapState().datastore.currentArticle.template_id = template._id
-            //this.$mapState().datastore.currentArticle.blocks = template
+        setTemplate(component){
+            this.$emit ( 'component' , component )
         }
     }
 }

@@ -1,5 +1,6 @@
 const desktop =  {
     state: {
+        mode: 'full',
         message: '',
         filter: '',
         tabs: [],
@@ -10,6 +11,9 @@ const desktop =  {
         project: null
     },
     mutations: {
+        mode ( state , payload ){
+            state.mode = payload
+        },
         message ( state , payload ){
             state.message = payload
         },
@@ -45,6 +49,9 @@ const desktop =  {
         }
     },
     actions : {
+        mode ( { commit } , payload ){
+            commit ( 'mode' , payload )
+        },
         message ( { commit } , payload ){
             commit ( 'message' , payload )
         },

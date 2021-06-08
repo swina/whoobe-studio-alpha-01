@@ -2,17 +2,19 @@
     <div class="text-sm w-full relative theme-dark overflow-y-auto z-2xtop mb-2 shadow">
         <div v-if="editor.current" class="w-full z-2xtop">
             
-            <div class="bg-purple-700 text-white flex flex-row items-center p-1 shadow relative p-1">
-                <div class="flex flex-row items-center" @dblclick="$emit('switch')">
+            <!-- <div class="bg-purple-700 text-white flex flex-row items-center p-1 shadow relative p-1">
+                <div class="w-full flex flex-row items-center justify-around text-base" @dblclick="$emit('switch')">
                     
                     <div>
                         <span v-if="editor.current.tag!='menu'" class="capitalize">{{ editor.current.type || editor.current.tag }}</span>
                         <span v-else>Menu <span v-if="customizeDropdown">Dropdown</span></span>
                     </div>
                     <i class="material-icons text-sm ml-2">{{editor.current.icon}}</i> 
+                    <div class="text-xs lg:text-sm text-gray-500">{{ size }}</div>
+                    <div class="text-xs lg:text-sm text-gray-500">{{ position }}</div>
                 </div>
                 
-            </div>
+            </div> -->
             <!-- <whoobe-edit-content 
                 :entity="editor.current" 
                 :element="editor.current" 
@@ -197,6 +199,15 @@ export default {
             if ( this.entity.entity && this.editor.current.element === 'p'){
                 this.editor = true
             }
+        },
+        size(){
+            return this.editor.current.coords ?
+                this.editor.current.coords.width.toFixed(2) + ' x ' + this.editor.current.coords.height.toFixed(2) : ''
+
+        },
+        position(){
+            return this.editor.current.coords ?
+                'x:' + this.editor.current.coords.x.toFixed(2) + ' y:' + this.editor.current.coords.y.toFixed(2) : ''
         }
     },
     methods:{
