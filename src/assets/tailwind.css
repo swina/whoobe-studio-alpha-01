@@ -7,7 +7,7 @@
 body {
     font-family:Arial, 'Roboto' , sans-serif;
     font-size:.8;
-    @apply text-sm leading-6 overflow-x-hidden bg-gray-800;
+    @apply text-xs leading-6 overflow-x-hidden bg-gray-800;
 }
 
 h1 {

@@ -154,10 +154,12 @@ export default {
             project.fonts = this.fonts.join('|')
             project.landing = project.component._id 
             project.single = project.component._id
-            this.output = 'Starting generation ...'
+            this.output = 'Starting generation ...\n'
             this.errors = ''
+
             this.$api.service ( 'projects' ).patch ( project._id , project ).then ( res => {
-                this.$api.service('whoobe/build').create({project:project.name,uploads:this.uploads,fonts:this.fonts}).then ( res =>{
+                console.log ( res )
+                this.$api.service('whoobe/build').create({project:res,uploads:this.uploads,fonts:this.fonts}).then ( res =>{
                     this.output += res.data
                 })
             })

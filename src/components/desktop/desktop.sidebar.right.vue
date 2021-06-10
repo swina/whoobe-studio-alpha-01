@@ -11,7 +11,7 @@
                         <icon name="chevron_right" class="text-gray-300 hover:text-indigo-500" title="more"/>
                     </div> -->
             </div>
-            <div v-if="currentTab.label!='settings'" class="text-white text-xs border-b border-gray-900 flex flex-row items-center p-1 shadow relative p-1">
+            <div v-if="currentTab.label!='settings' && currentTab.label!='generate'" class="text-white text-xs border-b border-gray-900 flex flex-row items-center p-1 shadow relative p-1">
                 <div class="w-full flex flex-row items-center justify-around text-base" @dblclick="$emit('switch')">
                     
                     <div>
@@ -88,6 +88,12 @@ export default {
                 icon: 'settings',
                 component: 'blocks/actions/block.document.settings.vue',
                 tooltip: 'Page settings'
+            },
+            { 
+                label: 'generate',
+                icon: 'dynamic_form',
+                component: 'settings/publish.vue',
+                tooltip: 'Publish'
             },
         ],
         components: {

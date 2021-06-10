@@ -139,7 +139,8 @@ export default {
             })
         },
         saveProject(){
-            this.selected.fonts = Array.isArray(this.selected.fonts) ? this.selected.fonts.join('|') : this.selected.fonts
+            //this.selected.fonts = Array.isArray(this.selected.fonts) ? this.selected.fonts.join('|') : this.selected.fonts
+            //this.selected.fonts = this.selected.fonts.replaceAll(' ','+')
             this.$api.service ( 'projects' ).patch ( this.selected._id , this.selected ).then ( res => {
                 console.log ( res )
             })

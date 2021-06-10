@@ -50,6 +50,7 @@ export default {
                 
             })
         } else {
+            console.log ( 'Mode single')
             this.$api.service ( 'components' ).get ( this.$attrs.project.landing ).then ( res => {
                 let json = res.json
                 let usedFonts = []
@@ -70,10 +71,12 @@ export default {
                 classes.forEach ( classe => {
                     let generalCSS 
                     if ( classe.hasOwnProperty('css') ){
-                        generalCSS = classe.css.split(' ')
+                        console.log ( 'Container => ' , Object.values(classe) )
+                        generalCSS = Object.values ( classe ) //classe.css.split(' ')
                         generalCSS.forEach ( css => {
                             if ( css ) purgeClasses.push ( css )
                         })
+                        
                         
                     } else {
                         generalCSS = classe.split(' ')
@@ -82,9 +85,9 @@ export default {
                         })
                     }
                 })
-
-                console.log ( [...new Set(purgeClasses)] )
-                console.log ( images , fonts )
+ 
+                //console.log ( [...new Set(purgeClasses)] )
+                //console.log ( images , fonts )
                 this.$emit('images',[...new Set(this.images)],[...new Set(usedFonts) ], [...new Set(purgeClasses)] )
             })
         }
