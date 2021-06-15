@@ -15,7 +15,11 @@ import MokaSvg from './elements/moka.svg'
 import MokaImg from './elements/moka.img'
 import MokaIcon from './elements/moka.icon'
 import MokaInput from './elements/moka.input'
+import MokaToggle from './elements/moka.toggle.vue'
 import MokaTextarea from './elements/moka.textarea'
+import MokaSelect from './elements/moka.select'
+import MokaChip from './elements/moka.chip.vue'
+import MokaList from './elements/moka.list.vue'
 import MokaSimpleSvg from './elements/moka.simple.svg'
 //import MokaSnipcartAddToCart from '@/components/plugins/store/nuxpresso/snipcart.add.to.cart'
 //import MokaPluginWrapper from '@/components/common/Plugins.Wrapper'
@@ -29,7 +33,11 @@ export default {
         MokaSvg,
         MokaImg,
         MokaInput,
+        MokaToggle,
         MokaTextarea,
+        MokaSelect,
+        MokaChip,
+        MokaList,
         MokaSimpleSvg,
         //MokaSnipcartAddToCart,
         //MokaPluginWrapper
@@ -107,11 +115,28 @@ export default {
             if ( el.element === 'menu' ){
                 return MokaMenu
             }
-            if ( el.tag === 'input' && el.type!='button' ){
+            if ( el.tag === 'input' && el.type!='button' && el.element != 'select' ){
+                if ( el.type === 'checkbox' ){
+                    if ( el.display === 'checkbox')
+                        return MokaInput
+                    if ( el.display === 'toggle' )
+                        return MokaToggle
+                }
                 return MokaInput
             } 
             if ( el.element === 'textarea' ){
                 return MokaTextarea
+            }
+            if ( el.element === 'select' ){
+                if ( el.display === 'select' ){
+                    return MokaSelect
+                }
+                if ( el.display === 'chip' ){
+                    return MokaChip
+                }
+                if ( el.display === 'list' ){
+                    return MokaList
+                }
             }
             
             if ( el.tag === 'article' && el.element != 'img' ){

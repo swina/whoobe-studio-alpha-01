@@ -583,9 +583,6 @@ export default {
     },
     mounted(){
         let vm = this
-        //this.$store.dispatch ( 'setComponent' , this.$attrs.blocks )
-        //console.log ( 'setting component ...' , this.$attrs.blocks.name )
-        //console.log ( this.$store.state.editor.component.name )
         if ( vm.doc.blocks.length === 0 ){
             this.$store.dispatch('setCurrent',vm.doc)
             this.$store.dispatch('selected',vm.doc.id)
@@ -600,16 +597,14 @@ export default {
             let data = {
                 autosave:  blocks
             }
-            console.log ( 'autosave' , data )
-            /*
             this.$api.service ( 'components' ).patch ( vm.component._id , data ).then ( result =>{
                 console.log ( 'Autosaved =>'  , result.data )
             }).catch ( error => {
                 this.$message ( 'Autosave error please check your logs')
             })
             vm.$store.dispatch ( 'autoSave' , blocks )
-            window.localStorage.setItem('nuxpresso-autosave',JSON.stringify(blocks))
-            */
+            window.localStorage.setItem('whoobe-autosave',JSON.stringify(blocks))
+            
         }, 60000*5 )
         
     },

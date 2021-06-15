@@ -1,6 +1,6 @@
 <template>
     <div :class="' object-fit cursor-pointer flex flex-col justify-center items-center relative m-auto'">
-        <img v-if="$attrs.image && $attrs.image.hasOwnProperty('url') && $attrs.image.url" :src="getImage($attrs.image)" :class="'m-auto mb-2 ' + size" @click="$emit('media')"/>
+        <img v-if="$attrs.image && $attrs.image.hasOwnProperty('url') && $attrs.image.url" :src="getImage($attrs.image)" :class="'m-auto mb-2 ' + size" @click="$emit('media')" :title="$attrs.image.url"/>
         <!--<img v-else :src="getImage($attrs.image) && $at" :class="'m-auto mb-2 ' + size" @click="$emit('media')"/>-->
         <i class="material-icons text-5xl" v-if="editor && editor.current && editor.current.hasOwnProperty('type') && editor.current.type==='audio'">audiotrack</i>
         <div v-if="editor && editor.current && editor.current.hasOwnProperty('type') && editor.current.type === 'file' && editor.current.hasOwnProperty('link') && editor.current.link">
@@ -11,8 +11,9 @@
         </div>
         <button v-if="!$attrs.image" @click="$emit('media')">Select Media</button>
         <div v-if="$attrs.image && ( $attrs.image.url || editor.current.link )" class="flex flex-row">
-            <button @click="$emit('noimage')">Remove</button>
-            <button @click="imageEditor($attrs.image)">Image Editor</button>
+            <button @click="$emit('noimage')" title="Remove image"><icon name="delete"/></button>
+            <button @click="imageEditor($attrs.image)" title="Edit image"><icon name="edit"/></button>
+            <button @click="$action('image_preview')"><icon name="link" title="Open preview"/></button>
         </div>
     </div>
 </template>

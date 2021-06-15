@@ -1,65 +1,102 @@
 <template>
-    <div class="w-full" v-if="selected">
-        <button @click="create=!create">Create new</button>
+    <div class="w-full h-4/5 text-gray-500">
+        
+        <div class="bg-purple-500 p-4 animate-pulse text-center text-white text-xl" v-if="resources">
+            Loading project resources ...
+        </div>
+
+        <div class="flex flex-row items-center border-b border-black">
+            <button class="lg border-r border-gray-900" @click="tab='project'">Settings</button>
+            <button class="lg border-r border-gray-900" @click="tab='publish'">Publish</button>
+        </div>
+
+        
         <!-- <template v-for="project in $mapState().datastore.dataset.projects">
             <div :class="'cursor-pointer theme-dark border p-1 mt-1 ' + active(project)" @click="getProjectData(project)">{{ project.name }}</div>
         </template> -->
-        <div v-if="selected" class="w-full bg-gray-800 p-2 grid grid-cols-2 gap-10">
+        <div v-if="tab==='project'">
+        <div v-if="selected" class="w-full bg-gray-800 p-4 grid grid-cols-2 gap-10">
+            <div class="flex flex-col">
+                <label>Page/Block</label>
+                <!-- <select class="dark w-full" v-model="selected.mode">
+                    <option value="website">Website</option>
+                    <option value="single">Single Page/Block</option>
+                </select> -->
+                <img :src="$imageURL(selected.component.image)" v-if="selected.component" class="m-auto h-40 w-32 object-cover object-top"/>
+                <button class="m-auto" @click="selectComponent=!selectComponent" v-if="selected.mode==='single'">Select</button>
+            </div>
             <div class="flex flex-col">
                 <label>Name</label>
                 <input type="text" class="dark w-full text-sm" v-model="selected.name"/>
+                <label>Google Analytics</label>
+                <input type="text" class="dark w-full text-sm" v-model="selected.analytics"/>
+                <label>SEO Title</label>
+                <input type="text" class="dark w-full text-sm" v-model="selected.component.seo.title"/>
+                <label>SEO Description</label>
+                <textarea class="dark w-full text-sm" v-model="selected.component.seo.description"/>
             </div>
             <div class="flex flex-col">
                 <label>CMS URL</label>
                 <input type="text" class="dark w-full text-sm" v-model="selected.url"/>
-            </div>
-            <div class="flex flex-col">
+            
                 <label>Destination folder</label>
                 <input type="text" class="dark w-full text-sm" v-model="selected.dist"/>
-            </div>
-            <div class="flex flex-col">
-                <label>Repo </label>
+            
+                <label>GIT Repo </label>
                 <input type="text" class="dark w-full text-sm" v-model="selected.repo"/>
             </div>
-            <div class="flex flex-col">
+            
+            <!-- <div class="flex flex-col">
                 <label>Google Analytics</label>
                 <input type="text" class="dark w-full text-sm" v-model="selected.analytics"/>
-            </div>
+                <label>SEO Title</label>
+                <input type="text" class="dark w-full text-sm" v-model="selected.component.seo.title"/>
+                <label>SEO Description</label>
+                <textarea class="dark w-full text-sm" v-model="selected.component.seo.description"/>
+            </div> -->
             <div class="flex flex-col">
                 <label>Fonts</label>
                 <textarea class="dark w-full text-sm" v-model="selected.fonts"/>
+                <label>Local Images {{ selected.uploads.length }}</label>
+                <div class="flex flex-row flex-wrap relative h-40 overflow-y-auto">
+                    <template v-for="image in selected.uploads">
+                        <img :src="$imageURL(image)" class="w-10 h-10 mr-1 mb-1 object-cover object-top" @click="imagePreview=!imagePreview,imageZoom=$imageURL(image)"/>
+                    </template>
+                </div>
             </div>
-            <div class="flex flex-col">
-                <label>Target</label>
-                <select class="dark w-full" v-model="selected.mode">
-                    <option value="website">Website</option>
-                    <option value="single">Single Page/Block</option>
-                </select>
-                <button @click="selectComponent=!selectComponent" v-if="selected.mode==='single'">Select</button>
-                <img :src="$imageURL(selected.component.image)" v-if="selected.component" class="m-auto h-40 w-32 object-cover object-top"/>
+            
+            
+            <div class="col-span-2 text-center" v-if="!resources">
+                <button class="lg m-auto" @click="saveProject">Save</button>
             </div>
 
-            <!---
-            <template v-for="field in Object.keys(schema)">
-                <div class="flex flex-col">
-                <label>{{schema[field].label}}</label>
-                <input class="w-full" type="text" v-if="schema[field].type==='string'" v-model="selected[field]"/>
-                <input type="checkbox" v-if="schema[field].type==='boolean'" v-model="selected[field]"/>
-                <textarea class="w-full h-24" v-model="selected[field]" v-if="schema[field].type==='array'"/>
-                <select v-if="schema[field].type==='select'" v-model="selected[field]">
-                    <option v-for="option in schema[field].options" :value="option">{{ option }}</option>
-                </select>
-                <select v-if="field==='landing'" v-model="landing">
-                    <option v-for="landing in landingPages" :value="landing._id">{{ landing.name }}</option>
-                </select>
+        </div>
+        </div>
+        <div v-if="tab==='publish'" class="flex flex-col p-4">
+            <div class="flex flex-col justify-center items-center p-2">
+                <!-- <icon name="web" class="m-auto rounded-full text-4xl text-gray-200 p-4 border" @click="tab='project'"/> -->
+                <icon name="dynamic_form" class="m-auto rounded-full text-4xl text-gray-200 p-4 border" @click="output='Collecting resources ...',publish()"/>
+                <div>
+                    <input type="checkbox" v-model="commit"> Commit &amp; Deploy
                 </div>
-            </template>
-            -->
-            <div class="col-span-2 text-center">
-                <button class="success m-auto" @click="saveProject">Save</button>
-                <button class="success m-auto" @click="openProject(project)">Connect to</button>
+                <div v-if="hasStore">
+                    <input type="checkbox" v-model="selected.store"/> Include store data
+                </div>
+                <button @click="publish()">Click here to publish</button>
+                <icon v-if="resources" name="bubble_chart" class="animate-spin"/>
             </div>
-            <whoobe-used-images @images="setImages" :project="selected" v-if="selected"/>
+            <div class="grid grid-cols-3 gap-10">
+                <textarea id="generated" v-model="output" style="font-family:monospace" class="text-sm w-full h-64 bg-black text-green-500 font-light col-span-2">
+                </textarea>
+                <textarea id="generated_errors" v-model="errors" style="font-family:monospace" class="text-sm w-full h-64 border-red-500 bg-black text-red-400"></textarea>
+            </div>
+            <div class="bg-purple-500 p-4 animate-pulse text-center text-xl" v-if="done && !errors">
+                {{ done }}
+                <button @click="preview">Preview</button>
+            </div>
+            <div class="bg-red-600 p-4 text-white animate-pulse text-center text-xl" v-if="done && errors">
+                Publish ended with errors. No page published.
+            </div>
         </div>
         <modal 
             size="md"
@@ -86,6 +123,11 @@
                 <block-gallery-selection @component="setComponent"/>
             </div>
         </modal>
+        <modal v-if="imagePreview" size="lg" position="modal" @close="imagePreview=!imagePreview" buttons="none">
+            <div slot="title">Preview</div>
+            <img slot="content" :src="imageZoom" class="w-full h-full object-contain" @click="imagePreview=!imagePreview"/>
+        </modal>
+        
     </div>
 </template>
 
@@ -97,6 +139,7 @@ export default {
         'block-gallery-selection' : () => import ( '@/components/blocks/actions/block.gallery.selection.vue' )
     },
     data:()=>({
+        tab: 'project',
         selected : null,
         create: false,
         newProject: 'new project', 
@@ -104,10 +147,20 @@ export default {
         landing: null,
         target: null,
         selectComponent: false,
+        output:'Ready to start ...\n',
+        errors:'',
+        commit: false,
+        imagePreview: false,
+        imageZoom: null,
+        resources: false,
+        done: ''
     }),
     computed:{
         schema(){
             return this.$mapState().datastore.schema.projects
+        },
+        hasStore(){
+            return this.selected.hasOwnProperty('store')
         }
     },
    
@@ -121,19 +174,51 @@ export default {
             this.$projectUsage()
         },
         getProject(name){
+            this.$loading(true)
             this.$api.service ( 'projects' ).find ( { query: { project: name } } ).then ( res => {
-                console.log ( res )
                 this.selected = res
                 this.selected.name = name
-                
+                this.selected.component.hasOwnProperty('seo') ? 
+                    null : 
+                        this.selected.component.seo = {
+                            title: name,
+                            description: ''
+                        }
+                this.$api.service ( 'resources' ).create ( { project : this.selected } ).then ( res => {
+                    console.log ( res )
+                    this.selected.purge = res
+                    this.$loading(false)
+                })
             })
 
+        },
+        async publish (){
+            //this.$message('Collecting resources to publish ... please wait')
+            this.selected = this.$projectResources ( this.selected )
+            this.$message('Resources collected')
+            this.output = ''
+            this.errors = ''
+            this.done = ''
+            this.$api.service('whoobe/build').create({project:this.selected,uploads:this.selected.uploads,fonts:this.selected.fonts,commit:this.commit,store:this.hasStore?this.selected.store:false}).then ( res =>{
+                    this.output += res.data
+            })
+        },
+        preview(){
+            this.$api.service('whoobe/build').find ( { query: { preview: true} } ).then ( res => {
+                window.open('http://localhost:5000','whoobe')
+            })
         },
         openProject(name){
             this.$api.service ( 'projects' ).find ( { query: { project: name , connect: true } } ).then ( res => {
                 console.log ( res )
                 this.selected = res
                 this.selected.name = name
+                this.selected.component.hasOwnProperty('seo') ? 
+                    null : 
+                        this.selected.component.seo = {
+                            title: name,
+                            description: ''
+                        }
                 window.localStorage.setItem ( 'whoobe-workspace' , name )
                 location.reload()
             })
@@ -144,7 +229,7 @@ export default {
             this.$api.service ( 'projects' ).patch ( this.selected._id , this.selected ).then ( res => {
                 console.log ( res )
             })
-            return null
+            
         },
         createProject(){
             this.$api.service ( 'projects' ).create ( {
@@ -164,20 +249,79 @@ export default {
             this.selected.purge = purgeCSS
         },
         setComponent ( component ){
+            this.$loading ( true )
             this.selectComponent = false
+            this.selected.name = component.name
             this.selected.component = component
             this.selected.single = component._id
             this.selected.landing = component._id
+            this.selected.component.hasOwnProperty('seo') ? 
+                    null : 
+                        this.selected.component.seo = {
+                            title: component.name,
+                            description: ''
+                        }
+            this.$api.service ( 'resources' ).create ( { project : this.selected } ).then ( res => {
+                    console.log ( res )
+                    this.selected.purge = res
+                    this.selected = this.$projectResources ( this.selected )
+                    this.$loading(false)
+            })
+            //this.selected = this.$projectResources(this.selected)
+        },
+        async loadResources(project){
+            this.$loading(true)
+            this.output = 'Collecting resources ...'
+            this.resources = true
+            project = await this.$projectResources ( project )
+            this.resources = false
+            this.output += 'Starting building process ...'
+            return project
         }
-
     },
     mounted(){
+        this.$message ( 'Loading project ...')
         if ( this.$mapState().desktop.project ){
+            this.$loading(true)
             this.selected = this.$mapState().desktop.project
-            this.selected.hasOwnProperty('analytics') ? null : this.selected.analytics = ''
+            this.$api.service ( 'components' ).get ( this.$mapState().desktop.project.component._id ).then ( res => {
+                delete res.autosave
+                this.selected.component = res
+                
+                this.selected.hasOwnProperty('analytics') ? null : this.selected.analytics = ''
+                this.selected.component.hasOwnProperty('seo') ? 
+                        null : 
+                            this.selected.component.seo = {
+                                title: this.selected.component.name,
+                                description: ''
+                            }
+                this.$api.service ( 'resources' ).create ( { project : this.selected } ).then ( res => {
+                    console.log ( res )
+                    this.selected.purge = res
+                    this.$loading(false)
+                })
+                this.selected = this.$projectResources ( this.selected )
+                //console.log ( 'calcolo interno ... ' , this.$projectResources ( this.selected ))
+            })
         }
         this.$api.service ( 'components' ).find ( {query:{category:'landing page'}} ).then ( res => {
             this.landingPages = res.data
+        })
+
+        this.$api.service('generate').on ( 'created' , (data) => {
+            
+            if ( data.data ){
+                if ( data.data.includes('done') ){
+                    this.done = 'Yahiiii project published!'
+                }
+                !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
+                //term.write ( data.data + '\n')
+            } 
+            if ( data.error ){
+                this.errors += data.error.normalize()
+            }
+            document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
+            document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
         })
     }
 }

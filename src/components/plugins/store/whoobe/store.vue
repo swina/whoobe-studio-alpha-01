@@ -1,7 +1,12 @@
 <template>
     <div class="" v-if="products">
     <div class="relative" :class="settings.general.css">
-        <div v-if="settings.general.display.cart.enabled" class="w-full text-xs flex flex-row items-center justify-end snipcart-checkout">
+        <div class="z-highest absolute right-0 -mr-10 flex flex-col justify-around items-center" v-if="editor && $mapState().editor.current.hasOwnProperty('plugin') &&  $mapState().editor.current && $mapState().editor.current.plugin._id === $attrs.plugin._id">
+            <!-- <icon name="settings" title="Settings" @click="$action('block_plugin_setting')" class="text-3xl"/>
+            <icon name="brush" title="Customize" @click="$action('block_plugin_setting')" class="text-3xl"/> -->
+            <icon :name="!current?'web':'collections'" :title="!current?'View Single':'View Loop'" class="text-3xl mr-2" @click="!current?current=products[0]:current=null"/>
+        </div>
+        <div v-if="settings.general.display.cart.enabled" class="w-full text-xs flex flex-row items-center justify-end snipcart-checkout -mt-8">
             <span class="snipcart-items-count"></span>
             <icon :name="settings.general.display.cart.name||'shooping_bag'" :class="settings.general.display.cart.css"/>
             <!--<i class="material-icons">shopping_bag</i>-->
@@ -27,17 +32,13 @@
 
         
 
-        <div class="z-highest absolute right-0 -mt-8 flex flex-row justify-around items-center" v-if="editor && $mapState().editor.current.hasOwnProperty('plugin') &&  $mapState().editor.current && $mapState().editor.current.plugin._id === $attrs.plugin._id">
-            <icon name="settings" title="Settings" @click="$action('block_plugin_setting')" class="text-3xl"/>
-            <icon name="brush" title="Customize" @click="$action('block_plugin_setting')" class="text-3xl"/>
-            <icon :name="!current?'web':'collections'" :title="!current?'View Single':'View Loop'" class="text-3xl mr-2" @click="!current?current=products[0]:current=null"/>
-        </div> 
+         
 
         
        
 
             <div v-if="!products.length"><h3>No products found!</h3></div>
-        <div v-if="!current" class="flex flex-col items-center justify-center" :class="settings.loop.cols">
+        <div v-if="!current" class="flex flex-col items-center justify-center" :class="settings.loop.container">
             <template v-for="(product,index) in products">
                 <div class="flex flex-col" :class="settings.loop.css" @click="current=product,currentPrice=product.price,currentOption=product.optionValues,variations(product.sku)">
                     <template v-for="field in settings.loop.fields">
@@ -73,9 +74,11 @@
         </div> -->
 
         <!-- SINGLE VIEW -->
-        <div v-if="current" class="fixed inset-0 overflow-y-auto h-screen md:relative md:h-auto">
-            <div :class="settings.single.css + ' grid-cols-'  + settings.single.cols" class="flex flex-col md:grid relative">
-                <icon name="close" class="absolute right-0 top-0 text-3xl" @click="current=null"/>
+        <!--<div v-if="current" class="fixed inset-0 overflow-y-auto h-screen md:relative md:h-auto">-->
+            <div v-if="current" :class="settings.single.css + ' '  + settings.single.container" class="relative">
+                <div class="absolute right-0 top-0 bg-white p-2">
+                    <icon name="close" class="text-3xl" @click="current=null"/>
+                </div>
                 <!-- <store-layout :layout="settings.single.layout">
                         <div slot="slot_0">
                             <div v-for="field in settings.single.fields" v-if="parseInt(field.col)===0" class="flex flex-col">
@@ -142,7 +145,7 @@
                     </template>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
         
         <!-- <transition name="animate-slideout">
             <modal

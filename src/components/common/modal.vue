@@ -1,9 +1,9 @@
 <template>
     <div>
         <div v-if="$attrs.exclusive" class="fixed top-0 left-0 bg-gray-800 bg-opacity-75 z-1 h-screen w-screen"></div>
-        <div ref="draggableContainer" id="draggable-container" class="z-highest max-h-screen max-w-screen shadow-lg text-sm overflow-hidden border border-gray-700" :class="size + height + position + color"  style="resize:both;">
+        <div ref="draggableContainer" id="draggable-container" class="rounded-lg z-highest max-h-screen max-w-screen shadow-lg text-sm overflow-hidden border border-gray-900" :class="size + height + position + color"  style="resize:both;">
             
-            <div class="absolute z-highest top-0 right-0 h-8 px-2 flex flex-row items-center text-gray-400 text-xls" >
+            <div class="absolute top-0 right-0 h-8 px-2 flex flex-row items-center text-gray-400 text-xls" >
                 <i class="material-icons" @click="$emit('close')">close</i>
             </div>
             <div id="z-2 draggable-header"  class="cursor-move w-full bg-gray-900 text-white  px-2 py-1"  @mousedown="dragMouseDown">

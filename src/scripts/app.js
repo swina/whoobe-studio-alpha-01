@@ -12,7 +12,7 @@
 
 const menu = {
     items : [
-        { label: 'Home' , icon: 'grid_view' , components: 'desktop/desktop.home.vue' , path: 'desktop/desktop.home.vue' , filter: 'home'} ,
+        { label: 'Projects' , icon: 'grid_view' , components: 'desktop/desktop.home.vue' , path: 'desktop/desktop.home.vue' , filter: 'home'} ,
         { label: 'Blocks' , icon: 'widgets' , component: 'blocks/blocks.vue' , path: '' ,  filter: '' , 
             dataset : 'components_categories'
         },

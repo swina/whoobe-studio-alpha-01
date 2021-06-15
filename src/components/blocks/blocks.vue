@@ -25,6 +25,7 @@ export default {
         blocksQry(){
             this.$api.service ( 'components' ).find ( {
                 query: {
+                    $limit: 200,
                     category: this.filter,
                     $sort: { updatedAt: -1 }
                 }

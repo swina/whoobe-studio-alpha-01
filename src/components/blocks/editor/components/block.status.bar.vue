@@ -1,17 +1,17 @@
 <template>
-    <div class="fixed bottom-0 left-0 pl-2 w-5/6 theme-dark flex flex-row items-center h-10 text-gray-300 p-1 z-highest flex flex-row items-center border-t border-gray-700">
+    <div class="fixed bottom-0 left-0 pl-2 w-superwide theme-dark flex flex-row items-center h-10 text-gray-300 p-1 z-highest flex flex-row items-center border-t border-gray-700">
         <div class="flex flex-row items-start ml-8">
         
-        <div class="h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="more_vert" class="text-orange-400" title="Options" @click="docOptions=!docOptions"/>
+        <div class="h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="docOptions=!docOptions">
+            <icon name="more_vert" class="text-orange-400" title="Options"/>
         </div>
         
         <!-- <i class="material-icons text-orange-400" title="Document">description</i> -->
 
 
         <!-- CLEAR SELECTION -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="border_clear" class="text-gray-300 hover:text-indigo-500" @click="$store.dispatch('setCurrent',doc),$store.dispatch('selected',doc.id)" title="Select document"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$store.dispatch('setCurrent',doc),$store.dispatch('selected',doc.id)">
+            <icon name="border_clear" class="text-gray-300 hover:text-indigo-500" title="Select document"/>
         </div>
 
 
@@ -19,34 +19,34 @@
         <!-- <icon name="grid_on" v-if="editor.current && editor.current.tag==='document'" class="text-gray-300 hover:text-indigo-500" @click="$action('grids')" title="Add Grid"/> -->
 
         <!-- ADD ELEMENT -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="add" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('block_add_element')" title="Add block"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('block_add_element')">
+            <icon name="add" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" title="Add block"/>
         </div>
 
         <!-- IMPORT A BLOCK -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="widgets" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" @click="$action('addreusable'),addBlock=true" title="Add reusable block"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('addreusable'),addBlock=true">
+            <icon name="widgets" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" title="Add reusable block"/>
         </div>
 
-        <div class="ml-8 h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black">
+        <div class="ml-8 h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="openPreview()">
         <!-- PREVIEW IN A NEW WINDOW -->
-            <icon name="preview" class="text-gray-300 hover:text-indigo-500" @click="openPreview()" title="Preview in a new window"/>
+            <icon name="preview" class="text-gray-300 hover:text-indigo-500" title="Preview in a new window"/>
         </div>
         <!-- PREVIEW DOCUMENT -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="laptop" class="text-gray-300 hover:text-indigo-500" @click="previewTab('laptop')" title="Preview"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="previewTab('laptop')">
+            <icon name="laptop" class="text-gray-300 hover:text-indigo-500" title="Preview"/>
         </div>
 
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="smartphone" class="text-gray-300 hover:text-indigo-500" @click="previewTab('mobile')" title="Preview"/>
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="previewTab('mobile')">
+            <icon name="smartphone" class="text-gray-300 hover:text-indigo-500" title="Preview"/>
         </div>
 
         <!-- PREVIEW SLIDER
         <i class="material-icons nuxpresso-icon-circle ml-2 text-gray-300 bg-green-400 " v-if="component && component.category==='slider'" title="Preview" @click="slider=!slider,disable=false">remove_red_eye</i>
          -->
         <!-- SAVE DOCUMENT -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black">
-            <icon name="save" class="hover:text-indigo-500 cursor-pointer" @click="savePage()" title="Save page"/><!--$action('savecomponent')-->
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="savePage()">
+            <icon name="save" class="hover:text-indigo-500 cursor-pointer" title="Save page"/><!--$action('savecomponent')-->
         </div>
 
         <!-- <i class="material-icons moka-icons nuxpresso-icon-circle text-gray-300 ml-2 divide-x divide-gray-200" @click="$action('savecomponent')"
@@ -66,9 +66,9 @@ title="Save document">save</i> -->
 
             <span class="capitalize ml-2 cursor-pointer" title="Edit CSS/Style" @click="$action('edit_css')">CSS</span>
             
-            <input v-if="editor.current && !editor.current.css.hasOwnProperty('css')" type="text" class="bg-gray-900 ml-2 w-3/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
+            <input v-if="editor.current && !editor.current.css.hasOwnProperty('css')" type="text" class="dark bg-gray-900 ml-2 w-3/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
             
-            <input v-else type="text" class="ml-2 w-3/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
+            <input v-else type="text" class="dark ml-2 w-3/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
 
             <i class="material-icons moka-icons ml-2" title="Edit CSS classes" @click="$action('edit_css')">edit</i>
             <div class="flex flex-row bg-purple-600 text-white mx-2 h-5 rounded px-1 text-sm items-center" @click="$action('seo')">SEO</div>

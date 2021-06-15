@@ -1,5 +1,5 @@
 <template>
-    <i :key="$randomID()" :class="$attrs.classe + ' rounded pt-1 px-1 border mt-2 material-icons mr-2 ' + active" @click="selected=!selected">{{$attrs.icon}}</i>
+    <i :key="$randomID()" :class="$attrs.classe + ' rounded pt-1 float-left px-1 border mt-2 material-icons mr-2 ' + active" @click="selected=!selected">{{$attrs.icon}}</i>
 </template>
 
 <script>

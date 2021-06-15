@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed theme-dark right-0 top-0 z-highest w-1/6 h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview'">
+    <div class="fixed theme-dark right-0 top-0 z-highest w-sidebar h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview'">
         <div>
             <div class="flex flex-row items-center bg-gray-900">
                 <template v-for="(tab,i) in sidebarToolbar">
@@ -12,15 +12,17 @@
                     </div> -->
             </div>
             <div v-if="currentTab.label!='settings' && currentTab.label!='generate'" class="text-white text-xs border-b border-gray-900 flex flex-row items-center p-1 shadow relative p-1">
-                <div class="w-full flex flex-row items-center justify-around text-base" @dblclick="$emit('switch')">
+                <div class="w-full flex flex-col  text-base" @dblclick="$emit('switch')">
                     
-                    <div>
-                        <span v-if="editor.current.tag!='menu'" class="capitalize">{{ editor.current.type || editor.current.tag }}</span>
+                    <div class="flex flex-row justify-start items-center">
+                        <span v-if="editor.current.tag!='menu'" class="text-xs capitalize">{{ editor.current.tag }} {{ editor.current.type }} {{ editor.current.label }}</span>
                         <!-- <span v-else>Menu <span v-if="customizeDropdown">Dropdown</span></span> -->
+                        <i class="material-icons text-sm ml-1">{{editor.current.icon}}</i> 
                     </div>
-                    <i class="material-icons text-sm ml-2">{{editor.current.icon}}</i> 
-                    <div class="text-xs lg:text-sm text-gray-500">{{ size }}</div>
-                    <div class="text-xs lg:text-sm text-gray-500">{{ position }}</div>
+                    <div class="flex flex-row justify-around w-full">
+                        <div class="text-xs lg:text-xs text-gray-500">{{ size }}</div>
+                        <div class="text-xs lg:text-xs text-gray-500">{{ position }}</div>
+                    </div>
                 </div>
                 
             </div>
@@ -52,7 +54,12 @@ export default {
                 component: 'blocks/editor/tailwind/tailwind.container.vue',
                 tooltip: 'Customize element'
             },
-            
+            { 
+                label: 'elements',
+                icon: 'add',
+                component: 'blocks/actions/block.elements.vue',
+                tooltip: 'Add element'
+            },
             { 
                 label: 'css',
                 icon: 'code',
@@ -65,12 +72,12 @@ export default {
                 component: 'blocks/actions/block.animation.vue',
                 tooltip: 'Animations'
             },
-            { 
-                label: 'attributes',
-                icon: 'list',
-                component: 'blocks/actions/block.attributes.settings.vue',
-                tooltip: 'Element attributes'
-            },
+            // { 
+            //     label: 'attributes',
+            //     icon: 'list',
+            //     component: 'blocks/actions/block.attributes.settings.vue',
+            //     tooltip: 'Element attributes'
+            // },
             { 
                 label: 'reusable',
                 icon: 'widgets',
@@ -89,12 +96,12 @@ export default {
                 component: 'blocks/actions/block.document.settings.vue',
                 tooltip: 'Page settings'
             },
-            { 
-                label: 'generate',
-                icon: 'dynamic_form',
-                component: 'settings/publish.vue',
-                tooltip: 'Publish'
-            },
+            // { 
+            //     label: 'generate',
+            //     icon: 'dynamic_form',
+            //     component: 'settings/publish.vue',
+            //     tooltip: 'Publish'
+            // },
         ],
         components: {
             customize: '@/components/blocks/editor/tailwind/tailwind.container.vue',

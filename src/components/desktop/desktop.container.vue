@@ -1,5 +1,5 @@
 <template>
-    <div desktop-container v-if="desktop.tabs.length" class="pt-8 w-full absolute inset-0 min-h-screen bg-gray-900 bg-gradient-to-br min-h-screen theme-dark overflow-y-auto" :class="editor.action!='in_editor_preview'?displayMode:'w-full'" :style="topPadding">
+    <div desktop-container v-if="desktop.tabs.length" class="editor-container pt-8 w-full absolute inset-0 min-h-screen bg-gray-900 bg-gradient-to-br min-h-screen theme-dark overflow-y-auto" :class="editor.action!='in_editor_preview'?displayMode:'w-full'" :style="topPadding">
         <component 
             v-if="component && editor.action != 'in_editor_preview'" 
             :key="desktop.tabs[currentTab].name" 
@@ -28,10 +28,10 @@ export default {
     },
     computed: {
         ...mapState ( [ 'desktop' , 'editor' ] ),
-        displayMode(){
+        displayMode(){ 
             let css = ''
             this.$attrs.boxed ? css+= 'pl-10': null
-            this.desktop.mode === 'editor' || this.desktop.mode === 'block' ? css += ' w-5/6' : ' w-full'
+            this.desktop.mode === 'editor' || this.desktop.mode === 'block' ? css += ' w-superwide' : ' w-full'
             return css
         },
         currentTab(){

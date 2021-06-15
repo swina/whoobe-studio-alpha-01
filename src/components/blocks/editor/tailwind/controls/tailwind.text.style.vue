@@ -3,15 +3,18 @@
         Font
         <div class="flex flex-col my-1">
             <div class="flex flex-row flex-wrap mb-1 text-black">
-                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('font-bold')" @click="setFont('font-bold')" title="bold">format_bold</i>
+                <icon name="format_bold" @click="setFont('font-bold')" class="mr-2"/>
+                <icon name="format_italic" @click="setFont('italic')" class="mr-2"/>
+                <icon name="format_underline" @click="setFont('underline')" class="mr-2"/>
+                <!-- <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('font-bold')" @click="setFont('font-bold')" title="bold">format_bold</i>
                 <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('italic')" @click="setFont('italic')" title="italic">format_italic</i>
                 <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('underline')" @click="setFont('underline')" title="underline">format_underlined</i>
-                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('font-black')" @click="setFont('font-black')" title="font black">title</i>
+                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('font-black')" @click="setFont('font-black')" title="font black">title</i> -->
             </div>
             <div class="flex flex-row flex-wrap mb-1">
-                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('uppercase')" @click="setFont('uppercase')" title="uppercase">arrow_upward</i>
+                <!-- <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('uppercase')" @click="setFont('uppercase')" title="uppercase">arrow_upward</i>
                 <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('lowercase')" @click="setFont('lowercase')" title="lowercase">arrow_downward</i>
-                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('capitalize')" @click="setFont('capitalize')" title="capitalize">text_fields</i>
+                <i :class="'material-icons nuxpresso-icon-btn text-black mr-2 ' + getFont('capitalize')" @click="setFont('capitalize')" title="capitalize">text_fields</i> -->
                 <!--<i class="material-icons nuxpresso-icon-btn text-black mr-2" @click="font.bold='',font.italic='',font.black='',font.underline='',font.transform=''" title="Reset">undo</i>-->
             </div>
             

@@ -1,22 +1,24 @@
 <template>
   <div class="w-full theme-dark">
-    <div class="p-2 flex flex-row items-center justify-center">
-      <button @click="$action('component_create')">New</button>
-      <button @click="$action('component_import')">Import</button>
-      <button @click="$mapState().editor.export='category',$action('component_export')">Export All</button>
+    <div class="sticky top-0 p-2 w-full theme-dark flex flex-row items-center justify-start">
+      <button class="lg" @click="$action('component_create')">New</button>
+      <button class="lg mx-1" @click="$action('component_import')">Import</button>
+      <button class="lg" @click="$mapState().editor.export='category',$action('component_export')">Export All</button>
+      <input class="dark mt-1 ml-2" type="text" placeholder="search..." v-model="search" @keydown="searchComponent($event)"/>
+      <button v-if="search" @click="search='',blocks=objects">Reset</button>
     </div>
     <div v-if="objects" class="px-2 py-4 m-auto whoobe-components-gallery flex flex-row flex-wrap justify-center ">
       <!-- GALLERY -->
-      <div v-for="comp in objects" class="mx-4 my-4 w-48" :title="comp.name + '-' + comp.description + ' ' + comp.updatedAt" :key="comp._id">
+      <div v-for="comp in blocks" class="mx-4 my-4 w-48" :title="comp.name + '-' + comp.description + ' ' + comp.updatedAt" :key="comp._id">
         <!-- <div v-if="comp && comp.hasOwnProperty('name')"> -->
           <div class="pl-1 h-7 text-xs text-gray-400">
             {{ comp.name.substring(0,20) }} 
           </div>
 
-          <div class="w-48 h-32 flex flex-col items-center justify-center border border-gray-700" @click="selectComponent(comp.id, 'component', comp)">
+          <div class="w-48 h-56 flex flex-col items-center justify-center border border-gray-700" @click="selectComponent(comp.id, 'component', comp)">
               <img v-if="comp.image"
                 :class="'image_' + comp._id"
-                class="object-cover object-top object-left w-48 h-32"
+                class="object-cover object-top object-left w-48 h-56"
                 :src="$imageURL(comp.image)"
                 title="Click to edit"
                 />
@@ -86,14 +88,25 @@ export default {
     name: 'BlocksGallery',
     props: [ 'objects' ],
     data:()=>({
+        allObjects: null,
         moreID: null,
         currImage: null,
         current: null,
         blocks: null,
         confirmModal: false,
-        confirm: false
+        confirm: false,
+        search:''
     }),
     methods:{
+      searchComponent(e){
+        if ( e.keyCode === 13 && this.search.length > 2){
+          
+          this.blocks = this.allObjects.filter ( obj => {
+            console.log ( obj.name )
+            return obj.name.toLowerCase().indexOf(this.search) > -1 // || obj.tags.toLowerCase().indexOf(this.search) > -1
+          })
+        }
+      },
       duplicateComponent ( block ){
         let duplicateObject = JSON.parse( JSON.stringify(block) )
         duplicateObject.name = duplicateObject.name + ' COPY'
@@ -147,6 +160,7 @@ export default {
         this.blocks = this.objects.filter ( obj => {
             return obj.hasOwnProperty ( 'name' )
         })
+        this.allObjects = this.objects
     }
 
 }

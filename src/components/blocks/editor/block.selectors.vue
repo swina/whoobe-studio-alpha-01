@@ -51,10 +51,8 @@
                 :doc="$attrs.component"
             /> -->
 
-            <div @click="selectDoc(doc)" class="absolute top-0 -mr-2 -mt-8 w-full text-center flex flex-row items-center justify-start" v-if="doc.id!=editor.selected">
-                <button>Page 
-                <icon name="select_all" :class="doc.id===editor.selected?'text-purple-500':'text-gray-500'" title="Select block component"/>
-                </button>
+            <div @click="selectDoc(doc)" class="absolute top-0 -mr-2 -mt-6 w-full text-center flex flex-row items-center justify-center rounded-tl-lg rounded-tr-lg text-sm text-white" :class="doc.id!=editor.selected?'bg-gray-900':'bg-purple-600'">
+                Document
             </div>
         </div>
         
@@ -246,7 +244,7 @@ export default {
             this.$refs.contextMenu.style.opacity = 1
             
             
-            if ( e.clientX < (window.innerWidth - 300) ) {
+            if ( e.clientX < ( (window.innerWidth*.85)   - 300) ) {
                  this.$refs.contextMenu.style.left = (e.clientX - 20) + 'px'
             } else {
                 if ( e.clientX < 200 ){
@@ -255,15 +253,22 @@ export default {
                     this.$refs.contextMenu.style.left = ( e.clientX - 300 - 20) + 'px'
                 }
             }
+            let coords = this.$refs.contextMenu.getBoundingClientRect()
             let yPos = e.clientY + this.$refs.contextMenu.getBoundingClientRect().y
-            if ( yPos > window.innerHeight ){
-                this.$refs.contextMenu.style.top = (window.pageYOffset + window.innerHeight - this.$refs.contextMenu.clientHeight - 100) + 'px'
+            let scrollTop = document.querySelector('.editor-container').scrollTop
+            console.log ( scrollTop  )
+            if ( scrollTop === 0 ){
+                this.$refs.contextMenu.style.top = scrollTop //e.clientY - coords.height/2
+                return
+            }
+            if ( yPos > (scrollTop) ){
+                this.$refs.contextMenu.style.top = (scrollTop + window.innerHeight - this.$refs.contextMenu.clientHeight - 100) + 'px'
                 return
             } else {
                 if ( e.clientY < 250 ){
-                    this.$refs.contextMenu.style.top = window.pageYOffset ? window.pageYOffset + 50  + 'px': 50  + 'px'    
+                    this.$refs.contextMenu.style.top = scrollTop ? scrollTop + 50  + 'px': 50  + 'px'    
                 } else {
-                    this.$refs.contextMenu.style.top = (window.pageYOffset + e.clientY-200) + 'px'
+                    this.$refs.contextMenu.style.top = scrollTop + 'px'
                 }
             }
             

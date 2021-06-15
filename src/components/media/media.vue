@@ -1,14 +1,16 @@
 <template>
-    <div v-if="files" class="theme-dark flex flex-col justify-start w-full items-center h-screen w-screen max-w-screen top-0 left-0 absolute pt-16 pl-10">
-        <div v-if="mode==='gallery'">
+    <div v-if="files" class="theme-dark flex flex-col justify-start w-full items-center h-screen w-screen max-w-screen top-0 left-0 absolute pt-8 pl-10">
+        <div v-if="mode==='gallery'" class="w-full">
             <media-buttons 
                 @click="setMode" 
                 @carousel="carousel=!carousel"
-                @cloudinary="cloudinary=!cloudinary"/>
+                @cloudinary="cloudinary=!cloudinary"
+                @search="search"/>
             
             <transition name="fade">
                 <media-carousel v-if="carousel && $mapState().editor.action==='media'" :files="files" class="theme-dark"/>
             </transition>
+
             <media-gallery :carousel="carousel" :files="files" @image="setSelected" class="shadow-lg"/>
             
             <div class="grid grid-cols-3  items-center justify-center content-center">
@@ -78,7 +80,8 @@ export default {
         carousel: false,
         cloudinary:false,
         cloudinaryPlugin: null,
-        plugins: []
+        plugins: [],
+        searchMedia: ''
     }),
     watch:{
         skip(v){
@@ -86,16 +89,22 @@ export default {
         }
     },
     methods:{
+        search(search){
+            this.searchMedia = search
+            this.mediaQry()
+        },
         setMode(mode){
             this.cloudinary = false
             this.mode = mode
         },
         mediaQry(){
             this.$loading(true)
+            console.log ( this.searchMedia )
             this.$api.service ( 'media' ).find ( {
                 query : {
                     $skip: this.skip,
                     $limit: this.limit,
+                    $search: this.searchMedia ,
                     $sort: { updatedAt : -1 }
                 }
             }).then ( res => {

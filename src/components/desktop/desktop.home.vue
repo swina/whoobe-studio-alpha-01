@@ -1,7 +1,27 @@
 <template>
     <div class="theme-dark min-h-screen px-20 pt-8">
-        <h2>Whoobe Studio</h2>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 text-purple-500 grid-cols-1 gap-10">
+        <h3 class="items-center flex">Projects<button class="ml-2" @click="gallery=!gallery">Add new</button></h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-5 text-purple-500 grid-cols-1 gap-10" v-if="projects">
+            <template v-for="project in projects">
+                <div class="h-56 bg-top bg-cover bg-no-repeat shadow-lg flex items-end cursor-pointer"  :style="'background-image: url(' + $imageURL(project.component.image) + ');'"  @click="$store.dispatch('project',project),$action('project_edit')">
+                    <div class="text-base bg-black w-full flex flex-row p-2 bg-opacity-75 cursor-pointer items-center">
+                        <icon name="view_quilt" class="text-3xl"/>
+                        <div class="p-2">{{ project.name }}</div>
+                    </div>
+                </div>
+            </template>
+            <modal
+                v-if="gallery"
+                size="md"
+                position="modal-top-left"
+                buttons="none"
+                @close="gallery=!gallery">
+                <div slot="title">Select a block</div>
+                <div slot="content">
+                    <block-gallery-selection @component="createProject"/>
+                </div>
+            </modal>
+            <!--
             <div class="h-64 bg-center bg-cover bg-no-repeat shadow-lg flex items-end" :style="'background-image: url(' + this.$imageURL('/uploads/architectu_bw.webp') + ');'">
                 <div class="text-xl bg-black w-full flex flex-row p-2 bg-opacity-75 cursor-pointer items-center" @click="$action('component_create')">
                     <icon name="view_quilt" class="text-3xl"/>
@@ -51,7 +71,7 @@
             <div class="text-gray-400">
                 <h3>Issues</h3>
                 <p>Help to improve Whoobe. Any time you find a bug or an error please open an issue on <a href="https://github.com/swina/whoobe-studio-alpha" target="_blank">Github repository</a></p>
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
@@ -59,7 +79,36 @@
 <script>
 export default {
     name: 'DesktopHome',
+    components: {
+        'block-gallery-selection' : () => import ( '@/components/blocks/actions/block.gallery.selection.vue' )
+    },
+    data:()=>({
+        gallery: false,
+        projects: null,
+        project:   {
+            "name": "",
+            "dist": "dist",
+            "uploads": [],
+            "fonts": [],
+            "url": "http://localhost:3030/",
+            "images": null,
+            "mode" : "single",
+            "component" : "null",
+            "purge" :[],
+            "analytics": "",
+            "landing" : ""
+        }
+    }),
     methods: {
+        createProject(component){
+            this.gallery = false
+            this.project.component = component
+            this.project.name = component.name
+            this.project = this.$projectResources ( this.project )
+            this.$api.service ( 'projects' ).create ( this.project ).then ( res => {
+                this.projects.unshift( res )
+            })
+        },
         openMedia(){
             this.$mapState().desktop.tabs.push ( 
                 {
@@ -72,6 +121,11 @@ export default {
                 }
             )
         }
+    },
+    mounted(){
+        this.$api.service ( 'projects' ).find ().then ( res => {
+            this.projects = res.data
+        })
     }
 }
 </script>

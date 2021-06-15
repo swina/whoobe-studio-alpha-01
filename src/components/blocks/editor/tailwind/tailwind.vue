@@ -78,7 +78,73 @@
         </div>
         </transition>
 
-        
+
+        <!-- Input -->
+        <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'input' && editor.current.tag != 'document'" key="semantic" class="customizer-item border-gray-900 pl-2" :class="group === 'input' ? 'bg-orange-400 text-white' : ''" @click="toggle('input')">
+                 <span class="text-xs">Input field</span>
+                 <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
+        </div>
+        <transition name="slideright">
+        <div v-if="!$attrs.mode && group==='input'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
+            <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i>Input Field</div>
+            <div class="p-1 flex flex-col">
+                <label>Field name</label>
+                <input class="dark w-full" type="text" v-model="editor.current.name"/>
+
+                <label>Placeholder</label>
+                <input class="dark w-full" type="text" v-model="editor.current.placeholder"/>
+                <label>Field Value</label>
+                <input class="dark w-full" type="text" v-model="editor.current.content"/>
+                <div class="flex flex-row items-center">
+                    <input class="dark" type="checkbox" v-model="editor.current.required"/> Required
+                </div>
+            </div>
+            <div class="p-1 flex flex-col" v-if="editor.current.type === 'checkbox'">
+                <div class="flex items-center text-base">
+                    <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="checkbox"> Checkbox
+                </div>
+                <div class="flex items-center text-base my-2">
+                    <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="toggle"> Toggle
+                </div>
+            </div>
+            <div class="p-1 flex flex-col" v-if="editor.current.element === 'select'">
+                Options
+                <div class="flex flex-row flex-wrap">
+                <template v-for="(option,i) in editor.current.options">
+                    <chip :content="option" class="mb-1 bg-purple-500 text-white mr-2 rounded" icon="close" @click="editor.current.options.splice(i,1)"/>
+                </template>
+                </div>
+                New option
+                <input class="dark" type="text" value="" @keydown="addOption($event)"/>
+                Display as 
+                <div class="flex items-center text-base">
+                    <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="chip"> Chip
+                </div>
+                <div class="flex items-center text-base my-2">
+                    <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="select"> Select
+                </div>
+                <div class="flex items-center text-base">
+                    <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="list"> List
+                </div>
+            </div>
+        </div>
+        </transition>
+
+
+        <!-- Form -->
+        <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'form' && editor.current.tag != 'document'" key="form" class="customizer-item border-gray-900 pl-2" :class="group === 'form' ? 'bg-orange-400 text-white' : ''" @click="toggle('form')">
+                 <span class="text-xs">Form Setting</span>
+                 <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
+        </div>
+        <transition name="slideright">
+        <div v-if="!$attrs.mode && group==='form'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
+            <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i>Form Settings</div>
+            <div class="p-1 flex flex-col">
+                <block-form-settings/>
+                
+            </div>
+        </div>
+        </transition>
 
         <template v-for="g in groups">
              <div :key="g.attr" class="customizer-item border-gray-900 pl-2" :class="g === group ? 'bg-orange-400 text-white' : ''" @click="toggle(g)">     
@@ -89,8 +155,8 @@
              </div>
              <transition name="slideright">
              <div v-if="g === group" class="whoobe-editor-tw-options bg-gray-800 text-gray-500 border-b border-gray-900 top-0 absolute w-full z-2xtop left-0 right-0 bottom-0">
-                 <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i> {{ g.label }}</div>
-                 <div :key="$randomID()" v-for="component in g.components" class="mb-1 p-1" :class="component.hasOwnProperty('group')? component.css :''">
+                <div class="bg-orange-400 text-black  flex flex-row p-1 items-center capitalize" @click="group=''"><i class="material-icons absolute right-0">chevron_right</i> {{ g.label }}</div>
+                <div :key="$randomID()" v-for="component in g.components" class="mb-1 p-1" :class="component.hasOwnProperty('group')? component.css :''">
                      <component 
                         :key="$randomID()"
                         :is="component.name" 
@@ -140,6 +206,7 @@ import twgroups from '@/scripts/tw.groups'
 export default {
     name: 'WhoobeTailwind',
     components: {
+        'block-form-settings' : () => import ( '@/components/blocks/actions/block.form.settings.vue' ),
         MokaBgcolor,
         MokaBgGradient,
         MokaBgPosition,
@@ -241,6 +308,11 @@ export default {
         },
         refreshArticles(){
             this.$find('articles')
+        },
+        addOption (e){
+            if ( e.keyCode === 13 && e.target.value.length ){
+                this.editor.current.options.push ( e.target.value )
+            }
         }
     }
 }

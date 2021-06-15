@@ -15,9 +15,9 @@ import { mapState } from 'vuex'
 export default {
     name: 'DesktopTabs',
     computed: {
-        ...mapState( ['desktop'] ),
+        ...mapState( ['desktop','editor'] ),
        displayMode(){
-           return this.desktop.mode === 'editor' ? 'w-5/6' : 'w-full'
+           return this.desktop.mode === 'editor' && this.editor.action != 'in_editor_preview' ? 'w-5/6' : 'w-full'
        }
     },
     methods: {

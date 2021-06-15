@@ -6,6 +6,18 @@ const actions = {
         position: 'modal',
         component: 'common/login.vue'
     },
+    image_preview :{
+        title: 'Preview',
+        size: 'lg',
+        position: 'modal',
+        component: 'blocks/actions/block.image.preview.vue'
+    },
+    project_edit : {
+        title: 'Project',
+        size: 'lg',
+        position: 'modal',
+        component: 'settings/projects.vue'
+    },
     articles_create: {
         title: 'Create article',
         size: 'md',
@@ -95,6 +107,12 @@ const actions = {
         position: 'modal',
         component: 'blocks/actions/block.attributes.settings.vue'
     },
+    block_gallery : {
+        title: 'Blocks',
+        size: 'md',
+        position: 'modal-top-left',
+        component: 'blocks/actions/block.gallery.selection.vue'
+    },
     icon_selector : {
         title: 'Select Icon',
         size: 'sm',
@@ -183,6 +201,12 @@ const actions = {
         position: 'modal',
         title: 'SEO',
         component: 'plugins/seo/index.settings.vue'
+    },
+    popupsettings : {
+        size: 'md',
+        position: 'modal',
+        title: 'Popup settings',
+        component: 'blocks/actions/block.popup.settings.vue'
     }
 }
 

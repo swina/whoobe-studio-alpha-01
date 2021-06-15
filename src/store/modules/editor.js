@@ -1,5 +1,6 @@
 const editor = {
     state: {
+        project: null,
         selected: null,
         current: null,
         component: null,
@@ -13,6 +14,9 @@ const editor = {
         save: true,
     },
     mutations: {
+        project ( state , payload ){
+            state.project = payload 
+        },
         selected ( state , payload ){
             state.selected = payload 
         },
@@ -45,6 +49,9 @@ const editor = {
         }
     },
     actions: {
+        project ( { commit } , payload ){
+            commit ( 'project' , payload )
+        },
         selected ( { commit } , payload ){
             commit ( 'selected' , payload )
         },

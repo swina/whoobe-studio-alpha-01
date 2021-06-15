@@ -16,12 +16,12 @@ const socket = io(  window.localStorage.getItem('whoobe-cms') , //'http://localh
 
 const api = feathers()
   .configure(socketio(socket,{
-    timeout:20000
+    timeout:50000
   }))
   .configure(auth({ storage: window.localStorage }))
 
 
-//const apiserver = api
+const apiserver = api
 
 
 export default {
@@ -158,5 +158,5 @@ export default {
     }
 
   },
-  //apiserver
+  apiserver
 }

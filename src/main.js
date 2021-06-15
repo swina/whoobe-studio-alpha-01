@@ -24,6 +24,9 @@ Vue.component ( 'chip' , Chip )
 import Radio from '@/components/common/radio.vue'
 Vue.component ( 'radio' , Radio )
 
+import Toggle from '@/components/common/switch.vue'
+Vue.component ( 'toggle' , Toggle )
+
 import Navigation from '@/components/common/navigation.vue'
 Vue.component ( 'navigation' , Navigation )
 

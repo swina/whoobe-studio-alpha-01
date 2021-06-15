@@ -43,7 +43,7 @@
                 </template>
             </div>    
         </transition>
-        <i v-if="!doc.popup.modal && doc.popup.close" :class="'z-2xtop material-icons absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)">close</i>
+        <icon name="close" :class="'z-highest absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)"/>
     </div>
     </transition>
         <i v-if="modal && doc.popup.modal" :class="'z-2xtop material-icons fixed top-0 right-0 m-2 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)">close</i>

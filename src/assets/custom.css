@@ -63,6 +63,15 @@
     z-index:99999999999999999999999999999;
 }
 
+*[data-image-info]:hover::before {
+    @apply w-full leading-tight block left-0 bg-black text-gray-300 bg-opacity-50 p-2;
+    content: attr(data-image-info);
+    position: absolute;
+    font-family: monospace;
+    font-size:.8rem;
+    z-index:99999999999999999999999999999;
+}
+
 /* Carousel / Slider animations keyframes */
 @keyframes imageFadeNavigation {
     0% { opacity: 0; animation-timing-function: ease-in; }

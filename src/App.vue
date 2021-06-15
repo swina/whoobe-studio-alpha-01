@@ -2,12 +2,7 @@
   <div id="app" islogged>
     
     <router-view/>
-    <!-- Global message display -->
-    <transition name="fade">
-        <div style="transform: translateX(-50%);left:50%;" class="border-l-4 border-blue-500 fixed bottom-0 m-auto shadow-xl mb-12 bg-gray-800 text-gray-200 text-base p-4 w-1/2  z-highest" v-if="message">   
-        {{ message }}
-        </div>
-    </transition>
+    
     <!-- loading fullscreen -->
     <loading v-if="$mapState().desktop.loading"/>
     <!-- loading icon bottom left -->
@@ -15,6 +10,12 @@
     <!-- actions component: opens modal with relative action -->
     <actions/>
     <main v-if="!logged"/>
+    <!-- Global message display -->
+    <transition name="fade">
+        <div style="transform: translateX(-50%);left:50%;" class="border-l-4 border-blue-500 fixed bottom-0 m-auto shadow-xl mb-12 bg-gray-800 text-gray-200 text-base p-4 w-1/2  z-modal" v-if="message" >   
+        {{ message }}
+        </div>
+    </transition>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ export default {
   components: {
     'actions'   : () => import ( '@/components/common/actions' )
   },
-  data:()=>({
+  data:()=>({ 
     message: '',
     firstRun: false,
     logged: false

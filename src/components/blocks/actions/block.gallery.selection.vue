@@ -1,12 +1,12 @@
 <template>
-<div class="flex flex-col theme-dark">
+<div class="flex flex-col theme-dark max-h-screen">
     <div class="flex flex-row my-1 p-1">
         <span>Category</span> 
         <select v-model="filter" class="ml-2 w-full theme-dark">
         <option v-for="category in $mapState().datastore.dataset.setup[0].categories.components" :value="category">{{ category }}</option>
     </select>
     </div>
-    <div v-if="loadTemplates" class="flex flex-row flex-wrap justify-around p-4">
+    <div v-if="loadTemplates" class="relative overflow-y-auto flex flex-row flex-wrap justify-around p-4">
         <template v-for="(template,index) in templates">
             <div class="w-48 flex flex-col mb-4 cursor-pointer" v-if="index>=start && index < (start+limit)" @click="setTemplate(template)" :title="template.category">
                 <div class="flex flex-row items-center justify-between text-gray-600">

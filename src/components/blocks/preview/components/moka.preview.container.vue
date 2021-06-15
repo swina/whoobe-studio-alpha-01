@@ -15,7 +15,6 @@
         <block-carousel v-if="doc.hasOwnProperty('gallery') && doc.gallery" :block="doc"/>
         <block-slides v-if="doc.type === 'slides'" :block="doc"/>
         <template v-for="(block,b) in doc.blocks">
-            
             <moka-element
                 @click="elementAction"
                 v-if="block && !block.hasOwnProperty('blocks') && block.type!='slides' && !block.hasOwnProperty('items')"
@@ -29,7 +28,7 @@
 
             <block-preview-container
                 :key="block.id"
-                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items') && !block.hasOwnProperty('image_flip') && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides'" @action="elementAction" 
+                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items') && !block.hasOwnProperty('image_flip') && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides' && block.tag !='form'" @action="elementAction" 
                 :data="$attrs.data||null"
                 :currency="$attrs.currency||null"
                 :doc="block" :animation="$attrs.animation"/>
@@ -45,11 +44,23 @@
                 :key="block.id"
                 :el="block"/>
 
+            <block-form
+                v-if="block.tag === 'form'"
+                :key="block.id"
+                :form="block">
+            </block-form>
+
             <!-- <moka-menu-responsive
                 class="md:hidden"
                 :key="block.id"
                 :el="block"
                 v-if="block.tag === 'menu'"/> -->
+            <block-popup
+                :doc="block"
+                :key="block.id"
+                :ref="block.id"
+                v-if="block.hasOwnProperty('popup')"/>
+
             <moka-slider 
                 :key="block.id" 
                 :ref="block.id" 
@@ -79,6 +90,7 @@
                 :editor="true"/>
             
             
+            
             <moka-loop 
                      :key="block.id" 
                     v-if="block.hasOwnProperty('collection')"
@@ -104,7 +116,6 @@ import MokaElement from './moka.element.component'
 import draggable from 'vuedraggable'
 import MokaSlider from './moka.slider'
 import MokaFlipbox from './moka.flipbox'
-import MokaPopup from './moka.popup'
 import MokaPluginsWrapper from '@/components/common/Plugins.Wrapper'
 import MokaLoop from './moka.preview.loop'
 import MokaMenu from './elements/moka.menu'
@@ -122,9 +133,11 @@ import js from 'jsonpath'
 
 export default {
     name: 'BlockPreviewContainer',
-    components: { MokaElement , MokaSlider , draggable , MokaFlipbox , MokaPopup , MokaPluginsWrapper , MokaLoop , MokaMenu , MokaMenuResponsive, BlockCarousel ,
+    components: { MokaElement , MokaSlider , draggable , MokaFlipbox , MokaPluginsWrapper , MokaLoop , MokaMenu , MokaMenuResponsive, BlockCarousel ,
     'block-preview-menu' : () => import ( './block.preview.menu.vue' ) ,
-    'block-slides'       : () => import ( '@/components/plugins/slides/slides.vue')
+    'block-slides'       : () => import ( '@/components/plugins/slides/slides.vue'),
+    'block-form'         : () => import ( './block.preview.form.vue' ),
+    'block-popup'        : () => import ( './moka.popup.vue' )
     },
     props: { 
         doc : { type: Object }  
@@ -143,7 +156,7 @@ export default {
             return gsapEffects
         },
         semantic(){
-            return this.doc.semantic ? this.doc.semantic : 'div'
+            return this.doc.semantic ? this.doc.semantic : this.doc.tag != 'form' ? 'div' : 'form'
         },
         responsive(){
             return this.doc.hasOwnProperty('responsive') && this.doc.responsive && this.width < 640 ? true : false
@@ -175,7 +188,7 @@ export default {
             if ( !css ) return
                 let cls = css
                 css.hasOwnProperty('css') ? cls = css.css + ' ' + css.container : cls = css 
-                return cls.includes('absolute') || cls.includes('fixed') ? cls : cls + ' relative '
+                return cls.includes('absolute') || cls.includes('fixed') || cls.includes('modal') ? cls : cls + ' relative '
         },
         stile(block,doc){
             if ( !block || !doc ) return 

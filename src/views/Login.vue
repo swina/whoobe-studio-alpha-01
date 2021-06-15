@@ -1,12 +1,12 @@
 <template>
-    <div class="modal z-2 bg-white w-full md:w-1/4 text-lg flex flex-col rounded">
-        <div class="w-full p-1 bg-black text-white rounded-tl rounded-tr">Login</div>
-        <div class="p-4 flex flex-col">
+    <div class="modal z-2 theme-dark w-full md:w-1/2 lg:w-1/3 border border-black shadow-xl text-lg flex flex-col rounded-lg">
+        <div class="w-full p-2 bg-black text-white rounded-tl rounded-tr">Whoobe Login</div>
+        <div class="p-8 flex flex-col">
             <label>Email</label>
-            <input type="email" v-model="userLogin.email"/>
+            <input class="mb-4 w-full text-xl py-2" type="email" v-model="userLogin.email"/>
             <label>Password</label>
-            <input type="password" v-model="userLogin.password"/>
-            <button class="my-4 mx-auto text-xl rounded" @click="doLogin()">Login</button>
+            <input class="py-2 text-xl w-full" type="password" v-model="userLogin.password"/>
+            <button class="my-4 p-4 mx-auto text-xl rounded" @click="doLogin()">Login</button>
         </div> 
     </div>
 </template>

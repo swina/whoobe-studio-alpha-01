@@ -32,7 +32,6 @@ export default {
             if ( st.length > 1 ){
                 this.fonts.forEach ( ft => {
                     if ( st.indexOf ( ft ) > -1 ){
-                        console.log ( ft )
                         this.fontFamily = ft
                         this.$emit('stile' , 'font-family:\"' + ft + '\"' )
                         this.$emit('clearstile', 'font-family:\"' + ft + '\"' )

@@ -29,7 +29,7 @@
 
 
 
-            <input :type="el.type" v-if="el.element!= 'textarea' && el.tag === 'input' && el.type!='button'" :class="$cssResponsive(el.css)" :value="el.content" :placeholder="el.required?'required!':''"/><sup v-if="el.required" class="ml-1 nuxpresso-element-required">*</sup>
+            
 
             <button :class="$cssResponsive(el.css)" v-if="el.type==='file'">{{el.content}}</button>    
             
@@ -54,7 +54,12 @@
                 <moka-plugin-wrapper v-if="el.plugin.editor" :settings="el.plugin.editor.settings"  :block="el"  :plugin="el" :component="el.plugin.component"/>
             </div> -->
             
-            
+            <input :name="el.name" :type="el.type" v-if="el.element!= 'textarea' && el.tag === 'input' && el.type!='button' && el.element != 'select'" :class="$cssResponsive(el.css)" :value="el.content" :placeholder="el.required?'required!':''"/><sup v-if="el.required" class="ml-1 nuxpresso-element-required">*</sup>
+
+            <select v-if="el.element === 'select'" :class="el.css">
+                <option value=""></option>
+                <option v-for="option in el.options" :value="option">{{option}}</option>
+            </select>
 
             <textarea v-if="el.element === 'textarea'" :class="$cssResponsive(el.css)"></textarea>
 
