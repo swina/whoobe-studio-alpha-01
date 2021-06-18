@@ -9,7 +9,7 @@
                 </div>
                 <moka-container 
                     :key="block.id" 
-                    v-if="block.type==='grid' || block.type==='flex' || block.type === 'slides'"
+                    v-if="(block.type==='grid' || block.type==='flex' || block.type === 'slides') && block.type != 'popup'"
                     :doc="block" 
                     :level="b+1" 
                     :coords="b" 
@@ -32,7 +32,7 @@
                 <moka-popup
                     :key="block.id" 
                     :ref="block.id" 
-                    v-if="block && block.hasOwnProperty('popup')" 
+                    v-if="block && block.type === 'popup'" 
                     :develop="true" 
                     :embeded="true" 
                     :doc="block" 

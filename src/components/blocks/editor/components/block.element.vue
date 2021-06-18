@@ -37,6 +37,9 @@
             <icon v-if="el.tag==='icon' && !el.link" :class="$cssResponsive(el.css)" :name="el.content"/>
             <bt-icon v-if="el.tag==='icon_bootstrap' && !el.link" :class="$cssResponsive(el.css)" :name="el.content"/>
 
+            <!-- iconify -->
+            <icon-extra v-if="el.tag==='iconify'" :css="$cssResponsive(el.css)" :icon="el.content"/>
+
             <!-- bootstrap icon -->
             <i v-if="el.tag==='icon_bt' && !el.link" :class="'bi-' + el.content + '  moka-icons ' + $cssResponsive(el.css)"></i>
             
@@ -60,6 +63,7 @@
                 <option value=""></option>
                 <option v-for="option in el.options" :value="option">{{option}}</option>
             </select>
+
 
             <textarea v-if="el.element === 'textarea'" :class="$cssResponsive(el.css)"></textarea>
 
@@ -134,12 +138,18 @@
                     <i class="material-icons text-sm hover:text-blue-500 leading-4 ml-2" @click="moveUp(el.id,-1)" title="Move down">expand_more</i>
                     <i class="material-icons text-sm text-gray-600 hover:text-blue-500 leading-4 mr-2" @click="toolbar=!toolbar" v-if="toolbar">arrow_left</i>
                         <div v-if="toolbar||!toolbar" class="flex flex-row items-center">  
-                        <i v-if="el.type==='plugin'" class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_plugin_setting')" title="Plugin Settings">settings</i>
-                        <i v-if="el.type!='image'" class="material-icons hover:text-blue-500 text-sm    leading-4 mx-2" @click="$action('block_edit')" title="Edit content">edit</i>
-                        <icon name="list" class="hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_attributes')" title="Attributes"/>
-                        <i v-if="el.type==='image'" class="material-icons hover:text-blue-500 text-sm    leading-4 mx-2" @click="$action('media')" title="set image">photo</i>
-                        <i class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('customize'),toolbar=!toolbar" title="Customize">brush</i>
-                        <i class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('delete')" title="Delete">delete</i> 
+                        
+                            <i v-if="el.type==='plugin'" class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_plugin_setting')" title="Plugin Settings">settings</i>
+                            
+                            <i v-if="el.type!='image'" class="material-icons hover:text-blue-500 text-sm  leading-4 mx-2" @click="$action('block_edit')" title="Edit content">edit</i>
+
+                            <icon name="list" class="hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_attributes')" title="Attributes"/>
+                            
+                            <i v-if="el.type==='image'" class="material-icons hover:text-blue-500 text-sm    leading-4 mx-2" @click="$action('media')" title="set image">photo</i>
+                            
+                            <i class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('customize'),toolbar=!toolbar" title="Customize">brush</i>
+                            
+                            <i class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('delete')" title="Delete">delete</i> 
                         </div>
                         <icon v-if="el.hasOwnProperty('blocks')" name="list" title="Submenu" class="hover:text-blue-500 mx-2" @click="$action('block_menu_item')"/>
                 </div>

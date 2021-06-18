@@ -52,7 +52,7 @@ const twgroups = [
         { name: 'MokaWidths' , attr: 'width' },
         { name: 'MokaHeights' , attr: 'height' } 
     ]},
-    { label: 'text' , components: [ 
+    { label: 'typography' , components: [ 
         { name: 'MokaColor' , attr: 'textcolor' }, 
         // { name: 'MokaRange' , attr: 'textSize' , title: 'size' },
         { name: 'MokaOptions' , attr: 'textSize' , title: 'size' },

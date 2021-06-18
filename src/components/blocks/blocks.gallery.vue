@@ -1,6 +1,6 @@
 <template>
   <div class="w-full theme-dark">
-    <div class="sticky top-0 p-2 w-full theme-dark flex flex-row items-center justify-start">
+    <div v-if="!$attrs.mode" class="sticky top-0 p-2 w-full theme-dark flex flex-row items-center justify-start">
       <button class="lg" @click="$action('component_create')">New</button>
       <button class="lg mx-1" @click="$action('component_import')">Import</button>
       <button class="lg" @click="$mapState().editor.export='category',$action('component_export')">Export All</button>

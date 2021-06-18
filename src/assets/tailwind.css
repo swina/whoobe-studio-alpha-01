@@ -945,6 +945,37 @@ DESKTOP classes
       backdrop-filter: blur(5px);
     }
 
+    .blur-none {
+      backdrop-filter: blur(0px);
+    }	
+
+    .blur-sm	{
+      backdrop-filter: blur(4px);
+    }
+    
+    .blur {	
+      backdrop-filter:  blur(8px);
+    }
+
+    .blur-md {
+      backdrop-filter: blur(12px);
+    }
+
+    .blur-lg	{
+      backdrop-filter: blur(16px);
+    }
+    
+    .blur-xl { 
+      backdrop-filter: blur(24px);
+    }
+
+    .blur-2xl	{
+      backdrop-filter: blur(40px);
+    }
+
+    .blur-3xl {
+      backdrop-filter: blur(64px);
+    }
 
   }
 }

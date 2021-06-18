@@ -6,8 +6,8 @@
         v-if="doc && doc.blocks.length && modal" 
         :key="renewID"
         :class="'moka-popup-view overflow-hidden z-2xtop flex flex-no-wrap '+ classe(doc.css)" :style="doc.style + ' ' +  background(doc)" :ref="doc.id" ontouchstart="this.classList.toggle('hover');">
-            <transition name="fade">
-            <div class="h-full w-full">
+            <!-- <transition name="fade">
+            <div class="h-full w-full"> -->
                 <template v-for="(block,i) in doc.blocks">
 
                     <moka-element
@@ -17,7 +17,7 @@
                         :el="block"
                         :develop="false"/> 
 
-                    <moka-preview-single-container 
+                    <block-container 
                         v-if="block.hasOwnProperty('blocks') && !block.hasOwnProperty('blocks_flip')"
                         :key="block.id"
                         :doc="block"
@@ -40,11 +40,13 @@
                         :level="parseInt($attrs.level)+1" 
                         v-if="block && block.hasOwnProperty('blocks') && block.hasOwnProperty('blocks_flip')" 
                         :doc="block"/>    
-                </template>
+                </template><!-- 
             </div>    
-        </transition>
-        <icon name="close" :class="'z-highest absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)"/>
+        </transition> -->
+        
+        <icon v-if="doc.popup.close" name="close" :class="'z-highest absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)"/>
     </div>
+
     </transition>
         <i v-if="modal && doc.popup.modal" :class="'z-2xtop material-icons fixed top-0 right-0 m-2 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)">close</i>
         <div v-if="modal && doc.popup.modal" :class="'fixed top-0 left-0 right-0 bottom-0 min-h-screen min-w-screen ' + doc.popup.css.modal_background + ' opacity-' + doc.popup.css.modal_opacity"></div>
@@ -74,17 +76,19 @@ export default {
         modal: false,
         animation: null
     }),
-    components: { MokaElement  , MokaPreviewSingleContainer , MokaFlipbox },
+    components: { MokaElement  , MokaPreviewSingleContainer , MokaFlipbox ,
+    'block-container'           : () => import ( './moka.preview.container.vue') ,
+    },
     props: [ 'doc'  ],
     computed:{
-        ...mapState(['moka']),
+        ...mapState(['user']),
         animations(){
             return gsapEffects
         },
         
     },
     watch:{
-        '$store.state.moka.popup':function(v){
+        '$store.state.user.popup':function(v){
             if ( v && this.doc.hasOwnProperty('popup') && this.doc.popup.trigger && v === this.doc.popup.trigger ){
                 this.modal = true
                 

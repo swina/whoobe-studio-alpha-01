@@ -25,14 +25,12 @@
                 :el="block"
                 :coords="[b]"
                 :develop="false"/> 
-
             <block-preview-container
                 :key="block.id"
-                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items') && !block.hasOwnProperty('image_flip') && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides' && block.tag !='form'" @action="elementAction" 
+                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items') && !block.hasOwnProperty('image_flip') && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides' && block.tag !='form' && block.type != 'popup'" @action="elementAction" 
                 :data="$attrs.data||null"
                 :currency="$attrs.currency||null"
                 :doc="block" :animation="$attrs.animation"/>
- 
             <!-- <moka-menu
                 class="hidden md:block"
                 :key="block.id"
@@ -47,7 +45,8 @@
             <block-form
                 v-if="block.tag === 'form'"
                 :key="block.id"
-                :form="block">
+                :form="block"
+                :editor="false">
             </block-form>
 
             <!-- <moka-menu-responsive
@@ -55,11 +54,7 @@
                 :key="block.id"
                 :el="block"
                 v-if="block.tag === 'menu'"/> -->
-            <block-popup
-                :doc="block"
-                :key="block.id"
-                :ref="block.id"
-                v-if="block.hasOwnProperty('popup')"/>
+            
 
             <moka-slider 
                 :key="block.id" 
@@ -80,10 +75,10 @@
                 :doc="block" 
                 :editor="true"/>
                
-            <moka-popup
+            <block-popup
                 :key="block.id" 
                 :ref="block.id" 
-                v-if="block && block.hasOwnProperty('popup')" 
+                v-if="block && block.type === 'popup'" 
                 :develop="true" 
                 :embeded="true" 
                 :doc="block" 
@@ -96,7 +91,8 @@
                     v-if="block.hasOwnProperty('collection')"
                     :doc="block" 
                     :level="b+1" 
-                    :coords="b" 
+                    :coords="b"
+                    :editor="true" 
                     />
             <!-- <plugin-wrapper 
                 :key="block.id"

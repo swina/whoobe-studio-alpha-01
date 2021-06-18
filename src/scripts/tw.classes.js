@@ -229,7 +229,7 @@ var classes = {
         { label: 'Left'         , value: 'bg-gradient-to-l'     },
         { label: 'Top Left'     , value: 'bg-gradient-to-tl'    }
     ],
-    blur:[ 'blur-1' , 'blur-2' , 'blur-3' , 'blur-4' , 'blur-5' ],
+    blur:[ 'blur-1' , 'blur-2' , 'blur-3' , 'blur-4' , 'blur-5' , 'blur-sm' , 'blur-md' , 'blur-lg' , 'blur-xl' , 'blur-2xl' , 'blur-3xl' ],
     flexdirection : [ 'flex-col' , 'flex-row' , 'flex-col-reverse' , 'flex-row-reverse' ],
     flexorder:[
         'order-first',

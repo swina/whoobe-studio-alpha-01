@@ -1,11 +1,11 @@
 <template>
-    <div class="m-2 p-2">
+    <div class="p-2">
         <div class="flex flex-col">
             <label>Title</label>
             <input class="dark w-full" type="text" v-model="seo.title"/>
             <label>Description</label>
             <textarea class="dark w-full" v-model="seo.description"/>
-            <button class="lg bg-transparent border rounded border-gray-400" @click="saveSEO()">Save</button>
+            <button class="mt-1 m-auto bg-transparent border rounded border-gray-400" @click="saveSEO()">Save</button>
         </div>
     </div>
 </template>

@@ -10,6 +10,9 @@
                 v-if="block && !block.hasOwnProperty('blocks') && block.type!='slides' && !block.hasOwnProperty('items')"
                 :key="block.id"
                 :el="block"/>
+            <block-preview-container 
+                v-if="block && block.blocks"
+                :doc="block"/>
         </template>
         <span v-if="form.hasOwnProperty('mailchimp')">
             <input type="hidden" name="u" :value="form.mailchimp.u"/>
@@ -26,7 +29,8 @@ export default {
         key: null
     }),
     components: {
-        'block-element' : () => import ( './moka.element.component.vue')
+        'block-element' : () => import ( './moka.element.component.vue'),
+        'block-preview-container' : () => import ( './moka.preview.container.vue' )
     },
     props: ['form'],
     computed:{

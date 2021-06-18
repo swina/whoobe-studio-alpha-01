@@ -17,6 +17,7 @@
                     :level="b+1" 
                     :coords="b" 
                     />
+                
                 <!-- <block-preview-slides 
                     v-if="block && block.type === 'slides'"
                     :doc="block"
@@ -29,16 +30,16 @@
                     :level="b+1" 
                     :coords="b" 
                     />
+                -->
                 
-                <moka-popup
+                <block-popup
                     :key="block.id" 
                     :ref="block.id" 
-                    v-if="block && block.hasOwnProperty('popup')" 
+                    v-if="block && block.type === 'popup'" 
                     :develop="true" 
                     :embeded="true" 
                     :doc="block" 
                     :editor="true"/>
-                   -->
                    
                 <!-- <moka-slider :key="block.id" v-if="block.hasOwnProperty('slider')" :develop="true" :embeded="true" :doc="block" :editor="true"/>   -->
             </template>
@@ -90,6 +91,7 @@ export default {
     components: {
         BlockPreviewSlides,
         'block-container'           : () => import ( './components/moka.preview.container.vue') ,
+        'block-popup'               : () => import ( './components/moka.popup.vue' ),
         MokaSlider ,
         // MokaContainer,
         // MokaFlex,

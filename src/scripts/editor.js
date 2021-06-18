@@ -495,13 +495,17 @@ export default {
                     font.style.includes ( 'font-family') ?
                         usedFonts.push ( font.style.replace('font-family:','').replaceAll('\"','') ) : null
                 })
-                store.dispatch('message', 'Fonts used collected')
+                if ( project.component.json.fontFamily ){
+                    usedFonts.push ( project.component.json.fontFamily )
+                }
+                //store.dispatch('message', 'Fonts used collected')
                 let images = jp.query ( json , '$..blocks..image.url' )
                 images.forEach(img=>
                     !img.includes('//') ?
                         usedImages.push(img) : null
                 )
-                store.dispatch('message', usedImages )
+
+                //store.dispatch('message', usedImages )
 
                 ///let purgeClasses = jp.query ( json , '$..blocks[?(@.css.length>0)].css')
                 //json.css ? purgeClasses.push ( json.css ) : null
@@ -538,12 +542,10 @@ export default {
                 // store.dispatch('message', 'CSS used collected')
                 let plugins = [...new Set ( jp.query ( json , '$..blocks..path') )]
                 plugins.includes ( 'store/whoobe/store') ? project.store = true : project.store = false
-                if ( project.component.json.fontFamily ){
-                    project.fonts.push ( project.component.json.fontFamily )
-                }
-                store.dispatch('message', 'Plugins used collected')
+                
+                //store.dispatch('message', 'Plugins used collected')
                 if ( project.store ){
-                    store.dispatch('message', 'Using store plugin')
+                    //store.dispatch('message', 'Using store plugin')
                     apiserver.apiserver.service ( 'products' ).find( {
                         query : {
                             $limit: 200,
@@ -571,5 +573,17 @@ export default {
                 
                 return project
         }
+        Vue.prototype.$icons = ( search = '' , limit = 120 ) =>{
+            if ( !search ) return null
+            const resolve = new Promise ( (resolve,reject ) =>{
+                fetch ( 'https://api.iconify.design/search?query=' + search + '&limit=' + limit , { mode: 'cors'})
+                .then ( res => res.json() )
+                .then ( icons => resolve ( icons ))
+                .catch ( err => {
+                    console.log ( err )
+                })
+            })
+            return resolve
+        }    
     }
 }

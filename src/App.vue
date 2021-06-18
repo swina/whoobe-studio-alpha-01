@@ -29,7 +29,8 @@ import { mapState } from 'vuex'
 export default {
   name: 'App',
   components: {
-    'actions'   : () => import ( '@/components/common/actions' )
+    'actions'   : () => import ( '@/components/common/actions' ),
+    'whoobe-intro' : () => import ( '@/components/desktop/desktop.intro.vue' )
   },
   data:()=>({ 
     message: '',

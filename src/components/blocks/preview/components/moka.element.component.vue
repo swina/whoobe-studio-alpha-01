@@ -14,6 +14,7 @@ import MokaIframe from './elements/moka.iframe'
 import MokaSvg from './elements/moka.svg'
 import MokaImg from './elements/moka.img'
 import MokaIcon from './elements/moka.icon'
+import IconExtra from '@/components/common/supericon.vue'
 import MokaInput from './elements/moka.input'
 import MokaToggle from './elements/moka.toggle.vue'
 import MokaTextarea from './elements/moka.textarea'
@@ -39,6 +40,7 @@ export default {
         MokaChip,
         MokaList,
         MokaSimpleSvg,
+        IconExtra
         //MokaSnipcartAddToCart,
         //MokaPluginWrapper
     },
@@ -112,6 +114,12 @@ export default {
                 this.child = MokaIcon
                 return el.link ? MokaLink : MokaIcon
             }
+
+            if ( el.type === 'iconify' ){
+                this.child = IconExtra
+                return el.link ? MokaLink : IconExtra
+            }
+            
             if ( el.element === 'menu' ){
                 return MokaMenu
             }

@@ -1,15 +1,53 @@
 <template>
-    <div class="theme-dark min-h-screen px-20 pt-8">
-        <h3 class="items-center flex">Projects<button class="ml-2" @click="gallery=!gallery">Add new</button></h3>
-        <div class="grid md:grid-cols-2 lg:grid-cols-5 text-purple-500 grid-cols-1 gap-10" v-if="projects">
-            <template v-for="project in projects">
+    <div class="theme-dark min-h-screen pl-10 pt-10">
+        <h3>Whoobe Landing Pages Templates <chip class="text-sm" content="Show Intro" @click="$store.dispatch('intro',1)"></chip></h3>
+        <blocks-gallery :objects="templates" mode="home" class="m-auto" v-if="templates"/>
+        <whoobe-intro v-if="$store.state.user.intro"/>
+        <!-- <modal
+            v-if="index===0"
+            size="md"
+            position="modal"
+            @close="index=null"
+            buttons="none">
+            <div slot="title">Welcome to Whoobe</div>
+            <div slot="content" class="p-8 bg-gray-400 text-gray-800 text-lg">
+                <p>
+                    Whoobe Landing Pages Visual Builder is a browser application to create, change and publish landing pages without coding.
+                </p>
+                <p class="mt-4">
+                    <chip content="Take a tour" @click="index++"/> or just <span class="w-auto bg-purple-500 text-white rounded py-1 px-2 cursor-pointer" @click="intro=!intro">select template</span>
+                </p>
+            </div>
+        </modal>
+        <transition name="fade">
+        <modal
+            v-if="index===1"
+            css="m-12"
+            size="md"
+            position="modal-top-left"
+            @close="index=null"
+            buttons="none">
+            <div slot="title">Navigation Bar</div>
+            <div slot="content" class="p-8 bg-gray-400 text-gray-800 text-lg">
+                <p class="relative pl-8">
+                    <icon  name="chevron_left" class="absolute top-0 left-0 -ml-6 bg-white rounded-full p-2 z-highest text-xl"/> From the Navigation Bar you can access to all the application tools to manage your projects.<br>
+                    <br>
+                    <chip content="Next" @click="intro++"/>
+                </p>
+            </div>
+        </modal>
+        </transition> -->
+        <!-- <h3 class="items-center flex">Projects<button class="ml-2 lg" @click="gallery=!gallery">Add new</button> <button class="lg ml-2">Create a page</button></h3>-->
+        <div class="grid md:grid-cols-2 lg:grid-cols-5 text-purple-500 grid-cols-1 pl-10 absolute bottom-0 gap-10" v-if="projects">
+            <!--<template v-for="project in projects">
                 <div class="h-56 bg-top bg-cover bg-no-repeat shadow-lg flex items-end cursor-pointer"  :style="'background-image: url(' + $imageURL(project.component.image) + ');'"  @click="$store.dispatch('project',project),$action('project_edit')">
                     <div class="text-base bg-black w-full flex flex-row p-2 bg-opacity-75 cursor-pointer items-center">
                         <icon name="view_quilt" class="text-3xl"/>
-                        <div class="p-2">{{ project.name }}</div>
+                        <div class="p-2 text-sm">{{ project.name }}</div>
                     </div>
                 </div>
             </template>
+            
             <modal
                 v-if="gallery"
                 size="md"
@@ -20,7 +58,7 @@
                 <div slot="content">
                     <block-gallery-selection @component="createProject"/>
                 </div>
-            </modal>
+            </modal> -->
             <!--
             <div class="h-64 bg-center bg-cover bg-no-repeat shadow-lg flex items-end" :style="'background-image: url(' + this.$imageURL('/uploads/architectu_bw.webp') + ');'">
                 <div class="text-xl bg-black w-full flex flex-row p-2 bg-opacity-75 cursor-pointer items-center" @click="$action('component_create')">
@@ -47,32 +85,10 @@
                     <div class="p-2">Documentation</div>
                 </div>
             </div>
-            <div class="text-gray-400">
-                <h3>Info</h3>
-                <p>Version: alpha-version <br>May 2021</p>
-                <p>Author: Antonio Nardone</p>
-                <small>MIT License - Open source - Free</small>
-            </div>
-            <div class="text-gray-400">
-                <h3>Last updates</h3>
-                <p>- Context menu in the block editor and preview window</p>
-                <p>- Multitabs support</p>
-                <p>- Import media from Pixabay, upload media to Cloudinary, upload images from URL</p>
-                <p>- Image editor</p>
-            </div>
-            <div class="text-gray-400">
-                <h3>Tips</h3>
-                <ul>
-                    <li>Copy&Paste any block/element between documents with Alt+C (copy) and Alt+v (paste)</li>
-                    <li>Copy CSS attributes between blocks/elements with Alt+g (copy) and Alt+h (paste)</li>
-                    <li>In the Block Editor and the Block preview window click the mouse right button to access to a context menu</li>
-                </ul>
-            </div>
-            <div class="text-gray-400">
-                <h3>Issues</h3>
-                <p>Help to improve Whoobe. Any time you find a bug or an error please open an issue on <a href="https://github.com/swina/whoobe-studio-alpha" target="_blank">Github repository</a></p>
-            </div>-->
+            -->
+           
         </div>
+        <!-- <block-wizard/> -->
     </div>
 </template>
 
@@ -80,11 +96,17 @@
 export default {
     name: 'DesktopHome',
     components: {
-        'block-gallery-selection' : () => import ( '@/components/blocks/actions/block.gallery.selection.vue' )
+        'block-gallery-selection' : () => import ( '@/components/blocks/actions/block.gallery.selection.vue' ),
+        'blocks-gallery' : () => import ( '@/components/blocks/blocks.gallery.vue' )
+        // 'block-wizard' : () => import ( './desktop.wizard.vue' )
     },
     data:()=>({
+        index:0,
+        intro: true,
         gallery: false,
         projects: null,
+        icons: null,
+        templates: null,
         project:   {
             "name": "",
             "dist": "dist",
@@ -126,6 +148,27 @@ export default {
         this.$api.service ( 'projects' ).find ().then ( res => {
             this.projects = res.data
         })
+        this.$api.service ( 'components' ).find ( { query : { category: 'template' , $limit: 100 } } ).then ( res => {
+            this.templates = res.data
+        })
+            // let tab = 
+            //     {
+            //         component: () => import ( '@/components/blocks/blocks.vue' ) ,
+            //         name: 'Templates' ,
+            //         icon: 'widgets',
+            //         filter: 'template'  ,
+            //         mode: 'templates',
+            //         plugin: null,
+            //         resumeAction: null,
+            //         blocks: null
+            //     }
+            // //}) 
+            // this.$store.dispatch ( 'mode' , tab.mode ) 
+            // this.$store.dispatch ( 'add_tab' , tab )
+            //this.desktop.currentTab = this.desktop.tabs.length - 1
+            //window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
+        
+        
     }
 }
 </script>

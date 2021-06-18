@@ -50,6 +50,8 @@
     "xterm": "^4.11.0"
   },
   "devDependencies": {
+    "@iconify/iconify": "^2.0.1",
+    "@iconify/vue": "1",
     "@vue/cli-plugin-babel": "^4.5.0",
     "@vue/cli-plugin-pwa": "^4.5.0",
     "@vue/cli-service": "^4.5.0",

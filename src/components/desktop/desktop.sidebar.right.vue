@@ -72,12 +72,7 @@ export default {
                 component: 'blocks/actions/block.animation.vue',
                 tooltip: 'Animations'
             },
-            // { 
-            //     label: 'attributes',
-            //     icon: 'list',
-            //     component: 'blocks/actions/block.attributes.settings.vue',
-            //     tooltip: 'Element attributes'
-            // },
+            
             { 
                 label: 'reusable',
                 icon: 'widgets',
@@ -92,9 +87,9 @@ export default {
             },
             { 
                 label: 'settings',
-                icon: 'settings',
+                icon: 'offline_bolt',
                 component: 'blocks/actions/block.document.settings.vue',
-                tooltip: 'Page settings'
+                tooltip: 'Publish'
             },
             // { 
             //     label: 'generate',

@@ -93,7 +93,7 @@ export default {
                     ' h-' + this.$attrs.height : ''
         },
         position(){
-           return this.$attrs.position ? ' ' + this.$attrs.position : ''
+           return this.$attrs.position ? ' ' + this.$attrs.position + ' ' + this.$attrs.css : '' + this.$attrs.css
         },
         color(){
             return this.$attrs.color ? ' ' + this.$attrs.color : ' bg-gray-800 text-gray-300'

@@ -18,7 +18,7 @@ export default {
         elementAction: ''
     }),
     computed: {
-        ...mapState ( ['moka'] ),
+        ...mapState ( ['user'] ),
         component(){
             return this.child
         },
@@ -44,7 +44,7 @@ export default {
                 console.log ( this.elementAction )
                 this.elementAction = { action:  'popup' , value: this.el.link.split('?')[1] }
                 if ( this.elementAction ){
-                    this.moka.popup ?
+                    this.user.popup ?
                         this.$store.dispatch ( 'popup' , null ) :
                             this.$store.dispatch ( this.elementAction.action , this.elementAction.value )
                 } else {

@@ -38,7 +38,6 @@ export default {
     },
     mounted(){
         this.blocksQry()
-
         this.$api.service ( 'components' ).on ( 'created' , (data) =>{
             this.blocksQry()
             //this.blocks.unshift ( data )

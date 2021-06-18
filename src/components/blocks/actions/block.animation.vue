@@ -1,27 +1,27 @@
 
 <template>
-    <div class="flex flex-col theme-dark" v-if="current" :key="current.id">
+    <div class="flex flex-col theme-dark" v-if="current" :key="$randomID()">
         <!-- Element animation settings -->
         <div class="p-2">
             <label>Animation</label>
-            <select class="dark w-full" v-model="current.gsap.animation" @change="animate(current,current.id)">
+            <select class="dark w-full" v-model="editor.current.gsap.animation" @change="animate(editor.current,current.id)">
                 <option value="">none</option>
                 <option v-for="(ani,i) in gsapAnimations.gsapEffects" :value="ani.replace('-','')"><span class="capitalize">{{ ani.replace('-' , ' ')}}</span></option>
             </select>
             <label>Easing</label>
-            <select class="dark w-full" v-model="current.gsap.ease">
+            <select class="dark w-full" v-model="editor.current.gsap.ease">
                 <option value="">none</option>
                 <option v-for="(ease,i) in gsapAnimations.gsapEase" :value="ease"><span class="capitalize">{{ ease.replace('.out','')}}</span></option>
             </select>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mt-2">
                 <label>Duration (secs)</label>
-                <input class="dark w-full" type="number" min=".1" max="100" step=".1" v-model="current.gsap.duration"/>
+                <input class="dark w-full" type="number" min=".1" max="100" step=".1" v-model="editor.current.gsap.duration"/>
                 <label>Delay (secs)</label>
-                <input class="dark w-full" type="number" min="0" max="100" step=".1" v-model="current.gsap.delay"/>
+                <input class="dark w-full" type="number" min="0" max="100" step=".1" v-model="editor.current.gsap.delay"/>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <label>Trigger Over</label>
-                <input class="dark w-full" type="checkbox" v-model="current.gsap.trigger"/>
+                <input class="dark w-full" type="checkbox" v-model="editor.current.gsap.trigger"/>
             </div>
             <div ref="aniDemo" class="text-center text-2xl my-4 bg-black w-1/2 text-gray-400 m-auto p-4">animation</div>
             <a href="#" @click="animate()">Run</a>

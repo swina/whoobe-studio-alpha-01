@@ -12,6 +12,7 @@
         <iframe src="preview" class="mt-10 border-8 border-gray-900 z-highest shadow-xl rounded-2xl h-screen m-auto" style="width:365px;border-width:22px;height:640px;" v-if="editor.action === 'in_editor_preview' && editor.preview_mobile"/>
         <div class="m-auto text-center text-gray-700 my-8" v-if="editor.action === 'in_editor_preview' && editor.preview_mobile">This is a demo preview. Check fullscreen preview and select Smartphone size for a realistic preview</div>
         <icon  v-if="editor.action==='in_editor_preview'" name="close" class="hover:bg-gray-300 hover:text-black mt-10 mr-2 text-5xl text-gray-400 z-highest fixed top-0 right-0" @click="$action()"/>
+        <whoobe-intro v-if="user.intro"/>
     </div>
 </template> 
 
@@ -27,7 +28,7 @@ export default {
         'block-preview' : () => import ( '@/components/blocks/preview/block.preview.vue')
     },
     computed: {
-        ...mapState ( [ 'desktop' , 'editor' ] ),
+        ...mapState ( [ 'desktop' , 'editor' , 'user'] ),
         displayMode(){ 
             let css = ''
             this.$attrs.boxed ? css+= 'pl-10': null

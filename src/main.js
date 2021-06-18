@@ -57,8 +57,18 @@ Vue.component('plugin-wrapper',PluginWrapper)
 import Media from '@/components/media/media.vue'
 Vue.component('media',Media)
 
+import WhoobeIntro from '@/components/desktop/desktop.intro.vue'
+Vue.component('whoobe-intro',WhoobeIntro)
+
 import {SimpleSVG} from 'vue-simple-svg'
 Vue.component('simple-svg', SimpleSVG)
+
+import Iconify from '@iconify/iconify';
+
+import Supericon from '@/components/common/supericon.vue'
+Vue.component('icon-extra',Supericon)
+import IconifyIcon from '@iconify/vue';
+Vue.component ( 'IconifyIcon' , IconifyIcon )
 
 //import vueCustomElement from 'vue-custom-element'
 //Vue.use(vueCustomElement);

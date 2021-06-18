@@ -47,7 +47,7 @@
                     <div class="grid grid-cols-2">
                         <div class="flex flex-col">
                             <label class="font-bold cursor-pointer">Modal Background</label>
-                            <moka-bgcolor attr="bgcolor" v-model="editor.current.popup.css.modal_background" :css="editor.current.popup.css.modal_background"/>
+                            <moka-bgcolor attr="bg" v-model="editor.current.popup.css.modal_background" :css="editor.current.popup.css.modal_background"/>
                         </div>
                         <div class="flex flex-col">
                             Opacity

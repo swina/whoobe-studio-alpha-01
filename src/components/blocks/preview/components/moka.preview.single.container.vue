@@ -24,7 +24,7 @@
                 :level="parseInt($attrs.level)+1" 
                 v-if="block && block.hasOwnProperty('blocks') && !block.hasOwnProperty('blocks_flip')" 
                 :doc="block"/>
-
+            
             
         </template>     
        
