@@ -19,7 +19,6 @@ export default {
     computed:{
         ...mapState ( ['datastore' , 'editor' ,'desktop'] ),
         jsonToExport(){
-            console.log ( 'export => ' , this.editor.export )
             if ( this.editor.export === 'single' ){
                 this.filename = this.editor.component.name
                 return JSON.stringify(this.editor.component) 

@@ -1,8 +1,8 @@
 <template>
     <div class="theme-dark min-h-screen pl-10 pt-10">
-        <h3>Whoobe Landing Pages Templates <chip class="text-sm" content="Show Intro" @click="$store.dispatch('intro',1)"></chip></h3>
+        <h3>Whoobe Landing Pages Templates <chip class="text-sm" content="Show Intro" @click="viewIntro()"></chip></h3>
         <blocks-gallery :objects="templates" mode="home" class="m-auto" v-if="templates"/>
-        <whoobe-intro v-if="$store.state.user.intro"/>
+        <!-- <whoobe-intro v-if="$store.state.user.intro"/> -->
         <!-- <modal
             v-if="index===0"
             size="md"
@@ -122,6 +122,9 @@ export default {
         }
     }),
     methods: {
+        viewIntro(){
+            this.$store.dispatch('intro',1)
+        },
         createProject(component){
             this.gallery = false
             this.project.component = component

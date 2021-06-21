@@ -9,13 +9,13 @@
             <div @click="tab='moka'" :class="tab==='moka'?'py-1 px-2 bg-blue-400 text-white':'py-1 px-2 bg-white text-blue-400 border'">MOKAStudio</div>-->
         </div>
         <div class="flex flex-col justify-around">
-            <div v-if="tab==='projects'">
+            <!-- <div v-if="tab==='projects'">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Projects</h5>
                 <div class="flex flex-row p-2 w-full text-base">
                     <whoobe-projects/>
                 </div>
-            </div>
-            <div v-if="tab==='website'" class="border border-t-0 relative pb-8">
+            </div> -->
+            <!-- <div v-if="tab==='website'" class="border border-t-0 relative pb-8">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Site generator settings</h5>
                 <div class="flex flex-row p-2 w-full text-base">
                         
@@ -24,9 +24,6 @@
                         <input type="text" v-model="$datastore('setup').general.seo_title"/>
                         <label class="font-bold">SEO Description (default)</label>
                         <textarea v-model="$datastore('setup').general.seo_description" class="w-3/4"/>
-                        <!--<label class="font-bold">Google Analytics Code</label>
-                        <input type="text" v-model="moka.settings.google_analytics"/>
-                        <div class="text-xs">Leave blank to not apply</div>-->
                         
                         
                         <label class="font-bold">Read More text</label>
@@ -39,107 +36,40 @@
                         <input type="text" v-model="$datastore('setup').general.responsive_menu_transition"/>
                         <p class="text-xs">(default fade)</p>
                     </div>
-                    <!-- <div class="w-1/2">
-                        <label class="font-bold">Layout settings</label>
-                        <div class="bg-gray-200 rounded p-2 text-center cursor-pointer">
-                            Colors<br>
-                            <div class="flex flex-row justify-around">
-                                <div class="flex flex-col cursor-pointer">
-                                    <label class="font-bold">Text</label>
-                                    <moka-color attr="textcolor" v-model="$datastore('setup').general.body_color" :css="$datastore('setup').general.body_color"/>
-                                </div>
-                                <div class="flex flex-col">
-                                    <label class="font-bold cursor-pointer">Background</label>
-                                    <moka-bgcolor attr="bgcolor" v-model="$datastore('setup').general.body_bg" :css="$datastore('setup').general.body_bg"/>    
-                                </div>
-                            </div>
-                        </div>                    
-                        
-                        <div class="bg-gray-200 my-2 rounded p-2 text-center cursor-pointer">
-                            Darkmode colors<br>
-                            <div class="flex flex-row justify-around">
-                                <div class="flex flex-col">
-                                    <label class="font-bold">Text</label>
-                                    <moka-color attr="textcolor" v-model="$datastore('setup').general.darkmode_color" :css="$datastore('setup').general.darkmode_color"/>
-                                </div>
-                                <div class="flex flex-col">
-                                    <label class="font-bold cursor-pointer">Background</label>
-                                    <moka-bgcolor attr="bgcolor" v-model="$datastore('setup').general.darkmode_bg" :css="$datastore('setup').general.darkmode_bg"/>    
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="flex flex-col">
-                            <label class="font-bold">Enable Darkmode</label>
-                            <input type="checkbox" v-model="$datastore('setup').general.darkmode"/>
-                            <label class="font-bold">Enable Breadcrumb</label>
-                            <input type="checkbox" v-model="$datastore('setup').general.breadcrumb"/>
-                            <label class="font-bold">Enable Scrolltop</label>
-                            <input type="checkbox" v-model="$datastore('setup').general.scrolltop"/>
-                        </div>
-                    </div> -->
+                    
                 </div>
                 <button class="absolute bottom-0 right-0 m-2" @click="saveSettings">Save</button>
             </div>
             <div v-if="tab==='categories'" class="border border-t-0">
                 <moka-categories></moka-categories>
-            </div>
+            </div> -->
             
-            <div v-if="tab==='moka'" class="border border-t-0">
-                <h5 class="bg-gray-700 text-gray-200 p-1">Studio settings</h5>
-                    <div class="flex flex-row">
-                    <div class="flex flex-col p-2 w-full md:w-1/2">
-                        <!-- <div class="p-2 bg-gray-200 mb-4">
-                        <label>License Key</label>
-                        <input type="text" class="w-full" v-model="license"/>
-                        <div class="flex flex-row">
-                            <button class="mr-2" @click="setLicense()">Save</button>
-                            <button v-if="!license"><a href="https://moodgiver.netlify.app" target="_blank">Get a License Key</a></button>
-                        </div>
-                        <div>{{licenseMessage}}</div>
-                        </div> -->
-                        <label>Server URL</label>
-                        <input type="text" class="text-base w-full" v-model="strapiurl"/>
-                        <button @click="setStrapiURL()">Save</button>
-                        <div v-if="$datastore('setup')">
-                        <label class="mt-4 font-bold">Block Types</label>
-                        <select v-if="$datastore('setup') && $datastore('setup').types.components" v-model="currentType" multiple class="h-32 w-full" readonly>
-                            <option v-for="(tipo,index) in $datastore('setup').types.components" :value="index">{{tipo}}</option>
-                        </select>
-                        <div class="flex flex-row my-1">
-                            <input type="text" v-model="new_type" placeholder="footer,header,content"/>
-                            <button class="ml-2 sm"  @click="$datastore('setup').types.components.push(new_type)">Add</button>
-                            <button v-if="currentType.length" class="ml-2 sm danger" @click="removeTypes()">Remove</button>
-                        </div>
-                        <div class="text-xs">
-                            Input values that can help to find/define your components like footer, header, call to action , etc
-                        </div>
-                        <button @click="saveTypes">Save</button>
-                        </div>
-                        <label class="font-bold">Colors palette</label>
-                        <div class="flex flex-col">
-                        <template v-for="color in colors">
-                            <div class="flex flex-row mb-1">
-                            <template v-for="n in 9">
-                                <div :title="color + ' ' + (n*100)":class="'border w-6 h-6 rounded-full mr-2 bg-' + color + '-' + (n*100)"></div>
-                            </template>
+            <div v-if="tab==='moka'" class="border border-gray-900">
+                    <h5 class="theme-dark p-1">General</h5>
+                        <div class="flex flex-col p-2">
+                            <label>Server URL</label>
+                            <input type="text" class="dark w-full" v-model="whoobeCMS"/>
+                            
+                            <div class="flex my-4">
+                            <input type="checkbox" v-model="whoobeLocal"/> 
+                            <label>Local Development</label>
                             </div>
-                        </template>
-                        </div>
-                    </div>
-                    <div class="flex flex-col p-2 w-full md:w-1/2">
-                        <label class="font-bold">Fonts</label>
-                        <select v-if="moka" v-model="currentFont" multiple class="h-32 w-full" readonly>
+                            <button @click="setWhoobeCMS()">Save</button>
+                            <!-- <div v-if="$datastore('setup')">
                             
-                            <option v-for="(font,index) in editor.fonts" :value="index">{{font}}</option>
-                        </select>
-                        <div class="text-xs">
-                            To add fonts you need to update the environment variable VUE_APP_FONT_FAMILIES listing the fonts by name separated by the | character.
-                            
-                        </div>
-                        
-                    </div>
+                            <label class="font-bold">Fonts</label>
+                            <select v-if="moka" v-model="currentFont" multiple class="h-32 w-full" readonly>
+                                
+                                <option v-for="(font,index) in editor.fonts" :value="index">{{font}}</option>
+                            </select> -->
+                            <!-- <div class="text-xs">
+                                To add fonts you need to update the environment variable VUE_APP_FONT_FAMILIES listing the fonts by name separated by the | character.
+                                
+                            </div> -->
+                        </div> 
+                    
                 </div>
+                
             </div>
             <div v-if="tab==='elements'" class="border border-t-0">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Blocks Elements</h5>
@@ -187,14 +117,14 @@ export default {
     },
     data:()=>({
         tabs: [
-            { label: 'Workspace' , tag: 'projects' },
-            { label: 'Studio' , tag: 'moka' },
-            { label: 'Generator' , tag: 'website' },
+            // { label: 'Workspace' , tag: 'projects' },
+            { label: 'General' , tag: 'moka' },
+            // { label: 'Generator' , tag: 'website' },
             { label: 'Categories' , tag: 'categories'},
             { label: 'Blocks Elements' , tag: 'elements'},
             { label: 'Blocks Object' , tag: 'objects'}
         ],
-        tab: 'projects',
+        tab: 'moka',
         types: null,
         new_type:'',
         currentColor: '',
@@ -207,7 +137,8 @@ export default {
             pasword: '',
             confirm: ''
         },
-        strapiurl: '',
+        whoobeCMS: '',
+        whoobeLocal: true,
         license: '',
         licenseMessage: '',
         licenseUser: {
@@ -219,15 +150,18 @@ export default {
     }),
     computed: {
         ...mapState ( ['moka','user','datastore','editor'] ),
-        
+        whoobeStatus(){
+            return window.localStorage.getItem ( 'whoobe-cms' )
+        },     
         colors(){
             return this.mokacolors()
         }
     },
     mounted(){
         
-        if ( window.localStorage.getItem('moka-strapiurl') ){
-            this.strapiurl = window.localStorage.getItem('moka-strapiurl')
+        if ( window.localStorage.getItem('whoobe-cms') ){
+            this.whoobeCMS = window.localStorage.getItem('whoobe-cms')
+            this.whoobeLocal = JSON.parse(window.localStorage.getItem('whoobe-local'))
         }
         
         // this.$apiwhoobe.authenticate().then ( res => {
@@ -245,11 +179,13 @@ export default {
         // })
     },
     methods:{
-        setStrapiURL(){
-            window.localStorage.setItem ( 'moka-strapiurl' , this.strapiurl )
-            alert ( 'Changed Strapi Server')
-            window.location.reload()
-            this.$router.push ( '/' )
+        setWhoobeCMS(){
+            window.localStorage.setItem ( 'whoobe-cms' , this.whoobeCMS )
+            window.localStorage.setItem ( 'whoobe-local' , this.whoobeLocal )
+            //alert ( 'Changed Whoobe Server')
+            //window.location.reload()
+            //this.$router.push ( '/' )
+        
         },
         setLicense(){
             

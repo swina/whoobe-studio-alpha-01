@@ -1,7 +1,6 @@
 <template>
     <div v-if="blocks" class="w-full">
-        <blocks-gallery :objects="objects" class="m-auto" @duplicated="blocksQry"/>
-        
+        <blocks-gallery :objects="blocks" class="m-auto" @removed="blocksQry()" @duplicated="blocksQry()"/>
     </div>
 </template>
 
@@ -30,6 +29,7 @@ export default {
                     $sort: { updatedAt: -1 }
                 }
             }).then ( res => {
+                console.log ( 'Blocks changed!')
                 this.total = res.total
                 this.blocks = res.data
                 this.$store.dispatch ( 'dataset' , { table: 'components' , data: res.data })
@@ -40,7 +40,6 @@ export default {
         this.blocksQry()
         this.$api.service ( 'components' ).on ( 'created' , (data) =>{
             this.blocksQry()
-            //this.blocks.unshift ( data )
             this.$message ( data.name + ' created')
         })
         this.$api.service ( 'components' ).on ( 'removed' , (data) =>{

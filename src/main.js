@@ -72,9 +72,10 @@ Vue.component ( 'IconifyIcon' , IconifyIcon )
 
 //import vueCustomElement from 'vue-custom-element'
 //Vue.use(vueCustomElement);
-
-window.localStorage.setItem('whoobe-cms' , process.env.VUE_APP_API_URL )
-
+if ( !window.localStorage.getItem('whoobe-cms') ){
+  window.localStorage.setItem('whoobe-cms' , process.env.VUE_APP_API_URL )
+  window.localStorage.setItem('whoobe-mode' , process.env.VUE_APP_LOCAL )
+}
 //import WhoobeStore from './components/plugins/store/nuxpresso/custom'
 //Vue.customElement ( 'whoobe-store' , WhoobeStore )
 

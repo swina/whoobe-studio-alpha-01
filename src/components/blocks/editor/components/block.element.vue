@@ -17,7 +17,11 @@
             </div>
             <!--<button v-if="el.element === 'button'" :class="el.css">{{ el.content }}</button>-->
 
-            <img :class="$cssResponsive(el.css) + imageCSSDefault" :ref="el.id" v-if="el.type==='video' && el.image && el.image.url && el.image.ext != '.svg'" :style="el.css?'':''" :src="$imagePreviewURL(el.image).replace('h_60','h_480').replace('w_90','w_640')"/>
+            <img :class="$cssResponsive(el.css) + imageCSSDefault" :ref="el.id" v-if="el.type==='video' && el.image && el.image.url && el.image.ext != '.svg' && !el.image.url.includes('mp4')" :style="el.css?'':''" :src="$imagePreviewURL(el.image).replace('h_60','h_480').replace('w_90','w_640')"/>
+
+            <video v-if="el.type==='video' && el.image && el.image.url && (el.image.url.includes('mp4') || el.image.url.includes('webm'))" :style="el.style" :class="$cssResponsive(el.css)">
+                <source :src="el.image.url"/>
+            </video>
             
 
             <i :class="'material-icons text-10xl m-auto ' + $cssResponsive(el.css)" v-if="el.type==='video' && !el.image" :title="el.label">movie</i> 
@@ -141,11 +145,13 @@
                         
                             <i v-if="el.type==='plugin'" class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_plugin_setting')" title="Plugin Settings">settings</i>
                             
-                            <i v-if="el.type!='image'" class="material-icons hover:text-blue-500 text-sm  leading-4 mx-2" @click="$action('block_edit')" title="Edit content">edit</i>
+                            <i v-if="el.type==='element'" class="material-icons hover:text-blue-500 text-sm  leading-4 mx-2" @click="$action('block_edit')" title="Edit content">edit</i>
 
                             <icon name="list" class="hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('block_attributes')" title="Attributes"/>
                             
                             <i v-if="el.type==='image'" class="material-icons hover:text-blue-500 text-sm    leading-4 mx-2" @click="$action('media')" title="set image">photo</i>
+
+                            <i v-if="el.type==='video'" class="material-icons hover:text-blue-500 text-sm    leading-4 mx-2" @click="$action('media')" title="set image">photo</i>
                             
                             <i class="material-icons hover:text-blue-500 text-sm leading-4 mx-2" @click="$action('customize'),toolbar=!toolbar" title="Customize">brush</i>
                             

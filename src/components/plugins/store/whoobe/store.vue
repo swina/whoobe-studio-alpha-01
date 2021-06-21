@@ -59,7 +59,7 @@
         <!-- PAGINATION -->
         <div v-if="!current">
             <div class="flex flex-row w-full items-center justify-center" v-if="settings.general.display.navigation">
-                {{ settings.general.display.navigation.name }} 
+                <!-- {{ settings.general.display.navigation.name }}  -->
                 <template v-for="page in pages">
                     <div :class="settings.general.display.navigation.css + ' ' + activePage(page)" @click="start=(page-1)*limit">{{ page }}</div>
                 </template>

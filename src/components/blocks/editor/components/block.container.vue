@@ -7,8 +7,8 @@
         class="p-2 fill-current"
         :class="classe(doc.css)" :style="doc.style + ' ' +  background(doc)" @dblclick="doc.blocks.length===0?$action('block_add_element'):null" :title="doc.type" :data-container-tag="doc.tag!='form'?doc.type:doc.tag">
         <div v-if="doc.blocks && !doc.blocks.length && !doc.image" class="text-xs">Dblclick here to add an element</div>
-        <div videobg v-if="doc.image && (doc.image.ext==='.mp4' || doc.image.ext==='webm' || doc.image.url.indexOf('.mp4') > -1)" :class="'fixed z-0 ' + doc.css.css">  
-            <video playsinline  class="object-contain" :autoplay="false" :loop="false">
+        <div videobg v-if="doc.image && (doc.image.ext==='.mp4' || doc.image.ext==='webm' || doc.image.url.indexOf('.mp4') > -1)" :class="'absolute inset-0 ' ">  
+            <video playsinline :poster="doc.image.previewUrl" class="object-cover object-center h-full w-full" autoplay loop>
                 <source :src="doc.image.url"/>
             </video>
         </div>

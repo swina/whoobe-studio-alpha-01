@@ -4,7 +4,12 @@
         <desktop-sidebar v-if="sidebar"/>
         <desktop-container :boxed="sidebar"/>
         <desktop-sidebar-right/>
-        <desktop-home v-if="$mapState().desktop.tabs.length === 0"/>
+        <div v-if="!$mapState().desktop.tabs.length" class="pl-10 pt-10">
+            <blocks filter="template"/>
+        </div>
+        <!--<whoobe-info/>-->
+        <!--<desktop-home v-if="$mapState().desktop.tabs.length === 0"/>-->
+        <whoobe-intro/>
         <icon name="lock" class="fixed z-highest bottom-0 left-0 m-2 text-indigo-500" @click="logout()"/>
     </div>
 </template>
@@ -12,21 +17,24 @@
 <script>
 import jp from 'jsonpath'
 import { mapState } from 'vuex'
+import Blocks from '@/components/blocks/blocks.vue'
 export default {
     name: 'Desktop',
     data:()=>({
         sidebar: true
     }),
     computed:{
-        ...mapState ( ['desktop'] ),
+        ...mapState ( ['desktop','user'] ),
         
     },
     components: {
+        Blocks,
         'desktop-sidebar'   : () => import ( './desktop.sidebar.vue'),
         'desktop-tabs'      : () => import ( './desktop.tabs.vue'),
         'desktop-sidebar-right' : () => import ( './desktop.sidebar.right.vue' ),
         'desktop-container' : () => import ( './desktop.container.vue'),
-        'desktop-home'      : () => import ( './desktop.home.vue')
+        'desktop-home'      : () => import ( './desktop.home.vue'),
+        'whoobe-info'       : () => import ( '@/components/settings/info.vue' )
     },
     methods:{
         datastore(){
@@ -74,14 +82,17 @@ export default {
             window.localStorage.removeItem ( 'feathers-jwt' )
             this.$store.dispatch ( 'login' , false )
             this.$router.push('/login')
-        }
+        },
     } ,
     mounted(){
         this.$api.authenticate().then ( res => {
             this.datastore()
+            //this.$mapState().desktop.tabs.length ? null : this.homeStart()
         }).catch ( error => {
             this.$router.push('')
         })
+        
+            
     }
 }
 </script>

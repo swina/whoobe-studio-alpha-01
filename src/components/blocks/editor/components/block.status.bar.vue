@@ -49,6 +49,10 @@
             <icon name="save" class="hover:text-indigo-500 cursor-pointer" title="Save page"/><!--$action('savecomponent')-->
         </div>
 
+        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$store.dispatch('export','single'),$action('component_export')">
+            <icon name="download" class="hover:text-indigo-500 cursor-pointer" title="Export"/><!--$action('savecomponent')-->
+        </div>
+
         <!-- <i class="material-icons moka-icons nuxpresso-icon-circle text-gray-300 ml-2 divide-x divide-gray-200" @click="$action('savecomponent')"
 title="Save document">save</i> -->
         </div>

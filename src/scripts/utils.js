@@ -102,7 +102,7 @@ export default {
                 image.previewUrl ? 
                     image.previewUrl.includes('//') ? 
                         url = image.previewUrl : 
-                            url = ( window.localStorage.getItem('moka-strapiurl') || process.env.VUE_APP_API_URL ) + image.previewUrl.replace('/','') :
+                            url = ( window.localStorage.getItem('whoobe-cms') || process.env.VUE_APP_API_URL ) + image.previewUrl.replace('/','') :
                                 image.url.includes('//') ? url = image.url : 
                                     url =  ( window.localStorage.getItem('whoobe-cms') || process.env.VUE_APP_API_URL ) + image.url.replace('/','') 
             

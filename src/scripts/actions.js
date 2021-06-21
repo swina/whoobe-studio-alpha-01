@@ -24,6 +24,12 @@ const actions = {
         position: 'modal',
         component: 'articles/article.create.vue'
     },
+    mode_settings : {
+        title: 'Server',
+        size: 'md',
+        position: 'modal',
+        component: 'settings/settings.vue'
+    },
     component_settings: {
         title: 'General settings',
         size: 'md',

@@ -1,22 +1,29 @@
 <template>
-<div>
+<div v-if="user.intro && datastore.dataset.help">
+    <transition name="fade">
     <modal
-        v-if="$store.state.user.intro===1"
+        :key="user.intro"
+        v-if="user.intro"
         size="md"
-        position="modal"
+        :position="position"
+        :css="css"
         @close="$store.dispatch('intro',0)"
         buttons="none">
-        <div slot="title">Welcome to Whoobe</div>
-        <div slot="content" class="p-8 bg-gray-400 text-gray-800 text-lg">
-            <p>
-                Whoobe Landing Pages Visual Builder is a browser application to create, change and publish landing pages without coding.
-            </p>
-            <p class="mt-4">
-                <chip content="Take a tour" @click="$store.dispatch('intro',2)"/> or just <span class="w-auto bg-purple-500 text-white rounded py-1 px-2 cursor-pointer" @click="intro=!intro">select template</span>
-            </p>
+        <div slot="title">{{ title }}</div>
+        <div slot="content" class="relative p-8 bg-gray-400 text-gray-800 text-lg" v-html="content">
         </div>
+        <p class="p-4 bg-gray-400 text-black" slot="footer">
+            <button v-if="user.intro > 1" class="bg-purple-500 rounded mr-2"@click="$store.dispatch('intro',user.intro-1)">Prev</button>
+            <button v-if="datastore.dataset.help.data.length > (parseInt(user.intro))" content="Next" class="bg-purple-500 rounded" @click="$store.dispatch('intro',user.intro+1)">Next</button>
+            <button v-if="datastore.dataset.help.data.length <= (parseInt(user.intro))" content="Next" class="bg-purple-500 rounded" @click="$store.dispatch('intro',0)">Close</button>
+            <br><br>
+            <span v-if="parseInt(user.intro) == 1">
+                <input type="checkbox" v-model="enableIntro"/> Show at startup 
+            </span> 
+        </p>
     </modal>
-    <transition name="fade">
+    </transition>
+    <!-- <transition name="fade">
         <modal
             v-if="$store.state.user.intro===2"
             css="m-12 mt-64 z-2xtop"
@@ -168,12 +175,51 @@
     </transition>
     <div class="z-highest fixed top-0 left-0 h-screen bg-transparent w-10 border-2 border-lime-500" v-if="$store.state.user.intro===2"></div>
     <div class="z-highest fixed bottom-0 left-0 bg-transparent w-screen h-10 border-2 border-lime-500" v-if="$store.state.user.intro===7"></div>
-    <div class="z-highest fixed top-0 left-0 w-screen bg-transparent h-10 border-2 border-lime-500" v-if="$store.state.user.intro===3"></div>
+    <div class="z-highest fixed top-0 left-0 w-screen bg-transparent h-10 border-2 border-lime-500" v-if="$store.state.user.intro===3"></div> -->
 </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-    name: 'DesktopIntro'
+    name: 'DesktopIntro',
+    data:()=>({
+        enableIntro: false
+    }),
+    watch:{
+        enableIntro(v){
+            window.localStorage.setItem('whoobe-intro',v)
+            // if ( !v ) {
+            //     this.$store.dispatch ( 'intro' , 0 )
+            // } else {
+            //     this.$store.dispatch ( 'intro' , 1 )
+            // }
+        }
+    },
+    computed: {
+        ...mapState ( ['datastore' , 'user' ]),
+        title(){
+            return this.datastore.dataset.help.data[this.user.intro-1].title
+        },
+        content(){
+            return this.datastore.dataset.help.data[this.user.intro-1].content
+        },
+        position(){
+            return this.datastore.dataset.help.data[this.user.intro-1].position
+        },
+        css(){
+            return this.datastore.dataset.help.data[this.user.intro-1].css
+        }
+    },
+    mounted(){
+        if ( window.localStorage.getItem ( 'whoobe-intro') ){
+            this.enableIntro = JSON.parse(window.localStorage.getItem ( 'whoobe-intro' ))
+            !this.enableIntro ? 
+                this.$store.dispatch ( 'intro' , 0 ) : this.$store.dispatch('intro',1) 
+        } else {
+            this.enableIntro = true
+            this.$store.dispatch ( 'intro' , 1)            
+        }
+    }
 }
 </script>

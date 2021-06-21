@@ -1,7 +1,7 @@
 <template>
     <div class="p-2 theme-dark rounded text-xs" v-if="component">
         <div class="border mt-2 border-gray-700 rounded-lg">
-            <chip content="Page Settings" class="rounded-tr-lg rounded-tl-lg bg-gray-900"/>
+            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">Page Settings</div>
             <div class="flex flex-col p-2 bg-gray-600">
                 <label>Name</label>
                 <input class="dark w-full" type="text" v-model="component.name"/> 
@@ -59,21 +59,31 @@
 
 
         <div class="border mt-2 border-gray-700 rounded-lg">
-            <chip content="SEO" css="rounded-tl-lg rounded-tr-lg bg-gray-900 text-gray-300"/>
+            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">SEO</div>
             <plugin-seo class="bg-gray-600"/>
         </div>
         
         
         <div class="border mt-2 border-gray-700 rounded-lg">
-            <chip content="Analytics" css="rounded-tl-lg rounded-tr-lg bg-gray-900 text-gray-300"/>
+            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">Analytics <span class="text-purple-400">[Advanced]</span></div>
             <div class="flex flex-col p-2 bg-gray-600">
                 <input type="text" class="dark w-full" placeholder="Google Analytics" v-model="project.analytics"/>
             </div>
         </div>
         
-        <div class="flex flex-row items-center justify-around pt-4">
-            <button class="lg rounded bg-purple-600" @click="savePage()">Publish</button>
-            <button v-if="preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
+        <div class="flex flex-col pt-4">
+            
+            <div class="flex flex-col" v-if="!project.local">
+                <div v-if="!project.local">You are publishing online!</div>
+                <!-- <div class="flex">
+                    <input type="checkbox" v-if="!project.local" v-model="deploy"> Deploy
+                </div> -->
+            </div>
+            <div class="flex items-center justify-around">
+                <button class="lg rounded bg-purple-600" @click="savePage()">Publish</button>
+                <button v-if="preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
+                <button v-if="!project.local" class="lg rounded bg-red-600" @click="runDeploy=!runDeploy">Deploy</button>
+            </div>
         </div>
         <!--<div class="grid grid-cols-2 gap-2 p-1">
             <label class="font-bold">Mobile breakpoint </label>
@@ -90,6 +100,24 @@
                 <i class="iconify text-gray-300" data-icon="grommet-icons:console"></i> <span class="text-gray-300">whoobe-generator $ </span> {{ output }}
            </div>
         </div>
+        <modal 
+            v-if="runDeploy"
+            size="md"
+            position="modal"
+            @close="runDeploy=!runDeploy"
+            buttons="none">
+            <div slot="title">Deploy</div>
+            <div slot="content" class="p-2 flex flex-col">
+                
+                <label>Webhook</label>
+                <input type="text" v-model="deploy_hook" placeholder="deploy webhook URL" class="dark w-full">
+                <blockquote class="bg-purple-600">
+                    Deploy is executed only thru webhooks. If your whoobe hosting provider doesn't support deployments thru webhooks you need to run the deployment manually.<br>
+                    <span class="font-bold">With deploy you will update the online version with the current page.</span>
+                </blockquote>
+                <button class="m-auto lg bg-red-600" @click="deploySite()">Confirm</button>
+            </div>
+        </modal>
     </div>
 </template>
 
@@ -109,6 +137,9 @@ export default {
         fontFamily:'',
         component: null,
         project:{},
+        runDeploy: false,
+        deploy: false,
+        deploy_hook: '',
         output:'',
         errors:'',
         preview: false,
@@ -125,6 +156,15 @@ export default {
             return this.$mapState().datastore
         }
     },
+    watch:{
+        output(message){
+            console.log ( message.includes('Saved') )
+            if ( message && !this.project.local && message.includes('Saved') ){
+                this.output = ''
+                this.$message ( 'Current page has been published')
+            }
+        }
+    },
     methods:{
         loadProject(){
             //this.$loading(true)
@@ -133,9 +173,14 @@ export default {
             let vm = this
             this.$api.service ( 'resources' ).create ( { project : this.project } ).then ( res => {
                 vm.project.purge = res
+                // let component = vm.editor.component
+                // component.project = vm.project
                 
-                vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:false}).then ( res =>{
+                vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( res =>{
                     console.log ( res.data )
+                    // vm.$api.service('components').patch(component._id,component).then ( res => {
+                    //     console.log ( 'Component with project' , res )
+                    // })
                 })
                 //this.$loading(false)
             })
@@ -194,6 +239,23 @@ export default {
                 console.log ( err )
             })
         },
+        deploySite(){
+            //fetch ( "https://api.vercel.com/v1/integrations/deploy/prj_UrXSK65cstEKML6ExXwtbbYVmQ9N/9qhcTh7amC" , { method: 'POST'} )
+            if ( this.deploy_hook ){
+                fetch ( this.deploy_hook , { method: 'POST'} )
+                    .then ( result => result.json() )
+                    .then ( deployed => { 
+                        this.output = ''
+                        console.log ( deployed )
+                        this.$message ( 'Deployed' )
+                        return
+                    })
+                    .catch ( error => {
+                        this.$message ( 'Ooooops! Something went wrong. Check your console for errors' )
+                        return
+                    })
+            }
+        }
     },
     mounted(){
         this.component = this.$mapState().editor.component
@@ -202,16 +264,25 @@ export default {
         this.project.uploads = []
         this.project.fonts = []
         this.project.purge = ''
+        this.project.local = true
+        if  ( !JSON.parse(window.localStorage.getItem('whoobe-local'))  ){
+            this.project.local = false
+        }
         this.project.analytics = ''
         this.$api.service('generate').on ( 'created' , (data) => {
             
             if ( data.data ){
-                if ( data.data.includes('done') ){
+                if ( this.project.local && data.data.includes('done') ){
                     this.output = ''
                     this.$message ( 'Yahiiii project published!' )
                     this.preview = true
                     return
                 } 
+                // if ( !this.project.local && data.data.includes ( 'Saved' ) ){
+                //     this.output = ''
+                //     this.$message ( 'Published on remote Whoobe. Ready to deploy')
+                //     return
+                // }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 !data.data.includes('undefined') ? this.output = data.data.normalize().replace('undefined','') : null
                 //term.write ( data.data + '\n')
@@ -223,6 +294,7 @@ export default {
             // document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
             // document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
         })
-    }
+    },
+
 }
 </script>

@@ -1,7 +1,6 @@
 <template>
     
     <div class="z-highest absolute top-0 right-0 -ml-4 p-1 pl-2 -mt-6  h-6 w-auto bg-gray-800 text-gray-300 text-xs rounded-2xl items-center flex flex-row justify-around border border-gray-700">
-        
         <i class="material-icons text-lime-400 hover:text-red-500  text-base mr-2" v-if="doc.icon">{{doc.icon}}</i>
         
         <i class="material-icons text-lime-400 hover:text-red-500 text-base mr-2" v-if="!doc.icon">select_all</i>

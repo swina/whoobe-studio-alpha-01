@@ -9,6 +9,7 @@ const editor = {
         level: null,
         parent: null,
         autosave: null,
+        export: 'single',
         preview: null,
         fonts: process.env.VUE_APP_FONT_FAMILIES.split('|'),
         save: true,
@@ -44,6 +45,9 @@ const editor = {
         preview ( state , preview ){
             state.preview = preview
         },
+        export ( state , payload ){
+            state.export = payload
+        },
         save ( state , save ){
             state.save = save
         }
@@ -78,6 +82,9 @@ const editor = {
         },
         setPreview ( { commit } , preview ){
             commit ( 'preview' , preview )
+        },
+        export ( { commit } , payload ){
+            commit ( 'export' , payload )
         },
         save( { commit } , save ){
             commit ( 'save' , save )

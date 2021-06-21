@@ -1,8 +1,8 @@
 <template>
-    <span>
+    <!-- <span> -->
         <component  v-if="el && !el.hasOwnProperty('plugin')" :ref="el.id" :is="component" :style="el.style" :el="el" :child="child" :attrib="$attrs" :data="getAttributes()" :id="el.id"/> 
-        <plugin-wrapper v-if="el && el.hasOwnProperty('plugin')" :block="el"  :plugin="el.plugin" :component="el.plugin"/>
-    </span>
+        <!-- <plugin-wrapper v-if="el && el.hasOwnProperty('plugin')" :block="el"  :plugin="el.plugin" :component="el.plugin"/> -->
+    <!-- </span> -->
 </template>
 
 <script>

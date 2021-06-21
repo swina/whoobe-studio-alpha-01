@@ -138,7 +138,7 @@ input.nodark , select.nodark , textarea.nodark , nodark {
 }
 
 select {
-  @apply text-base;
+  @apply text-sm;
 }
 
 input[type=range] {

@@ -7,8 +7,8 @@
         v-if="doc"
         :key="randomID"
         :class="classe(doc.css)" :style="doc.style + ' ' +  background(doc)" :ref="doc.id" >
-        <div videobg v-if="doc.image && (doc.image.ext==='.mp4' || doc.image.ext==='webm' || doc.image.url.indexOf('.mp4') > -1)" :class="'fixed z-0 ' + doc.css.css">  
-            <video playsinline :poster="doc.image.previewUrl" class="object-cover h-full w-full" autoplay loop>
+        <div videobg v-if="doc.image && (doc.image.ext==='.mp4' || doc.image.ext==='webm' || doc.image.url.indexOf('.mp4') > -1)" :class="'absolute inset-0 ' ">  
+            <video playsinline :poster="doc.image.previewUrl" class="object-cover object-center h-full w-full" autoplay loop>
                 <source :src="doc.image.url"/>
             </video>
         </div>
@@ -17,7 +17,7 @@
         <template v-for="(block,b) in doc.blocks">
             <moka-element
                 @click="elementAction"
-                v-if="block && !block.hasOwnProperty('blocks') && block.type!='slides' && !block.hasOwnProperty('items')"
+                v-if="block && !block.hasOwnProperty('blocks') && block.type!='slides' && !block.hasOwnProperty('items') && !block.hasOwnProperty('plugin')"
                 :key="block.id"
                 :data="$attrs.data||''"
                 :dataset="doc.hasOwnProperty('data')?doc.data:null"
@@ -94,6 +94,7 @@
                     :coords="b"
                     :editor="true" 
                     />
+            <plugin-wrapper v-if="block && block.hasOwnProperty('plugin')" :block="block"  :plugin="block.plugin" :component="block.plugin"/>
             <!-- <plugin-wrapper 
                 :key="block.id"
                 v-if="block && block.type==='plugin'" 

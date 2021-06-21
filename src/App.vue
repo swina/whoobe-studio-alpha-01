@@ -16,11 +16,19 @@
         {{ message }}
         </div>
     </transition>
+    <!-- <transition name="fade">
+      <div v-if="!user.login && !logged">
+        <div class="z-modal fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-75">
+        </div>
+          <whoobe-login class="z-modal"/>
+      </div>
+    </transition> -->
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+//import Modal from '../../whoobe-generator-alpha/components/modal.vue'
 //import VuexPersistence from 'vuex-persist'
 //const vuexLocal = new VuexPersistence({
 //  storage: window.localStorage
@@ -29,9 +37,11 @@ import { mapState } from 'vuex'
 export default {
   name: 'App',
   components: {
-    'actions'   : () => import ( '@/components/common/actions' ),
-    'whoobe-intro' : () => import ( '@/components/desktop/desktop.intro.vue' )
+    'whoobe-login'    : () => import ( '@/views/Login.vue' ),
+    'actions'         : () => import ( '@/components/common/actions' ),
+    'whoobe-intro'    : () => import ( '@/components/desktop/desktop.intro.vue' )
   },
+ 
   data:()=>({ 
     message: '',
     firstRun: false,
@@ -46,6 +56,7 @@ export default {
       this.setMessage ( msg )
     },
     '$store.state.user.login':function(login){
+      this.logged = login
       if ( !login ) this.$router.push ( 'login' )
     },
     message(v){
@@ -69,6 +80,9 @@ export default {
         console.log ( 'Authenticated !')
       }).catch ( error => {
         this.$router.push ( '/login' )
+    })
+    this.$api.service ( 'collections' ).find ( { query: { collection: 'help' } } ).then ( res => {
+      this.$store.dispatch ( 'dataset' , { table: 'help' , data: res.data[0] }) 
     })
   }
 }

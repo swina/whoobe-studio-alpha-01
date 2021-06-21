@@ -24,9 +24,15 @@ License : MIT
 ### Issues 
 
 Use the Github repo to open an issue https://github.com/swina/whoobe-studio-alpha-01 -->
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-5 text-purple-500 grid-cols-1 pl-10 gap-10">
-        <h3 class="col-span-5">Whoobe</h3>
+<div class="text-purple-500 pl-20 pt-20">
+    <h3 class="col-span-5 flex items-center">Whoobe <button class="ml-2 text-sm bg-purple-500 rounded" content="Show Intro" @click="viewIntro()">Show Intro</button></h3>
+    <div class="my-20">
+        <button>START HERE</button>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-5 grid-cols-1 gap-10">
+        
+        
+        
          <div class="text-gray-400">
                 <h3>Info</h3>
                 <p>Version: alpha-version <br>May 2021</p>
@@ -53,7 +59,17 @@ Use the Github repo to open an issue https://github.com/swina/whoobe-studio-alph
                 <p>Help to improve Whoobe. Any time you find a bug or an error please open an issue on <a href="https://github.com/swina/whoobe-studio-alpha" target="_blank">Github repository</a></p>
             </div>
     </div>
-
-
+    </div>
 </template>
+
+<script>
+export default {
+    name: 'WhoobeInfo',
+    methods:{
+        viewIntro(){
+            this.$store.dispatch('intro',1)
+        }
+    }
+}
+</script>
 

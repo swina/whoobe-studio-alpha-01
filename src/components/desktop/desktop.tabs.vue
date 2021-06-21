@@ -3,8 +3,8 @@
         <div class="fixed top-0 left-0 h-10 w-10 text-center bg-purple-800 text-purple-300 flex items-center justify-center hover:text-white" @click="$emit('menu')" title="Menu">
             <icon name="menu"/>
         </div>
-        <div class="h-10 w-10 text-center text-lime-300 flex items-center justify-center border-r border-gray-900 hover:bg-indigo-600" @click="$action('wizard')" title="Wizard">
-            <icon-extra class="text-xl text-lime-500 hover:text-white" icon="whh:wizard"/>
+        <div class="h-10 w-10 text-center text-lime-300 flex items-center justify-center border-r border-gray-900 hover:bg-indigo-600" @click="$action('mode_settings')" :title="statusTitle">
+            <icon-extra class="text-xl text-lime-500 hover:text-white" :icon="statusIcon"/>
         </div>
         <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-10 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,$store.dispatch('mode',desktop.tabs[index].mode),$action()">
             <div class="flex-row-center mr-2"><icon :name="tab.icon" class="mr-2"/><span class="capitalize">{{ tab.name }}</span></div>
@@ -17,10 +17,23 @@
 import { mapState } from 'vuex'
 export default {
     name: 'DesktopTabs',
+    data:()=>({
+        statusTitle:''
+    }),
     computed: {
         ...mapState( ['desktop','editor'] ),
        displayMode(){
            return this.desktop.mode === 'editor' && this.editor.action != 'in_editor_preview' ? 'w-5/6' : 'w-full'
+       },
+       statusIcon(){
+           if ( window.localStorage.getItem('whoobe-cms').includes('localhost') ){
+               window.localStorage.setItem('whoobe-local',true)
+               this.statusTitle = 'Local Development'
+               return 'bx:bxl-dev-to'
+           }
+           this.statusTitle = 'Cloud Development'
+           window.localStorage.setItem('whoobe-local',false)
+           return 'mdi:cloud'
        }
     },
     methods: {

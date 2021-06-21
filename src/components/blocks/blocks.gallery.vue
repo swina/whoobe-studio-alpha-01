@@ -152,8 +152,15 @@ export default {
         this.$loading(true)
         this.$api.service ( 'components' ).remove ( this.current._id ).then ( res => {
           console.log( 'removed => ' , res)
+          this.$emit('removed')
           this.$loading ( false )
         })
+      }
+    },
+    watch:{
+      objects(v){
+        this.allObjects = v
+        this.blocks = v
       }
     },
     mounted(){

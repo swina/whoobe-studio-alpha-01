@@ -29,24 +29,28 @@ export default {
     },
     methods:{
         fetchImage (url){
-            var imgURL = new Image();
-            imgURL.src = this.imageUrl;
-            let name = this.imageUrl.split(".");
+            if ( !url.includes('mp4') && !url.includes('webm') ){
+                var imgURL = new Image();
+                imgURL.src = this.imageUrl;
+                let name = this.imageUrl.split(".");
 
-            let ext = name[name.length - 1];
-            name = "external";
-            let width, height;
-            imgURL.onload = () => {
-                this.image = {
-                    url: this.imageUrl,
-                    size: null,
-                    width: imgURL.width,
-                    height: imgURL.height,
-                    ext: name,
-                    name: name,
-                    caption: "",
-                    alternativeText: "",
-                };
+                let ext = name[name.length - 1];
+                name = "external";
+                let width, height;
+                imgURL.onload = () => {
+                    this.image = {
+                        url: this.imageUrl,
+                        size: null,
+                        width: imgURL.width,
+                        height: imgURL.height,
+                        ext: name,
+                        name: name,
+                        caption: "",
+                        alternativeText: "",
+                    };
+                }
+            } else {
+                this.image = { url: this.imageUrl , name: 'Video URL' }
             }
         }
     }

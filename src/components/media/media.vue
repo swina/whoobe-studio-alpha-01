@@ -120,12 +120,20 @@ export default {
             }
             
             if ( this.$mode() === 'block' ){
+                //console.log ( this.$mapState().editor.current.type , image )
                 this.$mapState().editor.current.image = image
                 this.$action()
-                //return
+                //this.$mapState().editor.current.image = image
+                return
             } 
             if ( this.$mode() != 'media' ){
+                if ( this.$mapState().editor.current.type === 'image' ){
+                    this.$mapState().editor.current.image = image
+                }
                 this.$mapState().editor.current.image = image
+                if ( this.$mapState().editor.current.type === 'video' ){
+                    this.$mapState().editor.current.source = image
+                }
                 //window.localStorage.setItem('whoobe-image', JSON.stringify(image) )
                 this.$store.dispatch('setCurrent',this.$mapState().editor.current)
                 this.$action()
