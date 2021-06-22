@@ -176,8 +176,8 @@ export default {
                 // let component = vm.editor.component
                 // component.project = vm.project
                 
-                vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( res =>{
-                    console.log ( res.data )
+                vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
+                    console.log ( response )
                     // vm.$api.service('components').patch(component._id,component).then ( res => {
                     //     console.log ( 'Component with project' , res )
                     // })
@@ -248,6 +248,7 @@ export default {
                         this.output = ''
                         console.log ( deployed )
                         this.$message ( 'Deployed' )
+                        this.$action()
                         return
                     })
                     .catch ( error => {
@@ -285,6 +286,7 @@ export default {
                 // }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 !data.data.includes('undefined') ? this.output = data.data.normalize().replace('undefined','') : null
+                console.log ( data.data.normalize() )
                 //term.write ( data.data + '\n')
             } 
             if ( data.error ){

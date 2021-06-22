@@ -16,8 +16,8 @@ export default {
     name: 'LoginView',
     data:()=>({
         userLogin: {
-            email: '',
-            password: ''
+            email: 'admin',
+            password: 'password'
         }
     }),
     methods:{

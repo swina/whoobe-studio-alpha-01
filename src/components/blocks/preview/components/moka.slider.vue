@@ -17,7 +17,7 @@
               <i class="material-icons nuxpresso-icon-circle" @click="$emit('close')">close</i>
             </div> -->
             
-            <div v-if="doc.controls.dots.enable" class="md:absolute bottom-0 left-0 text-center flex-row justify-center items-center p-1 w-full">
+            <div v-if="doc.controls.dots.enable" class="absolute bottom-0 left-0 text-center flex-row justify-center items-center p-1 w-full">
               <i :class="'material-icons mr-2 ' + dotActive(n)" :key="'dot-' + doc.id + n" v-for="n in doc.blocks.length" @click="goTo(n-1)">fiber_manual_record</i>
             </div>
 
