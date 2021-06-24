@@ -3,7 +3,9 @@
         :key="key"
         :action="action"
         :id="getID" 
-        name="mc-embedded-subscribe-form"
+        :name="formName"
+        :form-name="isNetlify?form.name:''"
+        :data-netlify="isNetlify"
         @submit="submitPrevent($event)">
         <template v-for="block in form.blocks">
             <block-element
@@ -39,6 +41,15 @@ export default {
         },
         getID(){
             return this.form.hasOwnProperty('mailchimp') ? 'mc-embedded-subscribe-form' : this.form.id
+        },
+        formName(){
+            return this.form.hasOwnProperty('mailchimp') ?
+                'mc-embedded-subscribe-form' :
+                        this.form.name 
+        },
+        isNetlify(){
+            return this.form.hasOwnProperty('netlify') && this.form.netlify ?
+                true : false
         }
     },
     methods:{
@@ -50,8 +61,9 @@ export default {
                 let data = new FormData(form)
                 this.sendForm(data)
             } else {
-                let form = document.querySelector('#' + this.form.id )
-                let data = new FormData(form)
+                let form = document.getElementById(this.form.id )
+                console.log ( e )
+                let data = new FormData( e.target )
                 this.sendForm(data)
             }
         },
@@ -63,9 +75,6 @@ export default {
                     body : data ,
                     mode: 'no-cors'
                 }).then ( res => {
-                    if (!res.ok) {
-                       throw Error(response.statusText);
-                    }
                     this.$message ( this.form.success )
                     this.key = this.$randomID()
                 }).catch ( error => {

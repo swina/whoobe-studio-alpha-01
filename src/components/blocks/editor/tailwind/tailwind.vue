@@ -198,7 +198,30 @@
             </div>
         </div>
         </transition>
+        <!-- Image -->
+        <div v-if="!$attrs.mode && editor.current && editor.current.hasOwnProperty('image') && editor.current.image" key="image" class="flex flex-col border-gray-900 px-2" :class="group === 'image' ? 'bg-orange-400 text-white' : ''" @click="toggle('image')">
+            <span class="text-xs">Image</span>
+            <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
+        </div>
+        <transition name="slideright">
+            <div v-if="!$attrs.mode && group==='image'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
+                <div class="bg-orange-400 text-black  flex flex-row p-1 capitalize" @click="group=''">
+                    <i class="material-icons absolute right-0">chevron_right</i>Image
+                </div>
+                <div>
+                <image-placeholder :image="editor.current.image" @noimage="editor.current.image=null" @media="$action('media')" class="text-center"/>
+                <!--<img :src="$imageURL(editor.current.image)" class="h-32 object-contain"/>-->
+                <!-- <div v-if="editor.current.image.width">{{ editor.current.image.width}} x {{ editor.current.image.height }} {{ parseInt(editor.current.image.size/1000) }}KB</div> -->
+                <div class="flex flex-col mt-2 justify-center items-center" v-if="editor.current.image.formats">
+                <select class="dark" v-model="imageSize">
+                    <option v-for="size in Object.keys(editor.current.image.formats)" :value="size">{{ editor.current.image.formats[size].width }} x {{ editor.current.image.formats[size].height }}</option>
 
+                </select>
+                </div>
+                </div>
+            </div>
+        </transition>
+        
     </div>
 </template>
 
@@ -225,6 +248,7 @@ import twgroups from '@/scripts/tw.groups'
 export default {
     name: 'WhoobeTailwind',
     components: {
+
         'block-form-settings' : () => import ( '@/components/blocks/actions/block.form.settings.vue' ),
         'block-iconify'       : () => import ( '@/components/blocks/actions/block.iconify.vue' ),
         MokaBgcolor,
@@ -244,13 +268,15 @@ export default {
         MokaHeights,
         MokaOptions,
         MokaRange,
+        'image-placeholder' : () => import ( '@/components/blocks/editor/components/block.image.placeholder.vue' )
     },
     data:()=>({
         cssTw:{},
         groups: null,
         group: '',
         allCss: '',
-        allStyle: ''
+        allStyle: '',
+        imageSize: ''
     }),
     props: [ 'css' ],
     computed: {
@@ -282,6 +308,9 @@ export default {
             },
             deep:true
         },
+        imageSize(size){
+            this.setImageSize(size)
+        }
     },
     mounted(){
         this.groups = twgroups
@@ -333,6 +362,12 @@ export default {
             if ( e.keyCode === 13 && e.target.value.length ){
                 this.editor.current.options.push ( e.target.value )
             }
+        },
+        setImageSize(size){
+            this.editor.current.image.url = this.editor.current.image.formats[size].url
+            this.editor.current.image.width = this.editor.current.image.formats[size].width
+            this.editor.current.image.height = this.editor.current.image.formats[size].height
+            this.editor.current.image.size = this.editor.current.image.formats[size].size
         }
     }
 }

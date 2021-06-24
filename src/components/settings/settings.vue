@@ -157,6 +157,12 @@ export default {
             return this.mokacolors()
         }
     },
+    watch: {
+        whoobeLocal(v){
+            v ? this.whoobeCMS = 'http://localhost:3030/' : this.whoobeCMS = ''
+
+        }
+    },
     mounted(){
         
         if ( window.localStorage.getItem('whoobe-cms') ){
@@ -180,11 +186,14 @@ export default {
     },
     methods:{
         setWhoobeCMS(){
+            this.$action()
             window.localStorage.setItem ( 'whoobe-cms' , this.whoobeCMS )
             window.localStorage.setItem ( 'whoobe-local' , this.whoobeLocal )
-            //alert ( 'Changed Whoobe Server')
-            //window.location.reload()
-            //this.$router.push ( '/' )
+            window.localStorage.removeItem ( 'feathers-jwt' )
+            this.$store.dispatch('login',false)
+            alert ( 'Changed Whoobe Server')
+            window.location.reload()
+            this.$router.push ( '/' )
         
         },
         setLicense(){

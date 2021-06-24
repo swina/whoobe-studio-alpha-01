@@ -74,6 +74,7 @@ export default {
                     url = ( window.localStorage.getItem('whoobe-cms') || process.env.VUE_APP_API_URL ) + image.substring(1) 
             }
             if ( mode === 'bg' ) return 'background-image:url ( ' + url + ');'
+            console.log ( url )
             return url
 
             

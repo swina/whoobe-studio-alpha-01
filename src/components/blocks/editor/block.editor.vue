@@ -588,28 +588,28 @@ export default {
             this.$store.dispatch('selected',vm.doc.id)
         }
         this.$store.dispatch('setComponent',this.$attrs.blocks)
-        this.timer = window.setInterval (()=>{
+        // this.timer = window.setInterval (()=>{
             
-            let blocks = {
-                blocks: vm.doc,
-                lastUpdate: new Date()
-            }
-            let data = {
-                autosave:  blocks
-            }
-            this.$api.service ( 'components' ).patch ( vm.component._id , data ).then ( result =>{
-                console.log ( 'Autosaved =>'  , result.data )
-            }).catch ( error => {
-                this.$message ( 'Autosave error please check your logs')
-            })
-            vm.$store.dispatch ( 'autoSave' , blocks )
-            window.localStorage.setItem('whoobe-autosave',JSON.stringify(blocks))
+        //     let blocks = {
+        //         blocks: vm.doc,
+        //         lastUpdate: new Date()
+        //     }
+        //     let data = {
+        //         autosave:  blocks
+        //     }
+        //     this.$api.service ( 'components' ).patch ( vm.component._id , data ).then ( result =>{
+        //         console.log ( 'Autosaved =>'  , result.data )
+        //     }).catch ( error => {
+        //         this.$message ( 'Autosave error please check your logs')
+        //     })
+        //     vm.$store.dispatch ( 'autoSave' , blocks )
+        //     window.localStorage.setItem('whoobe-autosave',JSON.stringify(blocks))
             
-        }, 60000*5 )
+        // }, 60000*5 )
         
     },
     beforeDestroy(){
-        window.clearInterval(this.timer)
+        //window.clearInterval(this.timer)
     }
 }
 </script>

@@ -1,5 +1,7 @@
 <template>
     <div class="flex flex-col p-4 theme-dark text-gray-300">
+        <label>Name</label>
+        <input class="dark w-full" type="text" v-model="editor.current.name"/>
         <label>Action</label>
         <input class="dark w-full" type="text" v-model="editor.current.action"/>
         <label>Success message</label>
@@ -12,6 +14,9 @@
         <input class="dark w-full" type="text" v-model="mailchimpUrl"/>
         <div v-if="mailchimp_email" class="font-bold border border-red-600 p-1">
             {{ mailchimp_email}}
+        </div>
+        <div class="flex flex-row">
+            <input type="checkbox" v-model="editor.current.netlify"/> Netlify Form
         </div>
     </div>
 </template>

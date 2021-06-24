@@ -123,7 +123,7 @@ export default {
             if ( el.element === 'menu' ){
                 return MokaMenu
             }
-            if ( el.tag === 'input' && el.type!='button' && el.element != 'select' ){
+            if ( el.tag === 'input' && el.type!='button' && el.element != 'select' && el.element != 'textarea'){
                 if ( el.type === 'checkbox' ){
                     if ( el.display === 'checkbox')
                         return MokaInput

@@ -9,6 +9,10 @@ import Login from '../views/Login.vue'
 //import Moka from '@/views/Moka.vue'
 //import Logout from '@/views/Logout.vue'
 //import ImageEditor from '@/components/media/editor/whoobe.filerobot'
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+}
 Vue.use(VueRouter)
 
 const routes = [

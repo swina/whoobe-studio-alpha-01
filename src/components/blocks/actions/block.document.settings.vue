@@ -95,11 +95,27 @@
             
         </div>
         -->
-        <div class="z-highest fixed top-0 right-0  h-screen w-screen bottom-0 left-0 bg-black bg-opacity-50" v-if="output">
+        <!-- <div class="z-highest fixed top-0 right-0  h-screen w-screen bottom-0 left-0 bg-black bg-opacity-50" v-if="output">
             <div class="absolute bottom-0 left-0 w-full p-2 pl-10 bg-black text-lime-500 font-mono">
                 <i class="iconify text-gray-300" data-icon="grommet-icons:console"></i> <span class="text-gray-300">whoobe-generator $ </span> {{ output }}
            </div>
-        </div>
+        </div> -->
+
+        <modal
+            v-if="publish"
+            size="lg"
+            position="modal"
+            buttons="none"
+            @close="publish=!publish">
+            <div slot="title">Publish {{ project.name }}</div>
+            <div slot="content" class="p-4">
+                <div class="grid grid-cols-3 gap-10 h-1/2" v-if="output">
+                    <textarea id="generated" v-model="output" style="font-family:monospace" class="text-sm w-full h-full bg-black text-green-500 font-light col-span-2">
+                    </textarea>
+                    <textarea id="generated_errors" v-model="errors" style="font-family:monospace" class="text-base w-full h-full bg-black text-red-400"></textarea>
+                </div>
+            </div>
+        </modal>
         <modal 
             v-if="runDeploy"
             size="md"
@@ -137,6 +153,7 @@ export default {
         fontFamily:'',
         component: null,
         project:{},
+        publish: false,
         runDeploy: false,
         deploy: false,
         deploy_hook: '',
@@ -168,15 +185,15 @@ export default {
     methods:{
         loadProject(){
             //this.$loading(true)
-            
             this.project = this.$projectResources ( this.project )
             let vm = this
             this.$api.service ( 'resources' ).create ( { project : this.project } ).then ( res => {
                 vm.project.purge = res
                 // let component = vm.editor.component
                 // component.project = vm.project
-                
+                vm.publish = true
                 vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
+                    
                     console.log ( response )
                     // vm.$api.service('components').patch(component._id,component).then ( res => {
                     //     console.log ( 'Component with project' , res )
@@ -184,26 +201,7 @@ export default {
                 })
                 //this.$loading(false)
             })
-            // this.$api.service ( 'projects' ).find({query: { single: this.$mapState().editor.component._id }} ).then ( res => {
-            //     console.log ( res )
-            //     if ( !res.data.length ){
-            //         this.project.component = this.$mapState().editor.component
-            //         this.project.name = this.$mapState().editor.component.name
-            //         this.project = this.$projectResources ( this.project )
-            //         this.project.single = this.$mapState().editor.component._id
-            //         this.$api.service ( 'projects' ).create ( this.project ).then ( res => {
-            //             console.log ( 'created project=>' , res )
-            //             this.$store.dispatch('project',this.project)
-            //             this.$action('project_edit')
-            //         })
-            //     } else {
-            //         this.project.component = this.$mapState().editor.component
-            //         this.project.name = this.$mapState().editor.component.name
-            //         this.project = this.$projectResources ( this.project )
-            //         this.$store.dispatch('project',this.project)
-            //         this.$action('project_edit')
-            //     }
-            // }) 
+            
         },
         previewProject(){
              this.$api.service('whoobe/build').find ( { query: { preview: true} } ).then ( res => {
@@ -256,45 +254,54 @@ export default {
                         return
                     })
             }
+        },
+        loadComponent(){
+            this.component = this.$mapState().editor.component
+            this.project.component = this.$mapState().editor.component
+            this.project.name = this.$mapState().editor.component.name
+            this.project.uploads = []
+            this.project.fonts = []
+            this.project.purge = ''
+            this.project.local = true
+            if  ( !JSON.parse(window.localStorage.getItem('whoobe-local'))  ){
+                this.project.local = false
+            }
+            this.project.analytics = ''
         }
     },
     mounted(){
-        this.component = this.$mapState().editor.component
-        this.project.component = this.$mapState().editor.component
-        this.project.name = this.$mapState().editor.component.name
-        this.project.uploads = []
-        this.project.fonts = []
-        this.project.purge = ''
-        this.project.local = true
-        if  ( !JSON.parse(window.localStorage.getItem('whoobe-local'))  ){
-            this.project.local = false
-        }
-        this.project.analytics = ''
+        this.loadComponent()
+        this.$api.service('components').on('patched',(data) => {
+            if ( data._id === this.project.component._id ){ 
+                this.$store.dispatch ( 'setComponent' , data )
+                this.$message ( 'Blocks updated' )
+                this.loadComponent()
+            }
+        })
         this.$api.service('generate').on ( 'created' , (data) => {
             
             if ( data.data ){
-                if ( this.project.local && data.data.includes('done') ){
-                    this.output = ''
-                    this.$message ( 'Yahiiii project published!' )
-                    this.preview = true
-                    return
-                } 
-                // if ( !this.project.local && data.data.includes ( 'Saved' ) ){
+                // if ( this.project.local && data.data.includes('Whoobe Site Generation done!') ){
+                // // //     //this.output = ''
+                //       this.$message ( 'Yahiiii project published!' )
+                // //      this.preview = true
+                // //      return
+                // } 
+                if ( !this.project.local && data.data.includes ( 'Saved' ) ){
                 //     this.output = ''
-                //     this.$message ( 'Published on remote Whoobe. Ready to deploy')
+                    this.$message ( 'Published on remote Whoobe. Ready to deploy')
                 //     return
-                // }
+                }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
-                !data.data.includes('undefined') ? this.output = data.data.normalize().replace('undefined','') : null
-                console.log ( data.data.normalize() )
+                !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 //term.write ( data.data + '\n')
             } 
             if ( data.error ){
-                //this.errors += data.error.normalize()
-                this.output = 'ERROR! ' + data.error.normalize() 
+                this.errors += data.error.normalize()
+                // this.output = 'ERROR! ' + data.error.normalize() 
             }
-            // document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
-            // document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
+            document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
+            document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
         })
     },
 

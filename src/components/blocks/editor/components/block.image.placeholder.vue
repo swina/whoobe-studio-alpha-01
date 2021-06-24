@@ -7,7 +7,8 @@
             <i class="material-icons text-5xl">file_present</i>
         </div>
         <div v-if="$attrs.image && $attrs.image.name && $attrs.image.size" class="w-full text-xs">
-            {{ $attrs.image.name}} <span v-if="$attrs.image.size">{{ Math.round(parseFloat($attrs.image.size),2) }} Kb</span>
+            <!-- {{ $attrs.image.name}} <br>-->
+            <span v-if="$attrs.image.size">{{ $attrs.image.width }}x{{$attrs.image.height}} - {{ Math.round(parseFloat($attrs.image.size/1000),2) }} Kb</span>
         </div>
         <button v-if="!$attrs.image" @click="$emit('media')">Select Media</button>
         <div v-if="$attrs.image && ( $attrs.image.url || editor.current.link )" class="flex flex-row">

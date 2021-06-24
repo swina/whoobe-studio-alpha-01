@@ -119,7 +119,8 @@ import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
 Vue.use ( VueFileAgent )
 
 console.log ( 'Using Whoobe-CMS => ' , window.localStorage.getItem ( 'whoobe-cms') || process.env.VUE_APP_API_URL )
-//import './registerServiceWorker'
+
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 

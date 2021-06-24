@@ -1,8 +1,8 @@
 <template>
-    <div class="px-8 w-full" v-if="$attrs.apikey">
+    <div class="px-8 w-full theme-dark" v-if="$attrs.apikey">
         <div class="flex flex-row items-center w-full mb-4 p-2 relative">
             <img src="https://pixabay.com/static/img/logo.png" class="rounded bg-white p-2 w-32 opacity-50 mr-2"/>
-            <input type="text" v-model="search" placeholder="search" class="mr-2"/>
+            <input type="text" v-model="search" placeholder="search" class="dark mr-2"/>
             <radio :options="options" @option="setOption" classe="text-gray-600"/>
             <!-- <input type="radio" class="text-3xl mx-2" name="type" v-model="type" value="all"> All
             <input type="radio" class="mx-2" name="type" v-model="type" value="photo"> Photo
