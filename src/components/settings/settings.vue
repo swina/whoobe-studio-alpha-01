@@ -187,6 +187,9 @@ export default {
     methods:{
         setWhoobeCMS(){
             this.$action()
+            if ( this.whoobeCMS.slice(-1) != '/' ){
+                this.whoobeCMS = this.whoobeCMS + '/'
+            }
             window.localStorage.setItem ( 'whoobe-cms' , this.whoobeCMS )
             window.localStorage.setItem ( 'whoobe-local' , this.whoobeLocal )
             window.localStorage.removeItem ( 'feathers-jwt' )
