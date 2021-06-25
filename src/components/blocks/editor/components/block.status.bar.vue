@@ -19,13 +19,13 @@
         <!-- <icon name="grid_on" v-if="editor.current && editor.current.tag==='document'" class="text-gray-300 hover:text-indigo-500" @click="$action('grids')" title="Add Grid"/> -->
 
         <!-- ADD ELEMENT -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('block_add_element')">
-            <icon name="add" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" title="Add block"/>
+        <div v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('block_add_element')">
+            <icon name="add"  class="text-gray-300 hover:text-indigo-500" title="Add block"/>
         </div>
 
         <!-- IMPORT A BLOCK -->
-        <div class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('addreusable'),addBlock=true">
-            <icon name="widgets" v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="text-gray-300 hover:text-indigo-500" title="Add reusable block"/>
+        <div  v-if="editor.current && (editor.current.tag==='document' || editor.current.type === 'grid' || editor.current.type === 'flex')" class="h-10 w-10 border-r border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('addreusable'),addBlock=true">
+            <icon name="widgets" class="text-gray-300 hover:text-indigo-500" title="Add reusable block"/>
         </div>
 
         <div class="ml-8 h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="openPreview()">
@@ -76,10 +76,10 @@ title="Save document">save</i> -->
 
             <i class="material-icons moka-icons ml-2" title="Edit CSS classes" @click="$action('edit_css')">edit</i>
             <div class="flex flex-row bg-purple-600 text-white mx-2 h-5 rounded px-1 text-sm items-center" @click="$action('seo')">SEO</div>
-            <div v-if="editor.current.coords" class="absolute right-0 mr-1 text-xs md:text-sm text-gray-600 p-1">
+            <!-- <div v-if="editor.current.coords" class="absolute right-0 mr-1 text-xs md:text-sm text-gray-600 p-1">
                 {{ editor.current.coords.width.toFixed(2) }} x {{ editor.current.coords.height.toFixed(2) }} |
                 x: {{ editor.current.coords.x.toFixed(2) }} y: {{ editor.current.coords.y.toFixed(2) }}
-            </div>
+            </div> -->
             <!--
             <i class="material-icons moka-icons ml-2" title="Customize" @click="$action('customize')">brush</i>
             <i class="material-icons moka-icon-circle ml-2" title="Preview in new window" @click="openPreview()">preview</i>

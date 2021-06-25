@@ -13,7 +13,7 @@
             </div>
         </template>
     </div>
-    <div class="fixed bottom-0 w-1/6 theme-dark h-10 p-2 flex flex-row justify-around items-center text-center">
+    <div class="absolute bottom-0 w-full theme-dark h-10 p-2 flex flex-row justify-around items-center text-center">
         <i class="material-icons mx-2 text-2xl" @click="prev">chevron_left</i>
         <select v-model="filter" class="dark">
             <option v-for="cat in $mapState().datastore.components_categories" :value="cat.filter">{{ cat.filter }}</option>
@@ -22,7 +22,7 @@
         <i class="material-icons mx-2 text-2xl" @click="next">chevron_right</i>
     </div>
     <transition name="fade">
-        <div v-if="search" class="fixed z-2xtop bottom-0 w-1/6 mb-10 theme-dark p-2 grid grid-cols-2 gap-2">
+        <div v-if="search" class="absolute z-2xtop bottom-0 w-full mb-10 theme-dark p-2 grid grid-cols-2 gap-2">
              <button class="w-full capitalize text-xs border" @click="start=0,tags=''">all</button>
             <template v-for="tipo in datastore.dataset.elements[0].types.types">
                 <button class="w-full text-xs capitalize " @click="tags=tipo">{{ tipo }}</button>
@@ -63,7 +63,7 @@ export default {
         //this.tags = this.datastore.dataset.elements[0].types.types
     },
     computed: {
-        ...mapState ( ['moka','datastore'] ),
+        ...mapState ( ['desktop','datastore'] ),
         
         /*categories(){
             let arr = this.$arrayGroup ( this.mokacomponents , 'category' , 'id' )
@@ -109,38 +109,43 @@ export default {
             
         },
         addReusable(obj){
-            let component = {}
-            let json , imported
-            if ( obj.hasOwnProperty ( 'json' ) ){
-                if ( !obj.json.hasOwnProperty('slider' ) ) {
-                    imported = obj.json.blocks[0]
-                    component = this.$clone(imported)
+            if ( this.desktop.tabs[this.desktop.currentTab].mode === 'block' ){
+                let component = {}
+                let json , imported
+                if ( obj.hasOwnProperty ( 'json' ) ){
+                    if ( !obj.json.hasOwnProperty('slider' ) ) {
+                        imported = obj.json.blocks[0]
+                        component = this.$clone(imported)
+                    } else {
+                        imported = obj.json
+                        component = this.$clone(imported)
+                    }            
                 } else {
-                    imported = obj.json
+                    imported = obj
                     component = this.$clone(imported)
-                }            
+                }
+                if ( component ){
+                    component['gsap'] = {
+                        animation: '',
+                        ease: '',
+                        duration: 0,
+                        delay:0
+                    }
+                    component.id = this.$randomID()
+                    //let target = this.$mapState().editor.current
+                    //if ( !target || this.addBlock ){
+                    //    target = this.doc
+                    //}
+                    if ( !this.$attrs.emit ){
+                        this.$mapState().editor.current.blocks.push ( component )
+                        this.$action()
+                    } else {
+                        this.$emit ( 'block' , component )
+                    }
+                }
             } else {
-                imported = obj
-                component = this.$clone(imported)
-            }
-            if ( component ){
-                component['gsap'] = {
-                    animation: '',
-                    ease: '',
-                    duration: 0,
-                    delay:0
-                }
-                component.id = this.$randomID()
-                //let target = this.$mapState().editor.current
-                //if ( !target || this.addBlock ){
-                //    target = this.doc
-                //}
-                if ( !this.$attrs.emit ){
-                    this.$mapState().editor.current.blocks.push ( component )
-                    this.$action()
-                } else {
-                    this.$emit ( 'block' , component )
-                }
+                this.$store.dispatch('setComponent',obj)
+                this.$emit ( 'component' , obj )
             }
         }
     },

@@ -6,7 +6,7 @@
         :name="formName"
         :form-name="isNetlify?form.name:''"
         :data-netlify="isNetlify"
-        @submit="submitPrevent($event)">
+        @submit="submitPrevent($event)" :class="Object.values(form.css).join(' ')">
         <template v-for="block in form.blocks">
             <block-element
                 v-if="block && !block.hasOwnProperty('blocks') && block.type!='slides' && !block.hasOwnProperty('items')"

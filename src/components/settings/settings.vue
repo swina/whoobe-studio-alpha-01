@@ -1,13 +1,10 @@
 <template>
     <div class="p-4">
-        <div class="flex flex-row text-sm cursor-pointer">
+        <!-- <div class="flex flex-row text-sm cursor-pointer">
             <template v-for="t in tabs">
                 <div @click="tab=t.tag" :class="tab===t.tag?'bg-black':''" class="px-2 desktop-tab capitalize border-0">{{t.label}}</div>    
             </template>
-            <!--
-            <div @click="tab='website'" :class="tab==='website'?'py-1 px-2 bg-blue-400 text-white':'py-1 px-2 bg-white text-blue-400 focus:outline-none border'">Website</div>
-            <div @click="tab='moka'" :class="tab==='moka'?'py-1 px-2 bg-blue-400 text-white':'py-1 px-2 bg-white text-blue-400 border'">MOKAStudio</div>-->
-        </div>
+        </div> -->
         <div class="flex flex-col justify-around">
             <!-- <div v-if="tab==='projects'">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Projects</h5>
@@ -45,7 +42,7 @@
             </div> -->
             
             <div v-if="tab==='moka'" class="border border-gray-900">
-                    <h5 class="theme-dark p-1">General</h5>
+                    <!-- <h5 class="theme-dark p-1">General</h5> -->
                         <div class="flex flex-col p-2">
                             <label>Server URL</label>
                             <input type="text" class="dark w-full" v-model="whoobeCMS"/>
@@ -71,13 +68,13 @@
                 </div>
                 
             </div>
-            <div v-if="tab==='elements'" class="border border-t-0">
+            <!-- <div v-if="tab==='elements'" class="border border-t-0">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Blocks Elements</h5>
                 <moka-settings-elements/>
             </div>
             <div v-if="tab==='objects'" class="border border-t-0">
                 <block-object/>
-            </div>
+            </div> -->
         </div>
         <!-- <moka-modal
             v-if="licenseUser.login"
@@ -120,9 +117,9 @@ export default {
             // { label: 'Workspace' , tag: 'projects' },
             { label: 'General' , tag: 'moka' },
             // { label: 'Generator' , tag: 'website' },
-            { label: 'Categories' , tag: 'categories'},
-            { label: 'Blocks Elements' , tag: 'elements'},
-            { label: 'Blocks Object' , tag: 'objects'}
+            //{ label: 'Categories' , tag: 'categories'},
+            //{ label: 'Blocks Elements' , tag: 'elements'},
+            //{ label: 'Blocks Object' , tag: 'objects'}
         ],
         tab: 'moka',
         types: null,

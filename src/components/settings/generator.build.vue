@@ -1,103 +1,40 @@
 <template>
-    <div class="p-2 theme-dark rounded text-xs" v-if="component">
-        <div class="border mt-2 border-gray-700 rounded-lg">
-            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">Page Settings</div>
-            <div class="flex flex-col p-2 bg-gray-600">
-                <label>Name</label>
-                <input class="dark w-full" type="text" v-model="component.name"/> 
-                <label>Description</label>
-                <textarea class="dark w-full" v-model="component.description"></textarea>
-
-                <label class="">Category</label>
-                <select class="dark w-full" v-model="component.category">
-                    <option :key="category" v-for="category in $mapState().datastore.dataset.setup[0].categories.components">{{ category }}</option>
-                </select>
-                
-                <label class="">Type <i class="material-icons" @click="addType=!addType">add</i></label>
-                <input class="dark w-full" v-if="addType" v-model="newType" @change="saveNewType"/>
-                
-                <select class="dark w-full" v-model="component.tags">
-                    <option value=""></option>
-                    <option :key="tipo" v-for="tipo in datastore.dataset.setup[0].types.components" :value="tipo">{{ tipo }}</option>
-                </select>
-
-                <label class="">Font</label>
-                <select class="dark w-full" v-model="editor.component.json.fontFamily">
-                    <option value="">default</option>
-                    <option value="Arial">sans</option>
-                    <option value="serif">serif</option>
-                    <option v-for="font in editor.fonts" :value="font.replace('+',' ')">{{font.replace('+',' ')}}</option>
-                    
-                </select>
+    <div class="p-2 grid grid-cols-2 gap-2 theme-dark text-xs" v-if="component">
+        <div class="">
+            <div class="bg-gray-900 px-1">SEO</div>
+            <plugin-seo class=""/>
+            
+            <div class="bg-gray-900 px-1">Target Folder</div>
+            <div class="flex flex-col p-2">
+                <input type="text" class="w-full dark" placeholder="./dist" v-model="project.target"/>
+            </div>
+            <div class="px-2">
+            <small class="text-gray-600">Folder where the generated files will be created. Has to be an absolute path</small>
             </div>
         </div>
-        
-        <div class="bg-gray-300 w-full cursor-pointer my-1 p-1 font-bold" @click="templateSettings=!templateSettings" v-if="component.category === 'loop'">Loop settings <i class="material-icons">expand_more</i></div>
-        <div class="flex flex-col text-sm bg-white p-1" v-if="templateSettings">
-
-            <label class="font-bold">Default template</label>
-            <div class="text-xs text-gray-600"><input type="checkbox" v-model="component.default"/> (apply to articles with no template)</div>
-        
-            <div class="my-1">
-                <input type="checkbox" v-model="component.loop"/>
-                <span class="font-bold">Loop </span>
-            </div>
-            <div class="flex flex-col" v-if="component.loop">
-                <select class="w-full" v-model="component.loop_type">
-                    <option value="">all</option>
-                    <option value="articles">articles</option>
-                    <option :key="opt.slug" v-for="opt in moka.categories" :value="opt.slug">articles/category/{{opt.name}}</option>
-                </select>
-                <div class="my-1">
-                    <input type="checkbox" v-model="component.loop_pagination"/>
-                    <label class="font-bold">Pagination</label> 
-                </div>
-                <div>Articles per page</div>
-                <input class="w-full" type="number" min="1" max="100" v-model="component.loop_limit"/>
-            </div>
-        </div>
-
-
-        <!-- <div class="border mt-2 border-gray-700 rounded-lg">
-            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">SEO</div>
-            <plugin-seo class="bg-gray-600"/>
-        </div>
-        
-        
-        <div class="border mt-2 border-gray-700 rounded-lg">
-            <div class="rounded-tr-lg rounded-tl-lg bg-gray-900 px-1">Analytics <span class="text-purple-400">[Advanced]</span></div>
-            <div class="flex flex-col p-2 bg-gray-600">
+        <div>
+            <div class="bg-gray-900 px-1">Analytics <span class="text-purple-400">[Advanced]</span></div>
+            <div class="flex flex-col p-2">
+                <label>GA</label>
                 <input type="text" class="dark w-full" placeholder="Google Analytics" v-model="project.analytics"/>
             </div>
         </div>
-        
+       
         <div class="flex flex-col pt-4">
             
             <div class="flex flex-col" v-if="!project.local">
                 <div v-if="!project.local">You are publishing online!</div>
-                
+                <!-- <div class="flex">
+                    <input type="checkbox" v-if="!project.local" v-model="deploy"> Deploy
+                </div> -->
             </div>
             <div class="flex items-center justify-around">
                 <button class="lg rounded bg-purple-600" @click="savePage()">Publish</button>
                 <button v-if="preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
                 <button v-if="!project.local" class="lg rounded bg-red-600" @click="runDeploy=!runDeploy">Deploy</button>
             </div>
-        </div> -->
-        <!--<div class="grid grid-cols-2 gap-2 p-1">
-            <label class="font-bold">Mobile breakpoint </label>
-            <div class="flex flex-row cursor-pointer items-center" title="Set mobile responsive breakpoint">
-                <i :class="'material-icons moka-icons text-sm p-1 mr-2 ' + mobile('md')" @click="breakpoint='md'">phone_iphone</i>
-                <i :class="'material-icons moka-icons text-sm p-1 mr-2 ' + mobile('lg')" @click="breakpoint='lg'">tablet</i>
-                <i :class="'material-icons moka-icons text-sm p-1 mr-2 ' + mobile('xl')" @click="breakpoint='xl'">laptop_mac</i>
-            </div>
-            
         </div>
-        -->
-        <!-- <div class="z-highest fixed top-0 right-0  h-screen w-screen bottom-0 left-0 bg-black bg-opacity-50" v-if="output">
-            <div class="absolute bottom-0 left-0 w-full p-2 pl-10 bg-black text-lime-500 font-mono">
-                <i class="iconify text-gray-300" data-icon="grommet-icons:console"></i> <span class="text-gray-300">whoobe-generator $ </span> {{ output }}
-           </div>
-        </div> -->
+        
 
         <modal
             v-if="publish"
@@ -137,10 +74,8 @@
 
 <script>
 export default {
-    name: 'WhoobeComponentSettings',
+    name: 'WhoobeGeneratorBuild',
     components: {
-        'block-color'   : () => import ( '../editor/tailwind/controls/tailwind.color.vue' ),
-        'block-bgcolor' : () => import ( '../editor/tailwind/controls/tailwind.bgcolor.vue' ),
         'plugin-seo'    : () => import ( '@/components/plugins/seo/index.settings.vue')
     },
     data:()=>({
@@ -190,11 +125,11 @@ export default {
             let vm = this
             this.$api.service ( 'resources' ).create ( { project : this.project } ).then ( res => {
                 vm.project.purge = res
-                // let component = vm.editor.component
-                // component.project = vm.project
+                vm.errors = ''
+                vm.output = ''
                 vm.publish = true
                 vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
-                    
+                    window.localStorage.setItem ( 'whoobe-last-build' , JSON.stringify(vm.project) )
                     console.log ( response )
                     // vm.$api.service('components').patch(component._id,component).then ( res => {
                     //     console.log ( 'Component with project' , res )
@@ -239,7 +174,6 @@ export default {
             })
         },
         deploySite(){
-            //fetch ( "https://api.vercel.com/v1/integrations/deploy/prj_UrXSK65cstEKML6ExXwtbbYVmQ9N/9qhcTh7amC" , { method: 'POST'} )
             if ( this.deploy_hook ){
                 fetch ( this.deploy_hook , { method: 'POST'} )
                     .then ( result => result.json() )
@@ -271,7 +205,13 @@ export default {
         }
     },
     mounted(){
-        this.loadComponent()
+        if ( this.$attrs.project ){
+            this.project = this.$attrs.project
+            this.component = this.$attrs.project.component
+        } else {
+            this.loadComponent()
+        }
+
         this.$api.service('components').on('patched',(data) => {
             if ( data._id === this.project.component._id ){ 
                 this.$store.dispatch ( 'setComponent' , data )
@@ -282,16 +222,9 @@ export default {
         this.$api.service('generate').on ( 'created' , (data) => {
             
             if ( data.data ){
-                // if ( this.project.local && data.data.includes('Whoobe Site Generation done!') ){
-                // // //     //this.output = ''
-                //       this.$message ( 'Yahiiii project published!' )
-                // //      this.preview = true
-                // //      return
-                // } 
+               
                 if ( !this.project.local && data.data.includes ( 'Saved' ) ){
-                //     this.output = ''
                     this.$message ( 'Published on remote Whoobe. Ready to deploy')
-                //     return
                 }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
@@ -299,10 +232,10 @@ export default {
             } 
             if ( data.error ){
                 this.errors += data.error.normalize()
-                // this.output = 'ERROR! ' + data.error.normalize() 
+                
             }
-            document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
-            document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
+            // document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
+            // document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
         })
     },
 

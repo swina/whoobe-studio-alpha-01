@@ -80,6 +80,7 @@ export default {
             
         },
         setTemplate(component){
+            this.$store.dispatch('setComponent',component)
             this.$emit ( 'component' , component )
         }
     }

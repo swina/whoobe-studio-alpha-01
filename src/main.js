@@ -51,6 +51,9 @@ Vue.component('block-element',BlockElement)
 import BlockAttributes from '@/components/blocks/editor/components/block.attributes.vue'
 Vue.component('block-attributes',BlockAttributes)
 
+import BlockReusable from '@/components/blocks/actions/block.reusable.vue'
+Vue.component('block-reusable',BlockReusable)
+
 import PluginWrapper from '@/components/common/plugin.wrapper.vue'
 Vue.component('plugin-wrapper',PluginWrapper)
 

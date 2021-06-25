@@ -563,12 +563,14 @@ export default {
                         project.fonts = [ ...new Set(usedFonts) ]
                         //project.purge = [ ...new Set(purgeClasses) ]
                         project.uploads = [ ...new Set(usedImages) ]
+                        project.plugins = [ ...new Set(plugins) ]
                     })
                     
                 } else {
                     project.fonts = [ ...new Set(usedFonts) ]
                     //project.purge = [ ...new Set(purgeClasses) ]
                     project.uploads = [ ...new Set(usedImages) ]
+                    project.plugins = [ ...new Set(plugins) ]
                 }
                 
                 return project

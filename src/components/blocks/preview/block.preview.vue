@@ -50,8 +50,7 @@
         
         <div whoobe-global-plugins v-if="plugins">
             <template v-for="plugin in plugins">
-                <plugin-wrapper :settings="plugin.editor.settings"  :block="null"  :plugin="plugin" :component="plugin.component"/>
-
+                <plugin-wrapper :settings="plugin.editor.settings" :block="null"  :plugin="plugin" :component="plugin.component"/>
             </template>
         </div>
         

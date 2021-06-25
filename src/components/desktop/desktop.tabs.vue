@@ -6,7 +6,7 @@
         <div class="h-10 w-10 text-center text-lime-300 flex items-center justify-center border-r border-gray-900 hover:bg-indigo-600" @click="$action('mode_settings')" :title="statusTitle">
             <icon-extra class="text-xl text-lime-500 hover:text-white" :icon="statusIcon"/>
         </div>
-        <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-10 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,$store.dispatch('mode',desktop.tabs[index].mode),$action()">
+        <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-10 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,setMode(index),$action()">
             <div class="flex-row-center mr-2"><icon :name="tab.icon" class="mr-2"/><span class="capitalize">{{ tab.name }}</span></div>
             <icon name="close" class="text-xs ml-2 text-transparent hover:text-white" @click="removeTab(index),desktop.currentTab--"/>
         </div>
@@ -44,10 +44,16 @@ export default {
         removeTab ( index ){
             this.desktop.tabs.splice ( index , 1 )
             this.desktop.currentTab = this.desktop.tabs.length - 1
-            this.$store.dispatch ( 'mode' , this.desktop.tabs[this.desktop.currentTab].mode )
+            console.log ( this.desktop.tabs.length )
+            // this.desktop.tabs.length ? 
+            //     this.$store.dispatch ( 'mode' , this.desktop.tabs[this.desktop.currentTab].mode ) : null
             window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
             this.$action()
         },
+        setMode(index){
+            if ( this.desktop.tabs.length && this.desktop.tabs[index] && this.desktop.tabs[index].hasOwnProperty('mode') )
+                this.$store.dispatch('mode',this.desktop.tabs[index].mode)
+        }
         
     },
     

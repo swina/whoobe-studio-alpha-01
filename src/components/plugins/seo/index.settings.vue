@@ -19,6 +19,12 @@ export default {
             description: ''
         }
     }),
+    watch:{
+        '$store.state.editor.component': function(comp){
+            this.$mapState().editor.component.hasOwnProperty('seo') ?
+            this.seo = { title: this.$mapState().editor.component.seo.title , description: this.$mapState().editor.component.seo.description } : { title: '' , description: ''}
+        }
+    },
     methods: {
         saveSEO(){
             let component = this.$mapState().editor.component
@@ -30,7 +36,7 @@ export default {
     },
     mounted(){
         this.$mapState().editor.component.hasOwnProperty('seo') ? 
-            this.seo = { title: this.$mapState().editor.component.seo.title , description: this.$mapState().editor.component.seo.description } : null
+            this.seo = { title: this.$mapState().editor.component.seo.title , description: this.$mapState().editor.component.seo.description } : { title: '' , description: ''}
     }
 }
 </script>
