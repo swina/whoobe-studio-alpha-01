@@ -19,18 +19,25 @@ export default {
                     null :
                         component.blocks_id = component.json.id 
                             : component.blocks_id = component.json.id
-                            
-            this.$saveComponent ( component ).then ( res => {
-                this.$loading(false)
-                this.$message('Block saved')
-                this.$action()
-                console.log ( res )
-            }).catch ( err => {
-                this.$loading(false)
-                this.$message('An error occured. Check you console log.')
-                this.$action()
-                console.log ( err )
-            })
+            let project = {
+                component: component
+            }
+            this.$api.service ( 'resources' ).create ( { project : this.project } )
+                .then ( purge => {
+                    component.purge = purge     
+                    console.log ( component )
+                    this.$saveComponent ( component ).then ( res => {
+                        this.$loading(false)
+                        this.$message('Block saved')
+                        this.$action()
+                        console.log ( res )
+                    }).catch ( err => {
+                        this.$loading(false)
+                        this.$message('An error occured. Check you console log.')
+                        this.$action()
+                        console.log ( err )
+                    })
+            })                
         }
     },
     mounted(){

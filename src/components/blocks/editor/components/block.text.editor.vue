@@ -17,6 +17,7 @@
                 @blur="onEditorBlur($event)"
                 @focus="onEditorFocus($event)"
                 @ready="onEditorReady($event)"
+                @change="onEditorChange($event)"
             /> 
         
         <transition name="fade">
@@ -45,6 +46,7 @@ Quill.register('modules/imageResize', ImageResize)
 
 import typo from '@/scripts/typo.js'
 import { mapState } from 'vuex'
+import jp from 'jsonpath'
 export default {
     name: 'MokaRichTextEditor',
     components:{
@@ -117,7 +119,7 @@ export default {
     computed:{
         ...mapState ( ['editor']),
         hasContent(){
-            this.$attrs.value ? this.content = this.$attrs.value : this.content = this.editor.current.content
+            this.$attrs.article ? this.content = this.$attrs.value : this.content = this.editor.current.content
             return true
         },
         editorOptions(){
@@ -161,6 +163,20 @@ export default {
         onEditorReady(editor) {
             return null
         },
+        onEditorChange(editor){
+            //create images array (uploads) to generate for the building
+            let delta = editor.quill.editor.delta.ops
+            let images = jp.query ( delta , '$..image')
+            let uploads = []
+            images.forEach ( image => {
+                if ( image.includes(':') ){
+                    let img = image.split(':')[2].split('/').splice(1)
+                    uploads.push ( '/' + img.join('/') )
+                }
+            })
+            this.$attrs.article.uploads = uploads
+            return null
+        },
         setEditorImage(img){
                 this.media = false
                 let image = this.$imageURL(img)
@@ -198,7 +214,7 @@ export default {
         Quill.register("modules/ImageExtend", ImageExtend);
         Quill.register("modules/ImageResize", ImageResize);
         Quill.register("modules/imageDrop", ImageDrop);
-
+        
     },
 }
 </script>

@@ -29,13 +29,13 @@
                 </div> -->
             </div>
             <div class="flex items-center justify-around">
-                <button class="lg rounded bg-purple-600" @click="savePage()">Publish</button>
+                <button class="lg rounded bg-purple-600" @click="buildProject()">Publish</button>
                 <button v-if="preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
                 <button v-if="!project.local" class="lg rounded bg-red-600" @click="runDeploy=!runDeploy">Deploy</button>
             </div>
         </div>
         
-
+        <div class="fixed inset-0 bg-black h-screen w-screen bg-opacity-75 z-2xtop" v-if="publish"></div>
         <modal
             v-if="publish"
             size="lg"
@@ -44,7 +44,7 @@
             @close="publish=!publish">
             <div slot="title">Publish {{ project.name }}</div>
             <div slot="content" class="p-4">
-                <div class="grid grid-cols-3 gap-10 h-1/2" v-if="output">
+                <div class="grid grid-cols-3 gap-10 h-1/2">
                     <textarea id="generated" v-model="output" style="font-family:monospace" class="text-sm w-full h-full bg-black text-green-500 font-light col-span-2">
                     </textarea>
                     <textarea id="generated_errors" v-model="errors" style="font-family:monospace" class="text-base w-full h-full bg-black text-red-400"></textarea>
@@ -108,7 +108,6 @@ export default {
     },
     watch:{
         output(message){
-            console.log ( message.includes('Saved') )
             if ( message && !this.project.local && message.includes('Saved') ){
                 this.output = ''
                 this.$message ( 'Current page has been published')
@@ -119,6 +118,20 @@ export default {
         }
     },
     methods:{
+        buildProject(){
+            let project = this.project.component
+            project.local = JSON.parse(window.localStorage.getItem('whoobe-local')) || true
+            this.errors = ''
+            this.output = ''
+            this.publish = true
+            console.log ( project )
+            this.$api.service('whoobe/build').create({project:project,commit:this.deploy}).then ( response =>{
+                    window.localStorage.setItem ( 'whoobe-last-build' , JSON.stringify(this.project) )
+                    
+            }).catch ( error => {
+
+            })
+        },
         loadProject(){
             //this.$loading(true)
             this.project = this.$projectResources ( this.project )
@@ -130,7 +143,6 @@ export default {
                 vm.publish = true
                 vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
                     window.localStorage.setItem ( 'whoobe-last-build' , JSON.stringify(vm.project) )
-                    console.log ( response )
                     // vm.$api.service('components').patch(component._id,component).then ( res => {
                     //     console.log ( 'Component with project' , res )
                     // })
@@ -165,12 +177,10 @@ export default {
                 this.$loading(false)
                 this.output = component.name + ' => Saved !'
                 this.loadProject()
-                console.log ( res )
             }).catch ( err => {
                 this.$loading(false)
                 this.$message('An error occured. Check you console log.')
                 this.$action()
-                console.log ( err )
             })
         },
         deploySite(){
@@ -179,7 +189,6 @@ export default {
                     .then ( result => result.json() )
                     .then ( deployed => { 
                         this.output = ''
-                        console.log ( deployed )
                         this.$message ( 'Deployed' )
                         this.$action()
                         return

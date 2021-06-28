@@ -479,9 +479,9 @@ export default {
             return traverse(obj)
         }
 
-        Vue.prototype.$projectResources = ( project ) => {
+        Vue.prototype.$projectResources = ( project , key = 'component' ) => {
             if ( !project ) return null
-                let json = project.component.json
+                let json = project[key].json
                 let usedFonts = []
                 let usedImages = []
                 let purgeClasses = []
@@ -495,8 +495,8 @@ export default {
                     font.style.includes ( 'font-family') ?
                         usedFonts.push ( font.style.replace('font-family:','').replaceAll('\"','') ) : null
                 })
-                if ( project.component.json.fontFamily ){
-                    usedFonts.push ( project.component.json.fontFamily )
+                if ( project[key].json.fontFamily ){
+                    usedFonts.push ( project[key].json.fontFamily )
                 }
                 //store.dispatch('message', 'Fonts used collected')
                 let images = jp.query ( json , '$..blocks..image.url' )
@@ -575,6 +575,104 @@ export default {
                 
                 return project
         }
+
+        Vue.prototype.$buildOptions = ( project ) => {
+            if ( json ) return null
+                let json = project.json
+                let usedFonts = []
+                let usedImages = []
+                let purgeClasses = []
+                //let purgeClasses = json.css ? json.css.split(' ') : []
+
+
+
+                let fonts = jp.query ( json , '$..blocks[?(@.style.includes("font-family"))]' )
+                //usedFonts.push ( fonts.style )
+                fonts.forEach ( font => {
+                    font.style.includes ( 'font-family') ?
+                        usedFonts.push ( font.style.replace('font-family:','').replaceAll('\"','') ) : null
+                })
+                if ( project.json.fontFamily ){
+                    usedFonts.push ( project.json.fontFamily )
+                }
+                //store.dispatch('message', 'Fonts used collected')
+                let images = jp.query ( json , '$..blocks..image.url' )
+                images.forEach(img=>
+                    !img.includes('//') ?
+                        usedImages.push(img) : null
+                )
+
+                //store.dispatch('message', usedImages )
+
+                ///let purgeClasses = jp.query ( json , '$..blocks[?(@.css.length>0)].css')
+                //json.css ? purgeClasses.push ( json.css ) : null
+                //console.log ( purgeClasses )
+                // let classes = jp.query ( json , '$..blocks..css' )
+                
+                //  classes.forEach ( classe => {
+                //      let generalCSS 
+                //     if ( classe.hasOwnProperty('css') ){
+                //         generalCSS = classe.css.split(' ')
+                //         let containerCSS = classe.container.split( ' ' )
+                //         generalCSS.forEach ( css => {
+                //             if ( css ) purgeClasses.push ( css )
+                //         })
+                //         containerCSS.forEach ( css => {
+                //             if ( css ) purgeClasses.push ( css )
+                //         })
+                        
+                        
+                //     } else {
+                //         generalCSS = classe.split(' ')
+                //         generalCSS.forEach ( css => {
+                //             if ( css ) purgeClasses.push ( css )
+                //         })
+                //     }
+                //     let containers = jp.query ( json , '$..blocks..container' )
+                //     containers.forEach( container => {
+                //         let cntrCSS = container.split(' ')
+                //         cntrCSS.forEach ( css => {
+                //             if ( css ) purgeClasses.push ( css )
+                //         })
+                //     })
+                // })
+                // store.dispatch('message', 'CSS used collected')
+                let plugins = [...new Set ( jp.query ( json , '$..blocks..path') )]
+                plugins.includes ( 'store/whoobe/store') ? project.store = true : project.store = false
+                
+                //store.dispatch('message', 'Plugins used collected')
+                if ( project.store ){
+                    //store.dispatch('message', 'Using store plugin')
+                    apiserver.apiserver.service ( 'products' ).find( {
+                        query : {
+                            $limit: 200,
+                            type: 'product'
+                        }
+                    }).then ( res => {
+                        res.data.forEach ( product => {
+                            Array.isArray(product.assets) ?
+                                !product.assets[0].includes('//') ?
+                                    usedImages.push(product.assets[0]) : null :
+                                        !product.assets.includes('//') ?
+                                            usedImages.push ( product.assets ) : null
+                                        
+                        })
+                        project.fonts = [ ...new Set(usedFonts) ]
+                        //project.purge = [ ...new Set(purgeClasses) ]
+                        project.uploads = [ ...new Set(usedImages) ]
+                        project.plugins = [ ...new Set(plugins) ]
+                    })
+                    
+                } else {
+                    project.fonts = [ ...new Set(usedFonts) ]
+                    //project.purge = [ ...new Set(purgeClasses) ]
+                    project.uploads = [ ...new Set(usedImages) ]
+                    project.plugins = [ ...new Set(plugins) ]
+                }
+                
+                return project
+        }
+
         Vue.prototype.$icons = ( search = '' , limit = 120 ) =>{
             if ( !search ) return null
             const resolve = new Promise ( (resolve,reject ) =>{

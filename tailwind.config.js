@@ -104,11 +104,13 @@ module.exports = {
           '20xl' : '6rem'
         },
         width : {
-          'sidebar' : '15%',
+          'little' : '15%',
+          'sidebar' : '20%',
           'auto'  : 'auto',
           'half'  : '50%',
           'large' : '60%',
           'wide'  : '75%',
+          'wider' : '80%',
           'superwide' : '85%',
           'extrawide' : '90%',
           '2xwide' : '95%'

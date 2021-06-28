@@ -1,12 +1,13 @@
 <template>
     <div v-if="articles && cols" class="m-2">
-        <div class="theme-dark" v-if="!selected">
-            <button @click="$action('articles_create')">Create new</button>
-            <span class="ml-2">Category</span> <select v-model="filter" class="theme-dark w-32">
-                <option value="">all</option>
-                <option v-for="category in $mapState().datastore.dataset.setup[0].categories.articles" :value="category">{{ category }}</option>
-            </select>
-        </div>
+            <div class="bg-gray-900 sticky top-0 -mt-2 p-2 w-full z-2xtop" v-if="!selected">
+                <button class="lg" @click="$action('articles_create')">Create new</button>
+                <span class="ml-2">Category</span> 
+                <select v-model="filter" class="dark ml-2 w-32">
+                    <option value="">all</option>
+                    <option v-for="category in $mapState().datastore.dataset.setup[0].categories.articles" :value="category">{{ category }}</option>
+                </select>
+            </div>
         <div class="bg-gray-200 text-sm" v-if="!selected">
             <div class="theme-dark bg-black grid" :class="'grid-cols-' + (cols.length+1)">
                 <div class="p-1 capitalize font-bold"  :class="field.title==='title'?'col-span-2':''" v-if="field.title!='_id'" v-for="(field,f) in cols" :key="f">{{ field.title }}</div>

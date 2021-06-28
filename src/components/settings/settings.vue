@@ -47,11 +47,18 @@
                             <label>Server URL</label>
                             <input type="text" class="dark w-full" v-model="whoobeCMS"/>
                             
-                            <div class="flex my-4">
-                            <input type="checkbox" v-model="whoobeLocal"/> 
-                            <label>Local Development</label>
+                            <div class="flex flex-row">
+                                <div class="flex my-4">
+                                    <input type="checkbox" v-model="whoobeLocal"/> 
+                                    <label>Local Development</label>
+                                </div>
+                                <div class="flex my-4">
+                                    <input type="checkbox" v-model="whoobeTest"/> 
+                                    <label>Cloud Test</label>
+                                </div>
                             </div>
                             <button @click="setWhoobeCMS()">Save</button>
+                            <div v-if="serverError" class="mt-1">{{serverError}}</div>
                             <!-- <div v-if="$datastore('setup')">
                             
                             <label class="font-bold">Fonts</label>
@@ -136,6 +143,8 @@ export default {
         },
         whoobeCMS: '',
         whoobeLocal: true,
+        whoobeTest: false,
+        serverError: '',
         license: '',
         licenseMessage: '',
         licenseUser: {
@@ -143,7 +152,8 @@ export default {
             email:'',
             password:'',
             message: ''
-        }
+        },
+        testServer: 'https://whoobe-server-alpha.herokuapp.com/'
     }),
     computed: {
         ...mapState ( ['moka','user','datastore','editor'] ),
@@ -157,8 +167,16 @@ export default {
     watch: {
         whoobeLocal(v){
             v ? this.whoobeCMS = 'http://localhost:3030/' : this.whoobeCMS = ''
-
+            v ? this.whoobeTest = false : this.whoobeTest ? this.whoobeCMS = this.testServer : null
+        },
+        whoobeCMS(){
+            this.serverError = ''
+        },
+        whoobeTest(v){
+            v ? this.whoobeLocal = false : null
+            v ? this.whoobeCMS = this.testServer : ''
         }
+
     },
     mounted(){
         
@@ -183,17 +201,27 @@ export default {
     },
     methods:{
         setWhoobeCMS(){
-            this.$action()
+            
             if ( this.whoobeCMS.slice(-1) != '/' ){
                 this.whoobeCMS = this.whoobeCMS + '/'
+                
             }
-            window.localStorage.setItem ( 'whoobe-cms' , this.whoobeCMS )
-            window.localStorage.setItem ( 'whoobe-local' , this.whoobeLocal )
-            window.localStorage.removeItem ( 'feathers-jwt' )
-            this.$store.dispatch('login',false)
-            alert ( 'Changed Whoobe Server')
-            window.location.reload()
-            this.$router.push ( '/' )
+            this.serverError = 'Checking connection ... please wait!'
+            fetch ( this.whoobeCMS ).then ( res => {
+                this.serverError = ''
+                this.$action()
+                window.localStorage.setItem ( 'whoobe-cms' , this.whoobeCMS )
+                window.localStorage.setItem ( 'whoobe-local' , this.whoobeLocal )
+                window.localStorage.removeItem ( 'feathers-jwt' )
+                this.$store.dispatch('login',false)
+                alert ( 'Changed Whoobe Server')
+                window.location.reload()
+                this.$router.push ( '/' )
+            }).catch ( error => {
+                this.serverError = 'Server URL is not valid or no server responding to the URL submitted'
+                this.$message('Server URL is not valid or no server responding to the URL submitted')
+                console.log ( error )
+            })
         
         },
         setLicense(){

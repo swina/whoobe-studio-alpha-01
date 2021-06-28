@@ -6,7 +6,7 @@
         :class="'overflow-hidden flex flex-no-wrap moka-flipper-container '+ classe(doc.css)" :style="doc.style + ' ' +  background(doc)" :ref="doc.id" ontouchstart="this.classList.toggle('hover');">
             <div class="moka-flipper h-full w-full">
                 <template v-for="(block,i) in doc.blocks">
-
+                    
                     <moka-element
                         v-if="block && !block.hasOwnProperty('blocks') && !block.hasOwnProperty('blocks') || block.hasOwnProperty('items')"
                         @click="elementAction"
@@ -42,7 +42,7 @@
 <script>
 
 
-import MokaElement from './moka.element'
+import MokaElement from './moka.element.component'
 import MokaPreviewSingleContainer from './moka.preview.single.container'
 import { mapState } from 'vuex'
 import gsap from 'gsap'

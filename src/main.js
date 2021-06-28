@@ -59,6 +59,8 @@ Vue.component('plugin-wrapper',PluginWrapper)
 
 import Media from '@/components/media/media.vue'
 Vue.component('media',Media)
+import WhoobeConfirm from '@/components/common/confirm.vue'
+Vue.component('modal-confirm',WhoobeConfirm)
 
 import WhoobeIntro from '@/components/desktop/desktop.intro.vue'
 Vue.component('whoobe-intro',WhoobeIntro)
@@ -67,6 +69,7 @@ import {SimpleSVG} from 'vue-simple-svg'
 Vue.component('simple-svg', SimpleSVG)
 
 import Iconify from '@iconify/iconify';
+Iconify.enableCache('all', false);
 
 import Supericon from '@/components/common/supericon.vue'
 Vue.component('icon-extra',Supericon)

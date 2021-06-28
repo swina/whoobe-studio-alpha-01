@@ -55,7 +55,6 @@
 
 <script>
 
-// import WhoobeSelectors from '@/components/moka/editor/whoobe.selectors'
 import { mapState } from 'vuex'
 import jp from 'jsonpath'
 
@@ -565,6 +564,27 @@ export default {
             let route = this.$router.resolve({path: '/preview'});
             let w = window.open(route.href, 'moka','width=' + window.screen.availWidth );
             w.focus()
+        },
+        autoSave(){
+            if ( !this.$attrs.blocks ) return 
+            let blocks = {
+                blocks: this.doc.blocks,
+                lastUpdate: new Date()
+            }
+            let data = {
+                autosave:  blocks
+            }
+            console.log ( 'Autosave data =>' , data )
+            this.$loading(true)
+            this.$api.service ( 'components' ).patch ( this.$attrs.blocks._id , data ).then ( result => {
+                console.log ( result )
+                console.log ( 'Autosaved =>'  , result )
+                this.$loading()
+            }).catch ( error => {
+                this.$loading()
+                console.log ( error )
+                this.$message ( 'Autosave error please check your logs')
+            })
         }    
     },
     watch:{
@@ -579,7 +599,8 @@ export default {
             if ( v ){
                 return this.exportJSON()
             }
-        }
+        },
+        
     },
     mounted(){
         let vm = this
@@ -588,28 +609,32 @@ export default {
             this.$store.dispatch('selected',vm.doc.id)
         }
         this.$store.dispatch('setComponent',this.$attrs.blocks)
-        // this.timer = window.setInterval (()=>{
+        this.autoSave()
+        this.timer = window.setInterval (()=>{
+            vm.autoSave()
+            // let blocks = {
+            //     blocks: vm.doc.blocks,
+            //     lastUpdate: new Date()
+            // }
+            // let data = {
+            //     autosave:  blocks
+            // }
+            // console.log ( 'Autosave data =>' , data )
+            // this.$loading(true)
+            // this.$api.service ( 'components' ).patch ( vm.doc._id , data ).then ( result =>{
+            //     console.log ( 'Autosaved =>'  , result.data )
+            //     this.$loading()
+            // }).catch ( error => {
+            //     this.$message ( 'Autosave error please check your logs')
+            // })
+            // vm.$store.dispatch ( 'autoSave' , blocks )
+            // window.localStorage.setItem('whoobe-autosave',JSON.stringify(blocks))
             
-        //     let blocks = {
-        //         blocks: vm.doc,
-        //         lastUpdate: new Date()
-        //     }
-        //     let data = {
-        //         autosave:  blocks
-        //     }
-        //     this.$api.service ( 'components' ).patch ( vm.component._id , data ).then ( result =>{
-        //         console.log ( 'Autosaved =>'  , result.data )
-        //     }).catch ( error => {
-        //         this.$message ( 'Autosave error please check your logs')
-        //     })
-        //     vm.$store.dispatch ( 'autoSave' , blocks )
-        //     window.localStorage.setItem('whoobe-autosave',JSON.stringify(blocks))
-            
-        // }, 60000*5 )
+        }, 60000*5 )
         
     },
     beforeDestroy(){
-        //window.clearInterval(this.timer)
+        window.clearInterval(this.timer)
     }
 }
 </script>

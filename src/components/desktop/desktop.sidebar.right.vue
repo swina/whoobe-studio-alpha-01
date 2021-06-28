@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed theme-dark right-0 top-0 z-highest w-sidebar h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview'">
+    <div class="fixed theme-dark right-0 top-0 z-highest w-sidebar lg:w-little h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview'">
         <div>
             <div class="flex flex-row items-center bg-gray-900">
                 <template v-for="(tab,i) in sidebarToolbar">
@@ -30,7 +30,9 @@
             <component :is="component" :component="component"/>
         </div>
         <!--<component :is="component" :component="component"/>-->
-        <span class="invisible">{{ this.desktop.tabs[this.desktop.currentTab].mode }}</span>
+        <!-- <span class="invisible">
+            {{ this.desktop.tabs[this.desktop.currentTab].mode }}
+        </span> -->
     </div>
 
 </template>

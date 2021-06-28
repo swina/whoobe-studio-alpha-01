@@ -27,7 +27,7 @@
                 :develop="false"/> 
             <block-preview-container
                 :key="block.id"
-                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items') && !block.hasOwnProperty('image_flip') && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides' && block.tag !='form' && block.type != 'popup'" @action="elementAction" 
+                v-if="block && !block.hasOwnProperty('slider') && block.hasOwnProperty('blocks') && !block.hasOwnProperty('items')  && !block.hasOwnProperty('popup') && block.type!='plugin' && !block.hasOwnProperty('collection') && block.tag != 'menu' && block.type !='slides' && block.tag !='form' && block.type != 'popup'" @action="elementAction" 
                 :data="$attrs.data||null"
                 :currency="$attrs.currency||null"
                 :doc="block" :animation="$attrs.animation"/>

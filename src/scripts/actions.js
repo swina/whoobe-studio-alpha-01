@@ -1,5 +1,6 @@
 
 const actions = {
+    
     login: {
         title: 'Login',
         size: 'md',

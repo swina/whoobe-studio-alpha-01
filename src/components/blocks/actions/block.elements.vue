@@ -172,11 +172,11 @@
                 <div slot="title">Mansory</div>
                 <div slot="content" class="flex flex-col p-2">
                     <label>Columns</label>
-                    <input type="number" min="2" max="8" v-model="mansory.cols">
+                    <input type="number" class="dark" min="2" max="8" v-model="mansory.cols">
                     <label>Rows</label>
-                    <input type="number" min="1" v-model="mansory.rows">
+                    <input type="number" class="dark" min="1" v-model="mansory.rows">
                     <label>Columns Gap</label>
-                    <input type="number" min="0" v-model="mansory.gap">
+                    <input type="number" class="dark" min="0" v-model="mansory.gap">
                 </div>
             </modal>
         </transition>

@@ -1,14 +1,14 @@
 <template>
-    <div class="flex flex-col p-4 bg-gray-200 text-black">
+    <div class="flex flex-col p-4">
         <label>Title</label>
-        <input type="text" v-model="newArticle.title"/>
+        <input class="dark w-full" type="text" v-model="newArticle.title"/>
         <label>Category</label>
-        <select v-model="newArticle.category">
+        <select class="dark" v-model="newArticle.category">
             <option value=""></option>
             <option v-for="(category,c) in $mapState().datastore.dataset.setup[0].categories.articles" :value="category"> {{ category }} </option>
         </select>
-        <div class="my-2">
-            <button class="success" @click="create">Create</button>
+        <div class="mt-8 flex items-center">
+            <button class="lg m-auto" @click="create">Create</button>
         </div>
     </div>
 </template>

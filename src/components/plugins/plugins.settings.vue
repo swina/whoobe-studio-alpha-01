@@ -1,5 +1,5 @@
 <template>
-    <div v-if="current" class="m-2 p-2 bg-gray-100 text-gray-700">
+    <div v-if="current && enabled" class="m-2 p-2 bg-gray-100 text-gray-700">
         <template v-for="(field,index) in Object.keys(datastore.schema.plugins)">
                     
             <details v-if="current.hasOwnProperty(field)">
@@ -89,7 +89,10 @@ export default {
     }),
     computed: {
         ...mapState ( ['datastore'] ),
-        
+        enabled(){
+            if ( typeof webpackHotUpdate === 'undefined') this.$message('message','This option is available only in development mode')
+            return typeof webpackHotUpdate != 'undefined' ? true : false 
+        }
     },
     
     methods:{

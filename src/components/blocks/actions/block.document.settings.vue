@@ -43,11 +43,11 @@
                 <span class="font-bold">Loop </span>
             </div>
             <div class="flex flex-col" v-if="component.loop">
-                <select class="w-full" v-model="component.loop_type">
+                <!-- <select class="w-full" v-model="component.loop_type">
                     <option value="">all</option>
                     <option value="articles">articles</option>
-                    <option :key="opt.slug" v-for="opt in moka.categories" :value="opt.slug">articles/category/{{opt.name}}</option>
-                </select>
+                    <option :key="opt.slug" v-for="opt in $mapState().datastore.dataset.setup[0].categories.articles" :value="opt.slug">articles/category/{{opt.name}}</option>
+                </select> -->
                 <div class="my-1">
                     <input type="checkbox" v-model="component.loop_pagination"/>
                     <label class="font-bold">Pagination</label> 
@@ -99,7 +99,7 @@
            </div>
         </div> -->
 
-        <modal
+        <!-- <modal
             v-if="publish"
             size="lg"
             position="modal"
@@ -131,7 +131,7 @@
                 </blockquote>
                 <button class="m-auto lg bg-red-600" @click="deploySite()">Confirm</button>
             </div>
-        </modal>
+        </modal> -->
     </div>
 </template>
 
@@ -184,126 +184,126 @@ export default {
         }
     },
     methods:{
-        loadProject(){
-            //this.$loading(true)
-            this.project = this.$projectResources ( this.project )
-            let vm = this
-            this.$api.service ( 'resources' ).create ( { project : this.project } ).then ( res => {
-                vm.project.purge = res
-                // let component = vm.editor.component
-                // component.project = vm.project
-                vm.publish = true
-                vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
+        // loadProject(){
+        //     //this.$loading(true)
+        //     this.project = this.$projectResources ( this.project )
+        //     let vm = this
+        //     this.$api.service ( 'resources' ).create ( { project : this.project } ).then ( res => {
+        //         vm.project.purge = res
+        //         // let component = vm.editor.component
+        //         // component.project = vm.project
+        //         vm.publish = true
+        //         vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
                     
-                    console.log ( response )
-                    // vm.$api.service('components').patch(component._id,component).then ( res => {
-                    //     console.log ( 'Component with project' , res )
-                    // })
-                })
-                //this.$loading(false)
-            })
+        //             console.log ( response )
+        //             // vm.$api.service('components').patch(component._id,component).then ( res => {
+        //             //     console.log ( 'Component with project' , res )
+        //             // })
+        //         })
+        //         //this.$loading(false)
+        //     })
             
-        },
-        previewProject(){
-             this.$api.service('whoobe/build').find ( { query: { preview: true} } ).then ( res => {
-                window.open('http://localhost:5000','whoobe')
-            })
-        },
-        savePage(){
-            //this.$loading ( true )
-            let component = this.editor.component
-            if ( !component.hasOwnProperty('seo') ){
-                this.$message ( 'SEO data are required in order to publish the page' )
-                return
-            }
-            this.output = 'Saving data ...'
+        // },
+        // previewProject(){
+        //      this.$api.service('whoobe/build').find ( { query: { preview: true} } ).then ( res => {
+        //         window.open('http://localhost:5000','whoobe')
+        //     })
+        // },
+        // savePage(){
+        //     //this.$loading ( true )
+        //     let component = this.editor.component
+        //     if ( !component.hasOwnProperty('seo') ){
+        //         this.$message ( 'SEO data are required in order to publish the page' )
+        //         return
+        //     }
+        //     this.output = 'Saving data ...'
 
-            window.localStorage.setItem('whoobe-component',JSON.stringify(component) )
-            delete component.autosave
-            component.blocks_id ?
-                component.blocks_id === component.json.id ?
-                    null :
-                        component.blocks_id = component.json.id 
-                            : component.blocks_id = component.json.id
+        //     window.localStorage.setItem('whoobe-component',JSON.stringify(component) )
+        //     delete component.autosave
+        //     component.blocks_id ?
+        //         component.blocks_id === component.json.id ?
+        //             null :
+        //                 component.blocks_id = component.json.id 
+        //                     : component.blocks_id = component.json.id
                             
-            this.$saveComponent ( component ).then ( res => {
-                this.$loading(false)
-                this.output = component.name + ' => Saved !'
-                this.loadProject()
-                console.log ( res )
-            }).catch ( err => {
-                this.$loading(false)
-                this.$message('An error occured. Check you console log.')
-                this.$action()
-                console.log ( err )
-            })
-        },
-        deploySite(){
-            //fetch ( "https://api.vercel.com/v1/integrations/deploy/prj_UrXSK65cstEKML6ExXwtbbYVmQ9N/9qhcTh7amC" , { method: 'POST'} )
-            if ( this.deploy_hook ){
-                fetch ( this.deploy_hook , { method: 'POST'} )
-                    .then ( result => result.json() )
-                    .then ( deployed => { 
-                        this.output = ''
-                        console.log ( deployed )
-                        this.$message ( 'Deployed' )
-                        this.$action()
-                        return
-                    })
-                    .catch ( error => {
-                        this.$message ( 'Ooooops! Something went wrong. Check your console for errors' )
-                        return
-                    })
-            }
-        },
-        loadComponent(){
-            this.component = this.$mapState().editor.component
-            this.project.component = this.$mapState().editor.component
-            this.project.name = this.$mapState().editor.component.name
-            this.project.uploads = []
-            this.project.fonts = []
-            this.project.purge = ''
-            this.project.local = true
-            if  ( !JSON.parse(window.localStorage.getItem('whoobe-local'))  ){
-                this.project.local = false
-            }
-            this.project.analytics = ''
-        }
+        //     this.$saveComponent ( component ).then ( res => {
+        //         this.$loading(false)
+        //         this.output = component.name + ' => Saved !'
+        //         this.loadProject()
+        //         console.log ( res )
+        //     }).catch ( err => {
+        //         this.$loading(false)
+        //         this.$message('An error occured. Check you console log.')
+        //         this.$action()
+        //         console.log ( err )
+        //     })
+        // },
+        // deploySite(){
+        //     if ( this.deploy_hook ){
+        //         fetch ( this.deploy_hook , { method: 'POST'} )
+        //             .then ( result => result.json() )
+        //             .then ( deployed => { 
+        //                 this.output = ''
+        //                 console.log ( deployed )
+        //                 this.$message ( 'Deployed' )
+        //                 this.$action()
+        //                 return
+        //             })
+        //             .catch ( error => {
+        //                 this.$message ( 'Ooooops! Something went wrong. Check your console for errors' )
+        //                 return
+        //             })
+        //     }
+        // },
+        // loadComponent(){
+        //     this.component = this.$mapState().editor.component
+        //     this.project.component = this.$mapState().editor.component
+        //     this.project.name = this.$mapState().editor.component.name
+        //     this.project.uploads = []
+        //     this.project.fonts = []
+        //     this.project.purge = ''
+        //     this.project.local = true
+        //     if  ( !JSON.parse(window.localStorage.getItem('whoobe-local'))  ){
+        //         this.project.local = false
+        //     }
+        //     this.project.analytics = ''
+        // }
     },
     mounted(){
-        this.loadComponent()
-        this.$api.service('components').on('patched',(data) => {
-            if ( data._id === this.project.component._id ){ 
-                this.$store.dispatch ( 'setComponent' , data )
-                this.$message ( 'Blocks updated' )
-                this.loadComponent()
-            }
-        })
-        this.$api.service('generate').on ( 'created' , (data) => {
+        this.component = this.$mapState().editor.component
+        //this.loadComponent()
+        // this.$api.service('components').on('patched',(data) => {
+        //     if ( data._id === this.project.component._id ){ 
+        //         this.$store.dispatch ( 'setComponent' , data )
+        //         this.$message ( 'Blocks updated' )
+        //         this.loadComponent()
+        //     }
+        // })
+        // this.$api.service('generate').on ( 'created' , (data) => {
             
-            if ( data.data ){
-                // if ( this.project.local && data.data.includes('Whoobe Site Generation done!') ){
-                // // //     //this.output = ''
-                //       this.$message ( 'Yahiiii project published!' )
-                // //      this.preview = true
-                // //      return
-                // } 
-                if ( !this.project.local && data.data.includes ( 'Saved' ) ){
-                //     this.output = ''
-                    this.$message ( 'Published on remote Whoobe. Ready to deploy')
-                //     return
-                }
-                //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
-                !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
-                //term.write ( data.data + '\n')
-            } 
-            if ( data.error ){
-                this.errors += data.error.normalize()
-                // this.output = 'ERROR! ' + data.error.normalize() 
-            }
-            document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
-            document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
-        })
+        //     if ( data.data ){
+        //         // if ( this.project.local && data.data.includes('Whoobe Site Generation done!') ){
+        //         // // //     //this.output = ''
+        //         //       this.$message ( 'Yahiiii project published!' )
+        //         // //      this.preview = true
+        //         // //      return
+        //         // } 
+        //         if ( !this.project.local && data.data.includes ( 'Saved' ) ){
+        //         //     this.output = ''
+        //             this.$message ( 'Published on remote Whoobe. Ready to deploy')
+        //         //     return
+        //         }
+        //         //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
+        //         !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
+        //         //term.write ( data.data + '\n')
+        //     } 
+        //     if ( data.error ){
+        //         this.errors += data.error.normalize()
+        //         // this.output = 'ERROR! ' + data.error.normalize() 
+        //     }
+        //     document.getElementById("generated").scrollTop = document.getElementById("generated").scrollHeight 
+        //     document.getElementById("generated_errors").scrollTop = document.getElementById("generated_errors").scrollHeight 
+        // })
     },
 
 }

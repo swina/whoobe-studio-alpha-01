@@ -102,11 +102,11 @@ export default {
             //    this.child = MokaSvg
             //    return el.link ? MokaLink : MokaSvg
             //}
-            if ( (el.element === 'img')  && el.image && el.image.ext === '.svg' ) {
-                this.child = MokaSimpleSvg
-                return el.link ? MokaLink : MokaSimpleSvg    
-            }
-            if ( el.element === 'img' && el.image && el.image.url && el.image.ext != '.svg' && el.image.ext != '.mp4' ) {
+            // if ( (el.element === 'img')  && el.image && el.image.ext === '.svg' ) {
+            //     this.child = MokaSimpleSvg
+            //     return el.link ? MokaLink : MokaSimpleSvg    
+            // }
+            if ( el.element === 'img' && el.image && el.image.url && el.image.ext != '.mp4' ) {
                 this.child = MokaImg
                 return el.link ? MokaLink : MokaImg
             }

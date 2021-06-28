@@ -2,8 +2,10 @@
     <div class="fixed bottom-0 left-0 pl-2 w-superwide theme-dark flex flex-row items-center h-10 text-gray-300 p-1 z-highest flex flex-row items-center border-t border-gray-700">
         <div class="flex flex-row items-start ml-8">
         
-        <div class="h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="docOptions=!docOptions">
-            <icon name="more_vert" class="text-orange-400" title="Options"/>
+        <div class="h-10 w-10 border-r border-l border-gray-900 flex flex-row items-center justify-center hover:bg-black" @click="$action('component_settings')">
+            <!-- @click="docOptions=!docOptions"-->
+            <!-- <icon name="more_vert" class="text-orange-400" title="Options"/> -->
+            <icon name="settings" class="text-orange-400" title="Options"/>
         </div>
         
         <!-- <i class="material-icons text-orange-400" title="Document">description</i> -->
@@ -125,17 +127,25 @@ export default {
                     null :
                         component.blocks_id = component.json.id 
                             : component.blocks_id = component.json.id
-                            
-            this.$saveComponent ( component ).then ( res => {
-                this.$loading(false)
-                this.$message('Block saved')
-                this.$action()
-                console.log ( res )
-            }).catch ( err => {
-                this.$loading(false)
-                this.$message('An error occured. Check you console log.')
-                this.$action()
-                console.log ( err )
+            // let project = {
+            //     component: component
+            // }
+            let project = this.$buildOptions(component)
+            console.log ( component )
+            this.$api.service ( 'resources' ).create ( { project : project } )
+                .then ( purge => {
+                    component.purge = purge.sort()                 
+                    this.$saveComponent ( component ).then ( res => {
+                        this.$loading(false)
+                        this.$message('Block saved')
+                        this.$action()
+                        console.log ( res )
+                    }).catch ( err => {
+                        this.$loading(false)
+                        this.$message('An error occured. Check you console log.')
+                        this.$action()
+                        console.log ( err )
+                    })
             })
         },
         openPreview(){

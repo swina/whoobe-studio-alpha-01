@@ -32,7 +32,7 @@ export default {
         displayMode(){ 
             let css = ''
             this.$attrs.boxed ? css+= 'pl-10': null
-            this.desktop.mode === 'editor' || this.desktop.mode === 'block' ? css += ' w-superwide' : ' w-full'
+            this.desktop.mode === 'editor' || this.desktop.mode === 'block' ? css += ' wider lg:w-superwide' : ' w-full'
             return css
         },
         currentTab(){

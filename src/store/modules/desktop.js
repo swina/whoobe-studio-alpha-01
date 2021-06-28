@@ -8,7 +8,9 @@ const desktop =  {
         error: null,
         currentTab: 0,
         loading: false,
-        project: null
+        project: null,
+        confirm: false,
+        confirmAction : null
     },
     mutations: {
         mode ( state , payload ){
@@ -46,6 +48,12 @@ const desktop =  {
         },
         project ( state , payload ){
             state.project = payload
+        },
+        confirm ( state , payload ){
+            state.confirm = payload
+        },
+        confirmAction ( state , payload ){
+            state.confirmAction = payload
         }
     },
     actions : {
@@ -82,7 +90,12 @@ const desktop =  {
         project ( { commit } , payload ){
             commit ( 'project' , payload )
         },
-
+        confirm ( { commit } , payload ){
+            commit ( 'confirm' , payload )
+        },
+        confirmAction ( { commit } , payload ){
+            commit ( 'confirmAction' , payload )
+        },
     }
 }
 

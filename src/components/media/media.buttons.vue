@@ -1,5 +1,5 @@
 <template>
-    <div class="sticky top-0 w-full theme-dark flex flex-row items-center justify-start p-2">
+    <div class="sticky top-0 w-full bg-gray-900 flex flex-row items-center justify-start p-2">
         <button class="lg mr-1" @click="$emit('click','upload')" title="Upload image">Upload</button>
         <button class="lg mr-1" @click="$emit('click','pixabay')" title="Upload from Pixabay">Pixabay</button>
         <button class="lg mr-1" @click="$emit('cloudinary')" title="Upload to Cloudinary">Cloudinary</button>

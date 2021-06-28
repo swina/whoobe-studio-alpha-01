@@ -42,13 +42,32 @@ export default {
             return index === this.desktop.currentTab ? 'bg-indigo-700 text-white' : ''
         },
         removeTab ( index ){
-            this.desktop.tabs.splice ( index , 1 )
-            this.desktop.currentTab = this.desktop.tabs.length - 1
-            console.log ( this.desktop.tabs.length )
-            // this.desktop.tabs.length ? 
-            //     this.$store.dispatch ( 'mode' , this.desktop.tabs[this.desktop.currentTab].mode ) : null
-            window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
-            this.$action()
+            let tab = this.desktop.tabs[this.desktop.currentTab]
+            if ( tab.hasOwnProperty('mode') ){
+                if ( tab.mode === 'block' ){
+                    let confirm = window.confirm ( 'Save before to close ?')
+                    if ( confirm ){
+                        //save current component
+                        let comp = this.$mapState().editor.component
+                        this.$api.service ( 'components' ). patch ( comp._id , comp )
+                            .then ( res => {
+                                this.$message ( 'Save successfully!' )
+                            })
+                            .catch ( err => {
+                                console.log ( err )
+                                this.$message ( 'An error occurred.')
+                            })
+                    }
+                }
+            } 
+                this.desktop.tabs.splice ( index , 1 )
+                this.desktop.currentTab = this.desktop.tabs.length - 1
+                console.log ( this.desktop.tabs.length )
+                // this.desktop.tabs.length ? 
+                //     this.$store.dispatch ( 'mode' , this.desktop.tabs[this.desktop.currentTab].mode ) : null
+                window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
+                this.$action()
+            
         },
         setMode(index){
             if ( this.desktop.tabs.length && this.desktop.tabs[index] && this.desktop.tabs[index].hasOwnProperty('mode') )

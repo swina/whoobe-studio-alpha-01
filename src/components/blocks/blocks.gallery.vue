@@ -1,8 +1,8 @@
 <template>
   <div class="w-full theme-dark">
-    <div v-if="!$attrs.mode" class="sticky top-0 p-2 w-full theme-dark flex flex-row items-center justify-start">
+    <div v-if="!$attrs.mode" class="bg-gray-900 sticky top-0 p-2 w-full flex flex-row items-center justify-start">
       <button class="lg" @click="$action('component_create')">New</button>
-      <button class="lg mx-1" @click="$action('component_import')">Import</button>
+      <button class="lg" @click="$action('component_import')">Import</button>
       <button class="lg" @click="$mapState().editor.export='category',$action('component_export')">Export All</button>
       <input class="dark mt-1 ml-2" type="text" placeholder="search..." v-model="search" @keydown="searchComponent($event)"/>
       <button v-if="search" @click="search='',blocks=objects">Reset</button>
@@ -38,7 +38,7 @@
           <div class="text-xs text-gray-600 opacity-0 hover:opacity-100" @mouseleave="moreID = null">
             <div>
               <div v-if="moreID === comp._id" @mouseleave="moreID = null" class="menu absolute -translate-y-24 transform bg-gray-900 w-48">
-                <div class="pl-1 hover:bg-white" @click="restoreAutosave(comp)" title="Restore from autosave">
+                <div class="pl-1 hover:bg-white" :class="comp.hasOwnProperty('autosave') && comp.autosave ? '' : 'italic'" @click="comp.hasOwnProperty('autosave') && comp.autosave ? restoreAutosave(comp) : null" title="Restore from autosave">
                   Restore
                 </div>
                 <div class="pl-1 hover:bg-white" @click="addToLibrary(comp, 'library')" title="Export">
@@ -80,6 +80,10 @@
             </div>
         </modal>
     </transition>
+    <modal-confirm 
+      v-if="confirm" 
+      @noconfirm="confirm=!confirm" 
+      @confirm="confirmAction"/>
   </div>
 </template>
 
@@ -95,6 +99,7 @@ export default {
         blocks: null,
         confirmModal: false,
         confirm: false,
+        confirmAction : null,
         search:''
     }),
     methods:{
@@ -142,7 +147,13 @@ export default {
             let w = window.open(route.href, 'whoobe','width=' + window.screen.availWidth );
             w.focus()
       },
-      restoreAutosave ( block ){
+        restoreAutosave ( block ){
+          this.confirmAction = () => {
+            this.confirm = false
+            console.log ( block.autosave ? block.autosave : 'no autosave')
+            console.log ( 'confirmed' )
+          }
+          this.confirm = true
           return
       },
       saveToLibrary ( block ){

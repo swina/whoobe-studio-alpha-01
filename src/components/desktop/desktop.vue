@@ -10,6 +10,7 @@
         <!--<whoobe-info/>-->
         <!--<desktop-home v-if="$mapState().desktop.tabs.length === 0"/>-->
         <whoobe-intro/>
+        <modal-confirm v-if="$mapState().desktop.confirm" @noconfirm="$store.dispatch('confirm',false)" @confirm="$mapState().desktop.confirmAction"/>
         <icon name="lock" class="fixed z-highest bottom-0 left-0 m-2 text-indigo-500" @click="logout()"/>
     </div>
 </template>

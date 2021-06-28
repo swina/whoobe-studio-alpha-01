@@ -1,19 +1,19 @@
 <template>
-    <div v-if="categories" class="m-2 bg-gray-100 text-black">
+    <div v-if="categories" class="m-2">
         <h4>Categories</h4>
-        <div class="flex flex-row flex-wrap p-2 bg-gray-200 text-black border" title="click to add a new category">
+        <div class="flex flex-row flex-wrap p-2" title="click to add a new category">
             <template v-for="(category,i) in categories">
                 <div title="click to manage facets" class="flex flex-row items-center mr-2 bg-purple-500 text-white rounded my-2 text-lg px-2 py-1">{{ category.name }} <icon name="edit" class="ml-2" @click="index=i,selected=category,getFacets(category._id)"/> <icon name="close" class="ml-2"/></div>
             </template>
-            <input type="text" class="new_category text-lg bg-gray-200" placeholder="" v-model="newCategory" @keydown="addCategory($event)"/>
+            <input type="text" class="new_category text-lg bg-gray-800" placeholder="add category" v-model="newCategory" @keydown="addCategory($event)"/>
         </div>
         <div v-if="selected" class="p-8 text-lg">
             <label>Name</label>
-            <input type="text" v-model="categories[index].name"/>
+            <input class="dark" type="text" v-model="categories[index].name"/>
             <label>Slug</label>
-            <input type="text" v-model="categories[index].slug"/>
-            <toggle :status="categories[index].active" v-model="categories[index].active" @click="setStatus"/>
-            <button class="lg success">Save</button>
+            <input class="dark" type="text" v-model="categories[index].slug"/>
+            <toggle :status="categories[index].active" v-model="categories[index].active" @click="setStatus" label="Active" css="text-purple-600"/>
+            <button class="lg">Save</button>
         </div>
         <div v-if="selected" class="bg-purple-500 text-white text-lg p-2">{{ selected.name }} Facets</div>
         <div v-if="facets" class="flex flex-row flex-wrap p-2 bg-gray-200 text-black border" title="click to add a new facet">

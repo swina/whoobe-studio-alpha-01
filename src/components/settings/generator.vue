@@ -30,6 +30,7 @@
                 
             </div>
         </div> 
+        <!-- <generator-articles/> -->
     </div>
 </template>
 
@@ -47,7 +48,8 @@ export default {
         //WhoobeUsedImages , WhoobeDocumentSettings ,
     'plugin-seo'        : () => import ( '@/components/plugins/seo/index.settings.vue'),
     'generator-build'   : () => import ( './generator.build.vue'),
-    'block-gallery'     : () => import (  '@/components/blocks/actions/block.gallery.selection.vue')
+    'block-gallery'     : () => import (  '@/components/blocks/actions/block.gallery.selection.vue'),
+    // 'generator-articles' : () => import ( './generator.articles.vue' )
     },
     data: () =>  ({
         output: '',
