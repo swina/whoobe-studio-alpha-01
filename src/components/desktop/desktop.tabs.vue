@@ -42,7 +42,7 @@ export default {
             return index === this.desktop.currentTab ? 'bg-indigo-700 text-white' : ''
         },
         removeTab ( index ){
-            let tab = this.desktop.tabs[this.desktop.currentTab]
+            let tab = this.desktop.tabs[index]
             if ( tab.hasOwnProperty('mode') ){
                 if ( tab.mode === 'block' ){
                     let confirm = window.confirm ( 'Save before to close ?')

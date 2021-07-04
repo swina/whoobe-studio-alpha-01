@@ -25,6 +25,10 @@
     top:50vh;
 }
 
+.ql-toolbar {
+     @apply absolute w-full bg-white -mt-10;
+}
+
 *[data-tool-tip] {
     @apply relative;
 }

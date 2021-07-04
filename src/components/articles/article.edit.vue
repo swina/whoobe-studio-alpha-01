@@ -25,8 +25,15 @@
                     <label>Excerpt</label>
                     <textarea class="dark text-sm w-full" v-model="currentArticle.excerpt"></textarea>
                     <label>Content</label>
-                    <block-text-editor v-model="currentArticle.content" size="h-4/5" :embeded="true" :article="currentArticle"/>
-                    
+                    <block-text-editor v-model="currentArticle.content" size="h-4/5" :embeded="true" :article="currentArticle" v-if="!fullscreen" @fullscreen="fullscreen=!fullscreen"/>
+                    <modal-fullscreen
+                        class="bg-white"
+                        @close="fullscreen=!fullscreen"
+                        v-if="fullscreen">
+                        <div slot="title">Editor</div>
+                        <block-text-editor slot="content" v-model="currentArticle.content" size="h-screen" :embeded="true" :article="currentArticle" @fullscreen="fullscreen=!fullscreen"/>
+                    </modal-fullscreen>
+
                 </section>
             
             
@@ -67,7 +74,7 @@
                             <div class="h-32 w-full flex p-1 justify-center" v-if="currentArticle.image">
                                 <img v-if="currentArticle.image" :src="$imageURL(currentArticle.image)" class="h-24 object-cover" :title="currentArticle.image.name" @click="$action('media')"/>
                             </div> 
-                            <button @click="$action('media')" class="mt-1">Select Media</button>
+                            <button @click="media=!media" class="mt-1">Select Media</button>
                             <!-- <moka-image-placeholder :image="currentArticle.image" @click="$action('media')" size="sm" @media="$action(),editorImage=false" @noimage="currentArticle.image=null"/> -->
                         
                         </div>
@@ -107,6 +114,16 @@
             
             </modal>
         </transition>
+        <transition name="fade">
+            <modal-fullscreen 
+                v-if="media"
+                @close="media=!media">
+                <div slot="title">Media</div>
+                <div slot="content">
+                    <media @close="media=false" @insertimage="setFeaturedImage"/>
+                </div>
+            </modal-fullscreen>
+        </transition>
     </div>
 </template>
 
@@ -120,7 +137,9 @@ export default {
     },
     data:()=>({
         currentArticle: null,
-        selectTemplate: false
+        selectTemplate: false,
+        fullscreen: false,
+        media:false
     }),
     computed:{
         datastore(){
@@ -138,17 +157,23 @@ export default {
 
             window.localStorage.setItem ( 'whoobe-article' , JSON.stringify(this.currentArticle) )
             window.localStorage.setItem ( 'whoobe-preview' , JSON.stringify ( this.currentArticle.blocks.json ) )
-            let route = this.$router.resolve({path: '/preview'});
+            let route = this.$router.resolve({path: '/preview?mode=article'});
             let w = window.open(route.href, 'whoobe','width=' + window.screen.availWidth );
             w.focus()
         },
         setTemplate(template){
             console.log ( template )
+        },
+        setFeaturedImage(image){
+            this.currentArticle.image = image
+            this.media = false
         }
     },
     mounted(){
         //this.$mapState().datastore.currentArticle = this.$attrs.article
         this.currentArticle = this.$attrs.article
+        !this.currentArticle.slug ?
+            this.currentArticle.slug = this.$slugify(this.currentArticle.title) : null
         !this.currentArticle.hasOwnProperty ( 'content' ) ? this.currentArticle.content = '' : null
     }
 }

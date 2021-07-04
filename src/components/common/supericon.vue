@@ -1,6 +1,6 @@
 <template>
 <span :key="id" >
-    <component class="iconify" :class="classe" v-if="component" :data-icon="icon" :is="component" :component="component" :data-container-tag="icon"/>
+    <component class="iconify" :class="classe" v-if="component" :data-icon="icon" :is="component" :component="component" :data-container-tag="icon" @click="$emit('click')"/>
     
 </span>
 </template>

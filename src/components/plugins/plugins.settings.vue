@@ -90,7 +90,7 @@ export default {
     computed: {
         ...mapState ( ['datastore'] ),
         enabled(){
-            if ( typeof webpackHotUpdate === 'undefined') this.$message('message','This option is available only in development mode')
+            if ( typeof webpackHotUpdate === 'undefined') this.$message('This option is available only in development mode')
             return typeof webpackHotUpdate != 'undefined' ? true : false 
         }
     },

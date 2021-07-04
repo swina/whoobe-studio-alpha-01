@@ -55,12 +55,21 @@ export default {
             !el.link ?
                 this.css = this.$cssResponsive(el.css) :
                     this.css = ''
+            
+            if ( el.tag === 'article' && this.$route.query && this.$route.query.mode === 'article' ){
+                let article = JSON.parse ( window.localStorage.getItem('whoobe-article') )
+                el.type != 'image' ?
+                    el.content = article[el.label] :
+                        article[el.label] ? el.image = article[el.label] : el.image = null
+                
+            }
             if ( el.hasOwnProperty ('data') && el.data.hasOwnProperty('content') ){
                 el.content = el.data.content
             }
             if ( el.hasOwnProperty ('data') && el.data.hasOwnProperty('image') ){
                 el.image = el.data.image
             }
+
             if ( this.$attrs.data ){
                 //el.content = this.$attrs.data[el.label]
                 if ( el.type === 'image' ){
@@ -148,8 +157,7 @@ export default {
             }
             
             if ( el.tag === 'article' && el.element != 'img' ){
-                console.log ( 'article => ' , el.label )
-                return MokaText
+               return MokaText
             }
             if ( el.tag === 'article' && el.element === 'img' ){
                 return MokaImg

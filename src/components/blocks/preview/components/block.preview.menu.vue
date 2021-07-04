@@ -1,6 +1,6 @@
 <template>
-    <nav navigation :class="menuContainerCSS" class="cursor-pointer" :ref="el.id" :id="el.id" :style="background(el)">
-        <icon v-if="responsive" class="burger-icon md:hidden z-highest fixed top-0 m-1 text-3xl" :class="menu_responsive?el.css.items:el.css.items" :name="menu_responsive?el.icons.back:el.icons.burger" @click="menu_responsive=!menu_responsive"/>
+    <nav navigation :class="menuContainerCSS" class="cursor-pointer" :ref="el.id" :id="el.id" :style="background(el) + ' ' + el.style">
+         <span @click="menu_responsive=!menu_responsive"><icon-extra v-if="responsive" class="md:hidden z-highest fixed top-0 m-1 text-3xl" :class="menu_responsive?el.css.items:el.css.items" :icon="menu_responsive?el.icons.back:el.icons.burger" /></span>
         <!-- desktop -->
         <div class="hidden md:contents relative">
             <template v-for="(item,i) in el.blocks">

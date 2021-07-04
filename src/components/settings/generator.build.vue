@@ -29,9 +29,14 @@
                 </div> -->
             </div>
             <div class="flex items-center justify-around">
-                <button class="lg rounded bg-purple-600" @click="buildProject()">Publish</button>
-                <button v-if="preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
+                <button class="lg rounded bg-purple-600" @click="buildProject()">Generate</button>
+                <button v-if="project.local && preview" class="lg rounded bg-indigo-600" @click="previewProject()">Preview</button>
                 <button v-if="!project.local" class="lg rounded bg-red-600" @click="runDeploy=!runDeploy">Deploy</button>
+            </div>
+            <div v-if="project.local && preview">
+                Since the generated pages use a service worker to enhance the user experience, in local environment you could have some cached page since last generation. <br>
+                Unregister the service worker and reload the page to update the browser to the last generation.
+
             </div>
         </div>
         
@@ -141,6 +146,7 @@ export default {
                 vm.errors = ''
                 vm.output = ''
                 vm.publish = true
+                delete vm.project.autosave
                 vm.$api.service('whoobe/build').create({project:vm.project,store:this.hasStore?this.project.store:false,commit:vm.deploy}).then ( response =>{
                     window.localStorage.setItem ( 'whoobe-last-build' , JSON.stringify(vm.project) )
                     // vm.$api.service('components').patch(component._id,component).then ( res => {
@@ -153,7 +159,7 @@ export default {
         },
         previewProject(){
              this.$api.service('whoobe/build').find ( { query: { preview: true} } ).then ( res => {
-                window.open('http://localhost:5000','whoobe')
+                window.open('http://localhost:8000','whoobe')
             })
         },
         savePage(){
@@ -234,6 +240,9 @@ export default {
                
                 if ( !this.project.local && data.data.includes ( 'Saved' ) ){
                     this.$message ( 'Published on remote Whoobe. Ready to deploy')
+                }
+                if ( this.project.local && data.data.includes('done') ){
+                    this.preview = true
                 }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null

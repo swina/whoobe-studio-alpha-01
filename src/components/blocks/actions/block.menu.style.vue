@@ -18,14 +18,15 @@
             Responsive
             <input type="checkbox" v-model="editor.current.responsive"/>
             <div v-if="editor.current.responsive && mode==='responsive'" class="flex flex-col">
-                <div class="flex-row-center mb-2">
-                    <icon :name="editor.current.icons.burger" class="p-1 rounded-full  border border-dashed mr-2" title="Click to change" @click="icon=!icon,iconType='burger'"/> 
-                    Burger Icon 
+                <div class="flex-row-center mb-2" @click="icon=!icon,iconType='burger'">
+                    <icon-extra :key="icon" :icon="editor.current.icons.burger" class="p-1 rounded-full  border border-dashed mr-2 text-xl" title="Click to change" />
+                    <!-- <icon :name="editor.current.icons.burger" class="p-1 rounded-full  border border-dashed mr-2" title="Click to change"/>  -->
+                    Menu Icon 
                     
                 </div>
-                <div class="flex-row-cener">
-                    <icon :name="editor.current.icons.back" class="p-1 rounded-full  border border-dashed mr-2" title="Click to change" @click="icon=!icon,iconType='back'"/>
-                    Close Icon 
+                <div class="flex-row-center" @click="icon=!icon,iconType='back'">
+                    <icon-extra :key="icon" :icon="editor.current.icons.back" class="p-1 rounded-full  border border-dashed mr-2 text-xl" title="Click to change" />
+                    Close Icon
                 </div>
             </div>
             <div v-if="mode==='submenu'" class="mt-2">
@@ -78,7 +79,7 @@
                 buttons="none"
                 v-if="icon">
                 <div slot="title">Icon</div>
-                <block-icons slot="content" type="material" @icon="setIcon"/>
+                <block-iconify slot="content" @icon="setIcon"/>
             </modal>
         </transition>
         <transition name="slideright">
@@ -101,7 +102,7 @@ import { mapState } from 'vuex'
 export default {
     name: 'BlockMenuStyle',
     components: {
-        'block-icons'       : () => import ( './block.icons.vue' ),
+        'block-iconify'       : () => import ( './block.iconify.vue' ),
         'block-tailwind'    : () => import ( '@/components/blocks/editor/tailwind/tailwind.container.vue'),
     },
     data:()=>({
@@ -142,7 +143,9 @@ export default {
             return this.mode === mode ? 'bg-purple-800' : 'bg-gray-900'
         },
         setIcon(icon){
+            console.log ( icon, 'type=>' , this.iconType )
             this.editor.current.icons[this.iconType] = icon
+            console.log ( this.editor.current.icons[this.iconType])
             this.icon = false
         },
         setCSS(css){

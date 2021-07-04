@@ -1,14 +1,14 @@
 <template>
-    <div class="relative bg-white p-0 border-none max-h-screen" style="min-width:30rem;min-height:25rem;">
+    <div class="mt-10 relative bg-white p-0 border-none max-h-screen" style="min-width:30rem;min-height:25rem;" :class="is_full_screen">
         <!--<i v-if="!$attrs.embeded" class="material-icons absolute top-0 right-0 mt-1 mr-1 rounded-full cursor-pointer bg-red-500 text-white" @click="$emit('close')">highlight_off</i>-->
-        <i class="material-icons text-sm nuxpresso-icon-btn text-black absolute top-0 right-0 m-1  cursor-pointer" title="add image" @click="addImage">image</i>
-        
+        <icon name="image" class="absolute top-0 right-0 -mt-8 z-highest mr-10 cursor-pointer" title="add image" @click="addImage"/>
+        <icon name="fullscreen" class="z-highest absolute top-0 right-0 -mt-8 mr-2 cursor-pointer" title="fullscreen" @click="fullscreen=!fullscreen,$emit('fullscreen')"/>
        
             <quill-editor
                 v-if="hasContent" 
                 :style="'' + stile()"
                 :class="$attrs.size?$attrs.size:''"
-                class="mt-2 overflow-y-hidden"
+                class="mt-2 overflow-y-hidden pb-10"
                 ref="editor"
                 id="editor"
                 v-model="content"
@@ -30,6 +30,7 @@
                 </div>
             </modal-fullscreen>
         </transition>
+
 
 
     </div>
@@ -57,6 +58,7 @@ export default {
         iseditor: false,
         media: false,
         content: '',
+        fullscreen: false,
         font: "Barlow Condensed",
         /*
         editorOptions: {
@@ -121,6 +123,10 @@ export default {
         hasContent(){
             this.$attrs.article ? this.content = this.$attrs.value : this.content = this.editor.current.content
             return true
+        },
+        is_full_screen(){
+            return this.fullscreen ?
+                'h-screen' : ''
         },
         editorOptions(){
             return { modules: {

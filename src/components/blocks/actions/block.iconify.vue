@@ -33,7 +33,7 @@ export default {
             }
         },
         setIcon(icon){
-            console.log ( icon )
+            this.$emit('icon',icon)
             this.editor.current.content = icon
         }
     }

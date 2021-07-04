@@ -13,17 +13,19 @@
             </draggable>
             </transition>
         </ul>
-    
 </template>
 
 <script>
 import draggable from 'vuedraggable'
 export default {
     name: 'BlockTreeElements',
-    components: { draggable },
+    components: { 
+        draggable 
+    },
     data:()=>({
         current: null,
-        expand: false
+        expand: false,
+
     }),
     props: [ 'doc' ],
     mounted(){

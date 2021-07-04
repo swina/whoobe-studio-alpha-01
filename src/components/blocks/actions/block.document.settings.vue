@@ -32,8 +32,8 @@
             </div>
         </div>
         
-        <div class="bg-gray-300 w-full cursor-pointer my-1 p-1 font-bold" @click="templateSettings=!templateSettings" v-if="component.category === 'loop'">Loop settings <i class="material-icons">expand_more</i></div>
-        <div class="flex flex-col text-sm bg-white p-1" v-if="templateSettings">
+        <div class="w-full bg-gray-600 cursor-pointer my-1 p-1 font-bold" @click="templateSettings=!templateSettings" v-if="component.category === 'loop'">Articles template settings <i class="material-icons">expand_more</i></div>
+        <div class="flex flex-col text-sm p-1" v-if="templateSettings">
 
             <label class="font-bold">Default template</label>
             <div class="text-xs text-gray-600"><input type="checkbox" v-model="component.default"/> (apply to articles with no template)</div>
