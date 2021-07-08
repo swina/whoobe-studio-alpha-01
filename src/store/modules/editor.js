@@ -13,6 +13,7 @@ const editor = {
         preview: null,
         fonts: process.env.VUE_APP_FONT_FAMILIES.split('|'),
         save: true,
+        article: null
     },
     mutations: {
         project ( state , payload ){
@@ -50,6 +51,9 @@ const editor = {
         },
         save ( state , save ){
             state.save = save
+        },
+        article ( state , article ){
+            state.article = article
         }
     },
     actions: {
@@ -88,6 +92,9 @@ const editor = {
         },
         save( { commit } , save ){
             commit ( 'save' , save )
+        },
+        article( { commit } , article ){
+            commit ( 'article' , article )
         }
     }
 

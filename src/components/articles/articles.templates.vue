@@ -1,8 +1,8 @@
 <template>
 <div class="flex flex-col theme-dark">
-    <div class="flex flex-row my-1 p-1">
+    <div class="flex flex-row my-1 p-1 items-center">
         <span>Category</span> 
-        <select v-model="filter" class="ml-2 w-full theme-dark">
+        <select v-model="filter" class="ml-2 w-full dark">
         <option v-for="category in $mapState().datastore.dataset.setup[0].categories.components" :value="category">{{ category }}</option>
     </select>
     </div>
@@ -10,11 +10,11 @@
         <template v-for="(template,index) in templates">
             <div class="w-48 flex flex-col mb-4 cursor-pointer" v-if="index>=start && index < (start+limit)" @click="setTemplate(template)" :title="template.category">
                 <div class="flex flex-row items-center justify-between text-gray-600">
-                    <span class="text-xs">{{ template.name }}</span>
+                    <span class="text-xs">{{ template.name.substring(0,25) }}</span>
                     <i class="material-icons ml-1">{{ template.category === 'page' ? 'web' : 'dynamic_feed'}}</i>
                 </div>
                 
-                <div :style="'background-image:url(' + background(template) + ')'" class="h-24 bg-auto bg-no-repeat bg-cover border shadow rounded"></div>
+                <div :style="'background-image:url(' + background(template) + ')'" class="h-48  bg-auto bg-no-repeat bg-cover border shadow rounded"></div>
             </div>
         </template>
     </div>
@@ -27,10 +27,10 @@
 
 <script>
 export default {
-    name: 'BlockSelection',
+    name: 'ArticleBlockSelection',
     data:()=>({
         start: 0,
-        limit: 12,
+        limit: 8,
         templates:null,
         filter: 'page'
     }),
@@ -40,22 +40,20 @@ export default {
             this.$api.service('components').find ( { query : {
                 category : this.filter,
                 $skip:0,
-                $limit:200
+                $limit:200,
+                $sort: { updatedAt: -1}
             }}).then ( result => {
                 this.templates = result.data
             })
             return true
         }
     },
-    /*
+    
     watch:{
         filter(v){
-            this.templates = this.$mapState().datastore.dataset.components.filter ( templ => {
-                return templ.category === v
-            })
+            this.start = 0
         }
     },
-    */
     methods: {
         background(template){
             let image = ''
@@ -101,7 +99,9 @@ export default {
                         }
                     })
                     this.$message ( 'Updated ' + count + ' articles' )
+                    this.$emit('close')
                 })
+                
                 // this.$mapState().datastore.dataset.articles.map ( arts => {
                 //     if ( arts._id === this.article._id ){
                 //         arts.template_id = this.article.template_id
@@ -110,6 +110,7 @@ export default {
                 // })
                 //this.$action()
             })
+            
             //this.$mapState().datastore.currentArticle.template_id = template._id
             //this.$mapState().datastore.currentArticle.blocks = template
         }

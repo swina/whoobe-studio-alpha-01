@@ -1,54 +1,52 @@
 <template>
-    <div class="" v-if="products">
+    <div class="" v-if="products" id="whoobestore">
+    
     <div class="relative" :class="settings.general.css">
         <div class="z-highest absolute right-0 -mr-10 flex flex-col justify-around items-center" v-if="editor && $mapState().editor.current.hasOwnProperty('plugin') &&  $mapState().editor.current && $mapState().editor.current.plugin._id === $attrs.plugin._id">
-            <!-- <icon name="settings" title="Settings" @click="$action('block_plugin_setting')" class="text-3xl"/>
-            <icon name="brush" title="Customize" @click="$action('block_plugin_setting')" class="text-3xl"/> -->
             <icon :name="!current?'web':'collections'" :title="!current?'View Single':'View Loop'" class="text-3xl mr-2" @click="!current?current=products[0]:current=null"/>
         </div>
-        <div v-if="settings.general.display.cart.enabled" class="w-full text-xs flex flex-row items-center justify-end snipcart-checkout -mt-8">
+        <div v-if="settings.general.display.cart.enabled" class="w-full text-xs flex flex-row items-center justify-end snipcart-checkout -mt-8 cursor-pointer">
             <span class="snipcart-items-count"></span>
-            <icon :name="settings.general.display.cart.name||'shooping_bag'" :class="settings.general.display.cart.css"/>
-            <!--<i class="material-icons">shopping_bag</i>-->
+            <icon-extra :icon="settings.general.display.cart.name||'mi:shooping_bag'" :class="settings.general.display.cart.css"/>
             <span class="snipcart-total-price"></span>  
         </div>
         <icon name="brush" title="Customize" @click="customize=!customize" v-if="$mapState().editor.action==='in_editor_preview' &&  $mapState().editor.current"  class="absolute left-0 rounded-full border p-2 -m-10 bg-white z-highest hover:bg-purple-500 hover:text-white text-purple-500 text-3xl"/>
 
-        <!-- <div v-if="!apikey" class="text-center w-full border-4 bg-gray-300 text-lg text-red-500">Invalid License Key</div> -->
-        <!-- <h3 id="storeTop">Store</h3> -->
-        
-        <store-categories v-if="!current && settings.loop.categories.enabled" :container="settings.loop.categories.container" :css="settings.loop.categories.css" @category="qryByCategory"/>
-        
-        <div class="flex flex-col md:flex-row" v-if="!current">
-            <p v-if="settings.general.display.total.enabled" :class="settings.general.display.total.css">{{ settings.general.display.total.name }} {{total}}</p>
-            <input v-if="settings.general.display.search.enabled" type="text" :class="settings.general.display.search.css" :placeholder="settings.general.display.search.name" v-model="search" @keydown="productSearch($event)"/><icon name="zoom" class="visible md:invisible"/>
+        <div class="flex flex-col md:flex-row justify-start w-full items-center relative">
+            <div class="w-full md:w-5/6">
+                <store-categories v-if="!current && settings.loop.categories.enabled" :container="settings.loop.categories.container" :css="settings.loop.categories.css" @category="qryByCategory"/>
+            </div>
+            <div class="flex justify-end md:w-1/6 items-center">
+                <p v-if="settings.general.display.total.enabled" :class="settings.general.display.total.css">{{ settings.general.display.total.name }} {{total}}</p>
+                <button class="lg" @click="advancedFilter=!advancedFilter">Filter</button>
+            </div>
+            <transition name="slideright">
+                <div class="fixed z-modal bg-white h-screen p-2 flex flex-col top-0 right-0 w-full md:w-1/4 justify-start items-start py-4 shadow" v-if="!current && advancedFilter">
+                    <span class="absolute top-0 right-0 cursor-pointer" @click="advancedFilter=!advancedFilter"><icon-extra icon="mi:close" class="text-3xl"></icon-extra></span>
+                    
+                    <input v-if="settings.general.display.search.enabled" type="text" :class="settings.general.display.search.css" :placeholder="settings.general.display.search.name" v-model="search" @keydown="productSearch($event)"/><icon name="zoom" class="visible md:invisible"/>
+                    <div class="w-full">
+                        Price range
+                        <double-range class="mt-4" :min="0" :max="3000" @range="setPriceRange"/>
+                    </div>
+                </div>
+            </transition>
         </div>
-        <!-- <div class="w-full flex flex-row items-center justify-center text-center cursor-pointer" v-if="settings.general.display.navigation">
-            <icon :class="settings.general.display.navigation.css" :name="settings.general.display.navigation.name.split(',')[0]||'chevron_left'" @click="start > 0 ? start=start-limit : null"/>
-            <div>{{start+1}}-{{ ((start+limit) < total) ? (start+limit) :total }}</div>
-            <icon :class="settings.general.display.navigation.css" :name="settings.general.display.navigation.name.split(',')[1]||'chevron_right'" @click="(start+limit)<=total?start=start+limit:null"/>
-        </div> -->
-       
 
-        
+        <div v-if="!products.length"><h3>No products found!</h3></div>
 
-         
-
-        
-       
-
-            <div v-if="!products.length"><h3>No products found!</h3></div>
+        <!-- PRODUCTS LIST -->
         <div v-if="!current" class="flex flex-col items-center justify-center" :class="settings.loop.container">
             <template v-for="(product,index) in products">
                 <div class="flex flex-col" :class="settings.loop.css" @click="current=product,currentPrice=product.price,currentOption=product.optionValues,variations(product.sku)">
                     <template v-for="field in settings.loop.fields">
                         
-                        <div :class="field.css" v-if="schema[field.name].type!='image_uri' && field.name !='add_to_cart'">
+                        <div :class="field.css" v-if="schema[field.name].type!='image_uri' && field.name !='add_to_cart'" :title="product.name">
                             <small class="mr-1" v-if="schema[field.name].type==='currency'">{{ settings.general.currency }}</small>
                             {{ schema[field.name].type==='currency' ? parseFloat(product[field.name]).toFixed(2) : product[field.name] }}
                         </div>
                         <div v-else>
-                            <img :src="productImage(product[field.name])" :class="field.css" v-if="field.name != 'add_to_cart'">
+                            <img :src="productImage(product[field.name])" :class="field.css" v-if="field.name != 'add_to_cart'" :title="product.name" :alt="product.name">
                             <button v-if="field.name==='add_to_cart'" :class="field.css">Add to cart</button>
                         </div>
                     </template>
@@ -66,15 +64,8 @@
             </div>
         </div>
 
-
-        <!-- <div v-if="!current" class="w-full text-center cursor-pointer">
-            <i class="mr-4 bi-chevron-left" @click="start=start-limit,scrollTop()" v-if="start > 0"></i>
-            <small>{{start+1}}-{{start+limit}}</small>
-            <i class="ml-4 bi-chevron-right" @click="start=start+limit,scrollTop()" v-if="(start+limit)<=total"></i>
-        </div> -->
-
-        <!-- SINGLE VIEW -->
-        <!--<div v-if="current" class="fixed inset-0 overflow-y-auto h-screen md:relative md:h-auto">-->
+        <div id="store_single">
+        <transition name="fade">    
             <div v-if="current" :class="settings.single.css + ' '  + settings.single.container" class="relative">
                 <div class="absolute right-0 top-0 bg-white p-2">
                     <icon name="close" class="text-3xl" @click="current=null"/>
@@ -145,6 +136,8 @@
                     </template>
                 </div>
             </div>
+        </transition>
+        </div>
         <!-- </div> -->
         
         <!-- <transition name="animate-slideout">
@@ -204,7 +197,8 @@ export default {
     name: 'WhoobeStore',
     components: {
         'store-customize' : () => import ( './admin/settings.vue' ),
-        'store-categories' : () => import ( './store.categories.vue' )
+        'store-categories' : () => import ( './store.categories.vue' ),
+        'double-range'      : () => import ( '@/components/common/double.range.vue')
     },
     data:()=>({
         apikey: false,
@@ -228,7 +222,9 @@ export default {
         start: 0,
         total: 0,
         search:'',
+        advancedFilter: false,
         current: null,
+        allProducts: null,
         products: null,
         productVariations: null,
         currentPrice:null,
@@ -238,7 +234,12 @@ export default {
         settings: null,
         customize: false,
         schema: null,
-        filter: null
+        filter: null,
+        priceRange: {
+            min: 0,
+            max: 3000
+        },
+        qryPrice: false
     }),
     props:['editor'],
     computed:{
@@ -254,22 +255,37 @@ export default {
     },
     watch:{
         start(){
-            //this.scrollTop()
-                this.search ? 
-                    this.qrySearch(null) :
-                        this.filter ?
-                            this.filter.field === 'category' ?
-                                this.qryByCategory ( this.filter.value , true ) : 
-                                    this.qry() : this.qry()
+            this.scrollTop()
+            this.qryPrice ?
+                this.qryByPrice() :
+                    this.search ? 
+                        this.qrySearch(null) :
+                            this.filter ?
+                                this.filter.field === 'category' ?
+                                    this.qryByCategory ( this.filter.value , true ) : 
+                                        this.qry() : this.qry()
         },
         
         current(v){
             if ( v ){
+                //var element = document.querySelector("#store_single");
+                // scroll to element
+                //element.scrollIntoView();
+                this.scrollTop()
                 window.sessionStorage.setItem('moka-product-view',JSON.stringify(v))
             }
         }
     },
     methods:{
+        setPriceRange(min,max){
+            this.advancedFilter = false
+            this.priceRange = {
+                min: min,
+                max: max
+            }
+            this.qryPrice = true
+            this.qryByPrice()
+        },
         productImage ( asset ){
             return !Array.isArray(asset) ?
                 this.$imageURL(asset) : this.$imageURL(asset[this.currentImageIndex]) 
@@ -287,31 +303,61 @@ export default {
         },
         qry(){
             this.$api.service('products').find ( { query : { $limit: this.limit , $skip : this.start , type: 'product'  }}).then ( result => {
+                this.allProducts = result.data
                 this.products = result.data
                 this.total = result.total
             })
         },
         qryByCategory ( category , skip ){
+            this.qryPrice = false
             this.search = ''
             !skip ? this.start = 0 : null
             this.filter = { field: 'category' , value: category }
             this.$api.service('products').find ( { query : { $limit: this.limit , $skip : this.start , type: 'product' , category : category }}).then ( result => {
+                this.allProducts = result.data
                 this.products = result.data
                 this.total = result.total
             })
         },
         qrySearch(){
+            
             this.$api.service ( 'products' ).find ( { query :  { $limit: this.limit , $skip: this.start , $search : this.search  } } ).then ( res => {
+                this.allProducts = res.data
                 this.products = res.data
                 this.total = res.total 
+                this.advancedFilter = false
             })
+        },
+        qryByPrice(){
+            console.log ( this.start , this.limit )
+            this.$api.service ( 'products' )
+                .find ({ 
+                        query :  { 
+                            $limit: this.limit , 
+                            $skip: this.start,
+                            $and : [ 
+                                { price_value : { $gte: this.priceRange.min }} , 
+                                { price_value : { $lte: this.priceRange.max }} , 
+                            ],
+                            $sort: { price_value : 1 },
+                            type: 'product'
+                        }
+                })
+                .then ( res => {
+                    this.allProducts = res.data
+                    this.products = res.data
+                    this.total = res.total
+                    console.log ( res )
+                }).catch ( error => {
+                    console.log ( error )
+                })
         },
         randomImage(name){
             return 'https://source.unsplash.com/600x400?fashion&' + name
         },
         scrollTop(){
             // element which needs to be scrolled to
-            var element = document.querySelector("#storeTop");
+            var element = document.querySelector("#whoobestore");
             // scroll to element
             element.scrollIntoView();
         },

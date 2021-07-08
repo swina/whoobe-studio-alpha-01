@@ -87,11 +87,14 @@ button.round {
   @apply rounded-full w-20;
 }
 
-button.success {
-    @apply bg-green-400;
+button.info {
+  @apply bg-purple-600;
 }
 
 
+button.success {
+    @apply bg-green-400;
+}
 
 button.warning {
     @apply bg-orange-400;

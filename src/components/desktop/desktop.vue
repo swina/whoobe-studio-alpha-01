@@ -61,7 +61,7 @@ export default {
                 { 
                 query : 
                 {
-                    $select : ['_id', 'title' , 'slug' , 'template_id' , 'homepage' , 'active' ] 
+                    $select : ['_id', 'publish' , 'title' , 'slug' , 'template_id' , 'homepage' , 'active' , 'template_preview'] 
                 }
                 }
             ).then ( result => {

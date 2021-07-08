@@ -51,7 +51,7 @@
                             </span>
                                 
 
-                            <img v-if="currentArticle.template_preview" :src="this.$imageURL(currentArticle.template_preview)" class="w-48 h-32 object-cover object-top cursor-pointer" @click="$action('whoobe_templates')"/>
+                            <img v-if="currentArticle.template_preview" :src="this.$imageURL(currentArticle.template_preview)" class="w-48 h-32 object-cover object-top cursor-pointer" @click="selectTemplate=!selectTemplate"/>
                             <img v-else src="../../assets/no-image.png" class="h-24 object-contain"/>
                             <button class="sm mb-2" @click="selectTemplate=!selectTemplate">Page / Template</button> 
                             <!--<img class="h-24 object-cover object-top cursor-pointer" :src="$imageURL(currentArticle.blocks.image_uri)"
@@ -108,8 +108,7 @@
                 <div slot="content">
                 <block-templates 
                     :article="currentArticle"
-                    @set="setTemplate" 
-                    @close="selectTemplate=!selectTemplate"/>
+                    @close="selectTemplate=false"/>
                 </div>
             
             </modal>
@@ -161,8 +160,8 @@ export default {
             let w = window.open(route.href, 'whoobe','width=' + window.screen.availWidth );
             w.focus()
         },
-        setTemplate(template){
-            console.log ( template )
+        setTemplate(){
+            this.selectTemplate = false
         },
         setFeaturedImage(image){
             this.currentArticle.image = image

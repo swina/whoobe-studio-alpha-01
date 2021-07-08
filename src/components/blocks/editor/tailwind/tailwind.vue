@@ -157,14 +157,26 @@
                     <label>Link</label>
                     <input class="dark w-full" type="text" v-model="editor.current.link"/>
                     <div class="flex flex-row items-center">
-                        <label>Article/Page</label><icon name="refresh" @click="refreshArticles()"/>
+                        <label>Article/Page</label><icon name="list" @click="selectArticle=!selectArticle"/><icon class="ml-2" name="refresh" @click="refreshArticles()"/>
                     </div>
                     <select class="dark w-full" v-model="editor.current.link">
                         <option v-for="(opt,o) in $mapState().datastore.dataset.articles" :value="'/' + opt.slug">{{ opt.title }}</option>
                     </select>
+                    <div v-if="!editor.current.link.includes('//') && !editor.current.link.includes('#')">
+                        <img v-if="linkPreview" :src="$imageURL(linkPreview)" class="w-1/2 h-48 object-cover object-top m-auto mt-2"/>
+                    </div>
                     <label>Anchor</label>
                     <input class="dark w-full" type="text" v-model="editor.current.anchor"/>
                 </div>
+                <modal
+                    v-if="selectArticle"
+                    @close="selectArticle=!selectArticle"
+                    buttons="none"
+                    size="lg"
+                    position="modal">
+                    <div slot="title">Select Article</div>
+                    <block-article-selection slot="content" @selected="setArticle"/>
+                </modal>
             </div>
 
              <!-- slider link next prev -->
@@ -268,7 +280,8 @@ export default {
         MokaHeights,
         MokaOptions,
         MokaRange,
-        'image-placeholder' : () => import ( '@/components/blocks/editor/components/block.image.placeholder.vue' )
+        'image-placeholder' : () => import ( '@/components/blocks/editor/components/block.image.placeholder.vue' ),
+        'block-article-selection' : () => import ( '@/components/blocks/actions/block.article.selection.vue')
     },
     data:()=>({
         cssTw:{},
@@ -276,7 +289,8 @@ export default {
         group: '',
         allCss: '',
         allStyle: '',
-        imageSize: ''
+        imageSize: '',
+        selectArticle: false
     }),
     props: [ 'css' ],
     computed: {
@@ -284,6 +298,18 @@ export default {
         init(){
             this.allCss = this.css
             return true
+        },
+        linkPreview (){
+            let slug = this.editor.current.link.replace('/','')
+            let page = this.$mapState().datastore.dataset.articles.filter ( article => {
+                return article.slug === slug
+            })[0]
+            
+            if ( page && page.template_preview ){
+                return page.template_preview
+            } 
+            return null
+
         }
     },
     watch:{
@@ -368,6 +394,10 @@ export default {
             this.editor.current.image.width = this.editor.current.image.formats[size].width
             this.editor.current.image.height = this.editor.current.image.formats[size].height
             this.editor.current.image.size = this.editor.current.image.formats[size].size
+        },
+        setArticle(article){
+            this.editor.current.link = '/' + article.slug
+            this.selectArticle = false
         }
     }
 }

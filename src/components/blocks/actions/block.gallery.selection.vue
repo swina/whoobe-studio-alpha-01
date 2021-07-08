@@ -1,8 +1,8 @@
 <template>
 <div class="flex flex-col theme-dark max-h-screen">
-    <div class="flex flex-row my-1 p-1">
+    <div class="flex flex-row my-1 p-1 items-center">
         <span>Category</span> 
-        <select v-model="filter" class="ml-2 w-full theme-dark">
+        <select v-model="filter" class="ml-2 w-full dark">
         <option v-for="category in $mapState().datastore.dataset.setup[0].categories.components" :value="category">{{ category }}</option>
     </select>
     </div>
@@ -14,7 +14,7 @@
                     <i class="material-icons ml-1">{{ template.category === 'page' ? 'web' : 'dynamic_feed'}}</i>
                 </div>
                 
-                <div :style="'background-image:url(' + background(template) + ')'" class="h-24 bg-auto bg-no-repeat bg-cover border shadow rounded"></div>
+                <div :style="'background-image:url(' + background(template) + ')'" class="h-48 bg-auto bg-no-repeat bg-cover border shadow rounded"></div>
             </div>
         </template>
     </div>
@@ -27,10 +27,10 @@
 
 <script>
 export default {
-    name: 'BlockSelection',
+    name: 'BlockGallerySelection',
     data:()=>({
         start: 0,
-        limit: 12,
+        limit: 10,
         templates:null,
         filter: 'page'
     }),
@@ -40,7 +40,8 @@ export default {
             this.$api.service('components').find ( { query : {
                 category : this.filter,
                 $skip:0,
-                $limit:200
+                $limit:200,
+                $sort : { updatedAt : -1 }
             }}).then ( result => {
                 this.templates = result.data
             })

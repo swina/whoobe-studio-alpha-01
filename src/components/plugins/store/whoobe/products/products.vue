@@ -172,6 +172,12 @@ export default {
                     !product.hasOwnProperty('image') ?
                         product.image = null : null
                 })
+                // this.products.forEach ( product => {
+                //     let price_val = {
+                //         price_value : parseFloat(product.price)
+                //     }
+                //     this.$api.service ( 'products' ).patch ( product._id , price_val )
+                // })
             })
         },
         qrySearch(){

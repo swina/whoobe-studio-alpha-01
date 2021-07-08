@@ -25,6 +25,12 @@ const actions = {
         position: 'modal',
         component: 'articles/article.create.vue'
     },
+    article_selection : {
+        title: 'Select article',
+        size: 'lg',
+        position: 'modal',
+        component: 'blocks/actions/block.article.selection.vue'
+    },
     mode_settings : {
         title: 'Server',
         size: 'md',

@@ -1,11 +1,11 @@
 <template>
     <div class="m-4 p-4">
-        <div v-if="start" class="flex flex-row items-center justify-center mx-auto">
+        <!-- <div v-if="start" class="flex flex-row items-center justify-center mx-auto">
             <button class="lg mx-4 bg-purple-500" @click="start=false,context='website'">Generate Website</button>
             <button class="lg mx-4 bg-teal-500" @click="start=false,context='landing'">Generate Landing Page</button>
-        </div>
+        </div> -->
 
-        <div v-if="!start && context==='website' && website">
+        <div v-if="context==='website' && website">
             <div class="flex flex-col">
                 <h4>Generate Website</h4>
                 <div class="grid grid-cols-4 gap-10">
@@ -30,7 +30,7 @@
                     <div class="flex flex-col col-span-2">
                         <label>Pages to publish</label>
                         
-                        <treeselect v-model="pagesToPublish" :multiple="true" :options="options" @select="pageSelect" @unselect="pageUnselect"/>
+                        <treeselect v-if="options" v-model="pagesToPublish" :multiple="true" :options="options" @select="pageSelect" @unselect="pageUnselect"/>
 
 
                         <!-- <div class="flex flex-col relative h-1/3 overflow-y-auto cursor-pointer">
@@ -44,12 +44,13 @@
                         </div> -->
                     </div>
                 </div>
-                <div class="flex items-center">
+               
+                <!-- <pre>{{ output  }}</pre> -->
+            </div>
+             <div class="flex items-center w-full justify-around mt-6">
                     <button class="lg success" @click="buildWebsite()">Generate</button>
                     <button v-if="preview" class="ml-2 lg" @click="buildPreview()">Preview</button>
                 </div>
-                <!-- <pre>{{ output  }}</pre> -->
-            </div>
             <modal
                 v-if="setPWA"
                 @close="setPWA=!setPWA"
@@ -103,9 +104,9 @@
             <div slot="title">Publish {{ project.name }}</div>
             <div slot="content" class="p-4">
                 <div class="grid grid-cols-3 gap-10 h-1/2">
-                    <textarea id="generated" v-model="output" style="font-family:monospace" class="text-sm w-full h-full bg-black text-green-500 font-light col-span-2">
+                    <textarea id="generated" v-model="output" style="font-family:monospace" class="text-xs w-full h-full bg-gray-100 text-gray-700 font-light col-span-3">
                     </textarea>
-                    <textarea id="generated_errors" v-model="errors" style="font-family:monospace" class="text-xs w-full h-full bg-black text-red-400"></textarea>
+                    <!-- <textarea id="generated_errors" v-model="errors" style="font-family:monospace" class="text-xs w-full h-full bg-black text-red-400"></textarea> -->
                 </div>
             </div>
         </modal>
@@ -150,7 +151,7 @@ export default {
         fonts: null,
         generation: null,
         landingPages: null,
-        reusable:true,
+        reusable:false,
         component: null,
         lastProject: null,
         pagesToPublish: [],
@@ -171,13 +172,15 @@ export default {
             return typeof webpackHotUpdate != 'undefined' ? true : false 
         },
         options(){
-            return this.articles.map ( article => {
-                
-                return {      
-                    id: article._id,
-                    label: article.title
-                }
-            })
+
+            return this.articles ? 
+                this.articles.map ( article => {
+                    
+                    return {      
+                        id: article._id,
+                        label: article.title
+                    }
+                }) : null
         }
     },
     watch:{
@@ -192,6 +195,11 @@ export default {
         context(v){
             console.log ( v )
             if ( v === 'website' ){
+                this.$api.service ( 'build-nuxt' ).find().then ( res => {
+                    if ( res.total )
+                        this.website_build_id = res.data[0]._id
+                        this.website = res.data[0]
+               })
                 this.$api.service ( 'articles' )
                     .find ( {
                         query: {
@@ -200,9 +208,10 @@ export default {
                         }
                     }).then ( res => {
                         this.articles = res.data
-                        this.website = this.articles.filter ( page => {
-                            return page.homepage 
+                        let homepage = this.articles.filter ( page => {
+                            return page.homepage
                         })[0]
+                        this.website.blocks = homepage.blocks
                         this.articles.forEach ( page => {
                             if ( page.publish && !page.homepage ){
                                 this.pagesToPublish.push ( page._id )
@@ -210,16 +219,13 @@ export default {
                         })
                         this.website.meta = {}
                     })
-                this.$api.service ( 'build-nuxt' ).find().then ( res => {
-                    if ( res.total )
-                        this.website_build_id = res.data[0]._id
-
-                })
+                
             }
         },
         
     },
     mounted(){
+        this.context = 'website'
         this.lastProject = JSON.parse(window.localStorage.getItem ( 'whoobe-last-build'))
         if ( this.lastProject ){
             this.$loading(true)
@@ -239,9 +245,11 @@ export default {
                
                 if ( !this.project.local && data.data.includes ( 'Whoobe Site Generation done!' ) ){
                     this.$message ( 'Published on remote Whoobe. Ready to deploy')
-                    vm.preview = true                }
+                    vm.preview = true 
+
+                }
                 if ( this.project.local && data.data.includes('done') ){
-                    this.preview = true
+                    vm.preview = true
                 }
                 //!data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
                 !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null

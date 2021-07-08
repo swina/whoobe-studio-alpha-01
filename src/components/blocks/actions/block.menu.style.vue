@@ -29,8 +29,8 @@
                     Close Icon
                 </div>
             </div>
-            <div v-if="mode==='submenu'" class="mt-2">
-                <icon :name="editor.current.icons.submenu" class="p-1 rounded-full  border border-dashed mr-2" title="Click to change"  @click="icon=!icon,iconType='submenu'"/>
+            <div v-if="mode==='submenu'" class="flex-row-center mt-2" @click="icon=!icon,iconType='submenu'">
+                <icon-extra key="submenu_down" :icon="editor.current.icons.submenu" class="p-1 rounded-full  border border-dashed mr-2 text-xl" title="Click to change"/>
                 Submenu/Dropdown Icon 
             </div>
         </div>
