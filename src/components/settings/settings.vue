@@ -75,6 +75,7 @@
                 </div>
                 
             </div>
+            
             <!-- <div v-if="tab==='elements'" class="border border-t-0">
                 <h5 class="bg-gray-700 text-gray-200 p-1">Blocks Elements</h5>
                 <moka-settings-elements/>
@@ -117,7 +118,8 @@ export default {
     name: 'WhoobeSettings',
     components: { 
         MokaSettingsElements , MokaCategories , WhoobeProjects ,
-        'block-object' : () => import ( './block.object.vue' ) 
+        'block-object' : () => import ( './block.object.vue' ),
+        'whoobe-website' : () => import ( './website.vue') 
     },
     data:()=>({
         tabs: [
@@ -162,7 +164,8 @@ export default {
         },     
         colors(){
             return this.mokacolors()
-        }
+        },
+        
     },
     watch: {
         whoobeLocal(v){
@@ -175,8 +178,8 @@ export default {
         whoobeTest(v){
             v ? this.whoobeLocal = false : null
             v ? this.whoobeCMS = this.testServer : ''
-        }
-
+        },
+        
     },
     mounted(){
         
@@ -184,7 +187,7 @@ export default {
             this.whoobeCMS = window.localStorage.getItem('whoobe-cms')
             this.whoobeLocal = JSON.parse(window.localStorage.getItem('whoobe-local'))
         }
-        
+       
         // this.$apiwhoobe.authenticate().then ( res => {
         //     console.log ( 'user authenticated')
         //     if ( window.localStorage.getItem('whoobe') ){
@@ -200,6 +203,7 @@ export default {
         // })
     },
     methods:{
+        
         setWhoobeCMS(){
             
             if ( this.whoobeCMS.slice(-1) != '/' ){

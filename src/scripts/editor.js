@@ -646,7 +646,21 @@ export default {
                 
                 return project
         }
-
+        
+        Vue.prototype.$pageLinks = ( url = '' ) => {
+            if ( !url ) return null
+            const links = new Promise ( ( resolve, reject) => {
+                apiserver.apiserver.service('articles').find ( { query : 
+                    {
+                        slug: url.replace('/','')
+                    }
+                }).then ( res => {
+                    resolve ( res )
+                })
+            })
+            return links
+        }
+        
         Vue.prototype.$icons = ( search = '' , limit = 120 ) =>{
             if ( !search ) return null
             const resolve = new Promise ( (resolve,reject ) =>{

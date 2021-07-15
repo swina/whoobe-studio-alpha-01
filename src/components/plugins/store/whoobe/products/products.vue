@@ -89,6 +89,7 @@
     </modal>
     <modal
         size="lg"
+        position="modal"
         v-if="exportFile"
         @close="exportFile=!exportFile"
         @click_0="exportFile=!exportFile"

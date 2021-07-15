@@ -23,7 +23,7 @@
             <div>
                 <template v-for="plugin in $mapState().datastore.dataset.plugins">
                     <div :key="plugin.general.name" class="p-1 border-b border-gray-700 capitalize hover:bg-gray-600" v-if="plugin.component.config.hasOwnProperty('schema') && plugin.component.config.schema" @click="pluginElement(plugin)">
-                        {{ plugin.general.name }}
+                        {{ plugin.general.name }} [plugin]
                     </div>
                 </template>
                 <!-- <button @click="setCollectionFields('Product')">Product</button> -->
@@ -468,6 +468,9 @@ export default {
         },
         pluginElement ( plugin ){
             this.$mapState().editor.schema = plugin.component.config.schema
+            let ln = plugin.general.path.split('/')
+            let pippo = ln.pop()
+            console.log ( pippo )
             if ( plugin.component.config.source ){
                 this.$mapState().editor.source = plugin.component.config.source
             }

@@ -69,6 +69,11 @@
                             <input type="checkbox" v-model="currentArticle.homepage"/> 
                             Homepage
                         </div>
+                        <div>
+                            <!-- <div class="text-white mt-2 p-1">Homepage</div> -->
+                            <input type="checkbox" v-model="currentArticle.shop"/> 
+                            Shop
+                        </div>
                         <div class="text-white mt-2 p-1">Featured image</div>
                         <div class="flex flex-col mb-2 h-32 items-center">
                             <div class="h-32 w-full flex p-1 justify-center" v-if="currentArticle.image">

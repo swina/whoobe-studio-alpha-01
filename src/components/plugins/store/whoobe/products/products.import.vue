@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col p-4 bg-white text-black">
-        <!-- <div class="grid" v-if="schema && importFields">
+        <div class="grid" v-if="schema && importFields">
             <template v-for="field in Object.keys(schema)">
                 <div class="grid grid-cols-2">
                     <div>{{ field }}</div>
@@ -15,13 +15,20 @@
 
             </template>
 
-        </div> -->
+        </div>
         <div v-if="schema && importFields">
             <div class="flex flex-col p-2">
-                <p>You are importing {{ json.length }} products 
+                <!-- <p>You are importing {{ json.length }} products  -->
                 <br>
                 </p>
-                
+                Limit 
+                <select v-model="importLimit">
+                    <option value="10">First 10 records</option>
+                    <option value="100">First 10 records</option>
+                </select>
+                <input type="number" min="1" max="10000" v-model="importLimit"/>
+                Create new database
+                <input type="text" v-model="importNamespace"/>
                 <button class="warning" @click="importProducts" v-if="!importing">Import Products</button>
 
                 <div v-if="importOK">
@@ -36,7 +43,7 @@
         </div>
         <div class="flex text-white relative text-center p-2">
             <input type="file" class="absolute top-0 left-0 right-0 bottom-0 " @change="loadTextFromFile"/>
-            <button class="w-full warning">Select File</button>
+            <!-- <button class="hidden w-full warning">Select File</button> -->
         </div>
     </div>
 </template>
@@ -46,7 +53,7 @@ import model from '../model.js'
 import jp from 'jsonpath'
 
 export default {
-    name: 'MokaProductsImport',
+    name: 'WhoobeStoreImport',
     data:()=>({
         files: [],
         json: null,
@@ -56,10 +63,24 @@ export default {
         schema: null,
         toImport: null,
         importFields: null,
+        importLimit: null,
         mapping: {},
         importOK: [],
-        importError: []
+        importError: [],
+        importNamespace: '',
+        categories:[],
+        facets:[],
+        products: null,
+        variations: null
     }),
+    computed:{
+        productCategories(){
+            return [ ...new Set(this.categories) ].filter(c=>c.length>1)
+        },
+        productFacets(){
+            return [ ...new Set(this.facets) ].filter ( f => f.length > 1)
+        }
+    },
     watch:{
         json(v){
             if ( v.length ){
@@ -117,7 +138,42 @@ export default {
                     objData[i - 1][key] = data[i][k].trimEnd().replaceAll('category:','')
                 }
             }
+            this.importFields = Object.keys ( objData[0] )
+            this.products = objData.filter ( product => product['parent_id'] === '0' )
+            this.variations = objData.filter ( product => product['parent_id'] != '0' )
+            console.log ( 'Total=>'  , this.products.length )
             console.log ( objData )
+            let cats = [ ...new Set(objData.map ( prod => prod['category'] )) ]
+            console.log ( cats )
+            this.categories = []
+            this.facets = []
+            console.log ( cats )
+            cats.map ( c => {
+                let cat = c
+                let parent = this.$randomID()
+                let fc = ''
+                if ( c.includes ( '|' ) ) {
+                    cat = c.split('|')[0]
+                }
+                let category = cat
+                
+                if ( cat.includes ( '>' ) ){
+                    category = cat.split('>')[0]
+                    fc = cat.split('>')[1] 
+                    this.facets.push ( fc )
+                    // this.facets.push ( {
+                    //     collection : parent,
+                    //     name: fc,
+                    //     slug: this.$slugify(fc),
+                    //     type: 'facet',
+                    //     active: true
+                    // })
+                    console.log ( 'Facet=>' , fc )
+                }
+                console.log ( 'Category=>' , category )
+                this.categories.push ( category )
+
+            })
             return objData
         },
         CSVToArray(csvData, delimiter) {

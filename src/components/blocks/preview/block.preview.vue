@@ -1,5 +1,5 @@
 <template> 
-    <div :key="refreshID" :ref="doc.id" :class="pageCss(doc.css) + ' m-auto relative overflow-y-auto z-top overflow-x-hidden '" :style="stile(doc)" id="content">
+    <div :key="refreshID" :ref="doc.id" :class="pageCss(doc.css) + ' m-auto relative overflow-y-auto pb-10  z-top overflow-x-hidden '" :style="stile(doc)" id="content">
         <!-- 1st level - BLOCKS LOOP -->
         <span v-if="!doc.hasOwnProperty('slider')">
 

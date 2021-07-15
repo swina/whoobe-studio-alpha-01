@@ -31,10 +31,6 @@
             
             <i :class="'material-icons text-10xl m-auto ' + $cssResponsive(el.css)" v-if="el.type==='image' && !el.image">photo</i> 
 
-
-
-            
-
             <button :class="$cssResponsive(el.css)" v-if="el.type==='file'">{{el.content}}</button>    
             
             <!-- icon -->

@@ -5,10 +5,7 @@
                 <button @click="mode=section,fieldIndex=null" class="lg capitalize text-base" :class="mode===section?'bg-indigo-500':''">{{ section }}</button>
             </template>
         </div>
-        <!-- <div class="w-full" v-if="mode==='single'" @click="layoutSelect=!layoutSelect">
-            <label>Layout</label>
-            <single-layouts class="w-full theme-dark" :layout="layout" @layout="setLayout"/>
-        </div> -->
+        
         <div class="grid grid-cols-3 gap-2 p-2 w-full dark-theme text-base">
             <template v-for="field in Object.keys(settings[mode])">
                 
@@ -24,10 +21,11 @@
                 <div v-if="isObject(settings[mode][field]) && !isArray(settings[mode][field])" class="col-span-3 grid grid-cols-3 justify-start"> 
                     <template v-for="f in Object.keys(settings[mode][field])">
                         
-                        <label class="font-bold capitalize">
+                        <label class="bg-gray-700 w-full mb-1 col-span-3 capitalize cursor-pointer" @click="group=f">
                             {{ f }}
                         </label>
-                        <div v-if="isObject(settings[mode][field][f])" class="col-span-2 flex flex-col">
+
+                        <div v-if="isObject(settings[mode][field][f]) && group===f" class="col-span-3 p-2 flex flex-col mb-1 bg-gray-900">
 
                             <template v-for="ff in Object.keys(settings[mode][field][f])">
                                 <label>{{ ff }} </label>
@@ -43,7 +41,7 @@
                 
 
                 <div v-if="isArray(settings[mode][field])" class="col-span-3">
-                        <!-- gap-2 grid grid-cols-' + (Object.keys(settings[mode][field][0]).length  + 1) -->
+                        
                         <div :key="fn + '_' + i" v-for="(fn,i) in settings[mode][field]" class="p-1 flex flex-col mb-2" :class="fieldIndex===i?'border rounded':''">
                             <div @click="fieldIndex=i" class="w-full flex flex-row items-center flex-wrap">
                                 <input type="text" class="dark" v-model="settings[mode][field][i].name"/>
@@ -72,7 +70,7 @@
                 </div>
 
             </template>
-            
+            <button @click="copyTemplate()">Copy Template</button>
         </div>
         <!-- <modal 
             v-if="fields"
@@ -101,6 +99,7 @@ export default {
         mode: null,
         schema: null,
         fields: false,
+        group: '',
         addField: null,
         fieldIndex: null,
         layout:1, 
@@ -148,6 +147,10 @@ export default {
         setLayout(layout){
             this.settings[this.mode].layout = layout
             this.layout = layout
+        },
+        copyTemplate(){
+            window.localStorage.setItem ('whoobe-shop-template',JSON.stringify(this.settings[this.mode]))
+            this.$message ( 'Template copied' )
         }
     },
     mounted(){

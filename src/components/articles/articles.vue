@@ -5,7 +5,7 @@
                 <span class="ml-2">Category</span> 
                 <select v-model="filter" class="dark ml-2 w-32">
                     <option value="">all</option>
-                    <option v-for="category in $mapState().datastore.dataset.setup[0].categories.articles" :value="category">{{ category }}</option>
+                    <option v-for="category in $mapState().datastore.dataset.setup[0].categories.articles" :value="category.name">{{ category.name }}</option>
                 </select>
             </div>
         <div class="bg-gray-200 text-sm" v-if="!selected">

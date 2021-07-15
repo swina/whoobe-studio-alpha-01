@@ -29,6 +29,7 @@
                     <option v-for="font in editor.fonts" :value="font.replace('+',' ')">{{font.replace('+',' ')}}</option>
                     
                 </select>
+                <button class="mt-6 lg rounded" @click="createArticle()">Create Article</button>
             </div>
         </div>
         
@@ -179,11 +180,34 @@ export default {
                 this.$message ( 'Current page has been published')
             }
         },
-        '$store.state.editor.component':function(comp){
-            this.loadComponent()
-        }
+        // '$store.state.editor.component':function(comp){
+        //     this.loadComponent()
+        // }
     },
     methods:{
+        createArticle(){
+            let article = {}
+            article.title = this.component.name
+            article.slug = this.$slugify(this.component.name)
+            article.publish = true
+            article.component = this.component._id
+            article.content = ''
+            article.excerpt = ''
+            article.seo_title = this.component.seo.title
+            article.seo_description = this.component.seo.description
+            article.template_id = this.component._id
+            article.template_preview = this.component.image
+            article.categories = 'page'
+            let blocks = this.component
+            delete blocks.autosave
+            article.blocks = blocks
+            this.$api.service ( 'articles' ).create ( article ).then ( res => {
+                this.$message ( 'Article created!' )
+                this.$mapState().datastore.dataset.articles.push ( res )
+            }).catch ( error => {
+                this.$message ( 'An error occurred. Check you console log')
+            })
+        }
         // loadProject(){
         //     //this.$loading(true)
         //     this.project = this.$projectResources ( this.project )

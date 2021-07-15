@@ -61,7 +61,8 @@ export default {
                 { 
                 query : 
                 {
-                    $select : ['_id', 'publish' , 'title' , 'slug' , 'template_id' , 'homepage' , 'active' , 'template_preview'] 
+                    $limit: 200,
+                    $select : ['_id', 'publish' , 'title' , 'slug' , 'categories' , 'template_id' , 'homepage' , 'active' , 'template_preview'] 
                 }
                 }
             ).then ( result => {

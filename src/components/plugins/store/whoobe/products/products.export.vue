@@ -12,7 +12,7 @@
             <template v-for="(field,index) in schema">
                 <div class="grid grid-cols-2">
                     <div>
-                        <input type="text" class="w-3/4" v-model="mapping[field]"/>
+                        <input type="text" class="dark w-3/4" v-model="mapping[field]"/>
                         <i class="material-icons" @click="disableField(index)">close</i>
                     </div>
                     <div>
@@ -87,8 +87,11 @@ export default {
         
     },
     mounted(){
-        
-        this.$http.get('products').then ( res => {
+        this.$api.service('products').find ( {
+            query: {
+                $limit : 300
+            }
+        }).then ( res => {
             this.products = res.data
             let fields = this.products ? Object.keys(this.products[0]) : []
             fields.forEach ( field => {

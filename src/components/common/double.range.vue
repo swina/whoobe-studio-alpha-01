@@ -1,12 +1,12 @@
 <template>
-    <div class="w-full relative flex flex-row items-start justify-start">
+    <div class="w-full relative flex flex-col items-start justify-start">
         <div class='range-slider h-12 w-full'>
             <input type="range" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMin">
             <input class="rounded py-2 mx-2 text-sm" type="number" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMin">
             <input type="range" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMax">
             <input class="rounded py-2 mx-2 text-sm" type="number" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMax">
         </div>
-        <button class="rounded" @click="$emit('range',sliderMin,sliderMax)">GO</button>
+        <button class="rounded m-auto mt-6" @click="$emit('range',sliderMin,sliderMax)">Filter</button>
     </div>
 </template>
 
