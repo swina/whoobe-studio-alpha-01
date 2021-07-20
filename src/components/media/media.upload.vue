@@ -10,6 +10,7 @@
       :theme="theme?'list':''"
       ref="vueFileAgent" v-model="fileRecords"></vue-file-agent>
     
+    <input type="text" v-model="folder" class="dark mr-2" placeholder="target folder"/>
     <button :disabled="!fileRecords.length" @click="uploadFiles()">
     Upload {{ fileRecords.length }} files
     </button>
@@ -23,6 +24,7 @@ export default {
 
   name: 'MokaMediaUpload',
   data:()=>({
+      folder: '',
       selectedFiles: null,
       currentFile: undefined,
       progress: 0,
@@ -40,6 +42,7 @@ export default {
   }),
   mounted(){
     const mediaService = this.$api.service ( 'media ')
+    this.folder = this.$attrs.folder
     mediaService.on ( 'created' ,  media => console.log ( 'New image uploaded ' , media ))
   },
   computed:{
@@ -143,6 +146,7 @@ export default {
     uploadFile( obj , file, onUploadProgress , index ) {
         let formData = new FormData()
         formData.append("file", file )
+        formData.append('folder',this.folder)
         for (var key of formData.entries()) {
 			    console.log(key[0] + ', ' + key[1])
         }

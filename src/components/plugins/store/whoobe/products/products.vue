@@ -22,7 +22,7 @@
         </template>
         </div>
         <template v-for="product in products">
-            <div :key="product._id" :class="'text-black text-lg w-full p-1 border-b border-l border-r cursor-pointer grid grid-cols-' + cols" v-if="product.name" @click="editor.current=product,edit=true">
+            <div :key="product._id" :class="'text-black text-lg w-full p-1 border-b border-l border-r cursor-pointer text-sm grid grid-cols-' + cols" v-if="product.name" @click="editor.current=product,edit=true">
                 <template v-for="field in Object.keys(schema)">
                     <div :key="field" v-if="schema[field].list">
                         <span v-if="schema[field].type==='string'">{{ product[field] }}</span>
@@ -172,7 +172,25 @@ export default {
                 this.products.map ( product => {
                     !product.hasOwnProperty('image') ?
                         product.image = null : null
-                })
+                    // if ( !product.assets[0].includes('/products/') ){
+                    //     this.$api.service ( 'upload/file' ).create ( {
+                    //         url: 'http://localhost:3030' + product.assets[0],
+                    //         name: this.$slugify(product.name),
+                    //         folder: 'products'
+                    //     }).then ( res => {
+                    //         console.log ( 'Uploaded image for => ' , product.name )
+                    //     })
+                    // }
+                    // product.seo_title = product.name
+                    // product.seo_description = product.description
+                    // this.$api.service ('products').patch ( product._id , product).then ( res => {
+                    //     console.log ( res.name + ' updated')
+                    // })
+                    // let assets = []
+                    // !Array.isArray( product.assets ) ?
+                    //     product.assets ?
+                    //         product.assets = [ product.assets ] : null : null
+                })  
                 // this.products.forEach ( product => {
                 //     let price_val = {
                 //         price_value : parseFloat(product.price)

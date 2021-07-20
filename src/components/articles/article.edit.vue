@@ -1,13 +1,14 @@
 <template>
     <div v-if="currentArticle" class="theme-dark relative">
-        <div class="bg-gray-900 sticky top-0 -mt-2 p-2 w-full z-2xtop">
-            <button class="lg" @click="saveArticle">Save</button> 
-            <button class="lg" @click="$emit('close')">Import WP</button>
-            <button class="lg" @click="$emit('close')">Export</button> 
+        <div class="bg-gray-900 top-0 -mt-2 p-2 w-full z-2xtop">
+            <button class="lg" @click="$emit('delete',currentArticle._id)">Delete</button> 
+            <!--<button class="lg" @click="$emit('close')">Import WP</button>
+            <button class="lg" @click="$emit('close')">Export</button>  -->
             <button class="lg" @click="preview()">Preview</button> 
-            <button class="lg" @click="$emit('close')">Create New</button>
-            <icon name="close" class="absolute right-0 mr-2 text-3xl text-gray-300" @click="$emit('close')"/>
-            <button class="lg absolute right-0 mr-12" @click="saveArticle">Save</button> 
+            <button class="lg" @click="saveArticle">Save</button> 
+            <!-- <button class="lg" @click="$emit('close')">Create New</button> -->
+            <icon name="close" css="absolute right-0 -mt-10 text-3xl text-gray-300" @click="$emit('close')"/>
+            <!-- <button class="lg absolute right-0 mr-12" @click="saveArticle">Save</button>  -->
         </div>
         <!-- /** 
         * !Edit article 
@@ -60,7 +61,7 @@
                         <div class="mb-2 flex flex-col">
                             <div class="text-white mt-2 p-1">Category</div>
                             <select class="dark w-full" v-model="currentArticle.categories">
-                                <option v-for="(category,c) in datastore.dataset.setup[0].categories.articles" :value="category.name"> {{ category.name }} </option>
+                                <option v-for="(category,c) in $mapState().datastore.dataset.categories.filter(a=>a.type==='article')" :value="category.name"> {{ category.name }} </option>
                             </select>
                         </div>
                     </div>
@@ -71,8 +72,8 @@
                         </div>
                         <div>
                             <!-- <div class="text-white mt-2 p-1">Homepage</div> -->
-                            <input type="checkbox" v-model="currentArticle.shop"/> 
-                            Shop
+                            <input type="checkbox" v-model="currentArticle.store"/> 
+                            Store main page
                         </div>
                         <div class="text-white mt-2 p-1">Featured image</div>
                         <div class="flex flex-col mb-2 h-32 items-center">

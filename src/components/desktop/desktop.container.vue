@@ -1,5 +1,6 @@
 <template>
     <div desktop-container v-if="desktop.tabs.length" class="editor-container pt-8 w-full absolute inset-0 min-h-screen bg-gray-900 bg-gradient-to-br min-h-screen theme-dark overflow-y-auto" :class="editor.action!='in_editor_preview'?displayMode:'w-full'" :style="topPadding">
+        
         <component 
             v-if="component && editor.action != 'in_editor_preview'" 
             :key="desktop.tabs[currentTab].name" 
@@ -8,9 +9,13 @@
             :filter="desktop.tabs[currentTab].filter"
             :component="component"
             :blocks="desktop.tabs[currentTab].blocks"/>
+        
+        <!-- Preview -->
         <block-preview class="w-full" :develop="true" :doc="editor.component.json" v-if="editor.action==='in_editor_preview' && !editor.preview_mobile"/>
         <iframe src="preview" class="mt-10 border-8 border-gray-900 z-highest shadow-xl rounded-2xl h-screen m-auto" style="width:365px;border-width:22px;height:640px;" v-if="editor.action === 'in_editor_preview' && editor.preview_mobile"/>
+
         <div class="m-auto text-center text-gray-700 my-8" v-if="editor.action === 'in_editor_preview' && editor.preview_mobile">This is a demo preview. Check fullscreen preview and select Smartphone size for a realistic preview</div>
+        
         <icon  v-if="editor.action==='in_editor_preview'" name="close" class="hover:bg-gray-300 hover:text-black mt-10 mr-2 text-5xl text-gray-400 z-highest fixed top-0 right-0" @click="$action()"/>
         
     </div>

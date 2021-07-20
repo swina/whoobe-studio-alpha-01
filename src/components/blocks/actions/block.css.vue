@@ -5,7 +5,7 @@
         <div v-if="editor.current && isContainer">Container CSS</div>
         <textarea v-if="editor.current && isContainer" class="dark w-full h-24" v-model="container"/>
         <div>Style</div>
-        <textarea class="w-full h-24 dark" v-model="stile"/>
+        <textarea class="w-full h-24 dark" v-model="editor.current.style"/>
     </div>
 </template>
 
@@ -49,7 +49,7 @@ export default {
         }
     },
     mounted(){
-        this.stile = this.editor.current.style ? this.$clean(this.editor.current.style.replaceAll(' ','\n')) : ''
+        this.stile = this.editor.current.style ? this.$clean(this.editor.current.style) : ''
         
         // this.editor.current.css.hasOwnProperty('container') ?
         //     this.isContainer = true :

@@ -2,95 +2,159 @@ const model = {
     "_id": {
         type : "id",
         edit: false,
-        list: false
+        list: false,
+        import: true
     },
     "name": {
         type: "string",
+        group: 'general',
         edit: true,
-        list: true
+        list: true,
+        import: true
     },
     "slug":{
         type: "string",
+        group: 'general',
         edit: true,
         list: false
     },
     "description":{
         type: "text" ,
+        group: 'general',
         edit: true,
-        list: false
+        list: false,
+        import: true
     },
     "assets":{
         type: "image_uri",
+        group: 'general',
         edit: true,
-        list: true
+        list: true,
+        import: true
     },
     "category" :{
         type: "select",
+        group: 'category',
         edit: true,
-        list: true
+        list: true,
+        import: true
     },
     "facets":{
         type: "select", //"category:Sports & Outdoor|category:Equipment|brand:Wilson"
         separator: '|',
+        group: 'category',
         edit: true,
-        list: true
+        list: true,
+        import: false
     },
     "optionGroups":{
         type: "array",
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "optionValues":{
         type: "list",
         separator: "|",
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "sku":{
         type: "string",
+        group: 'general',
         list: true,
-        edit: false
+        edit: false,
+        import: true
     },
     "parent": {
         type: "string",
         list: false,
-        edit: false
+        edit: false,
+        import: false
     },
+    "upsell":{
+        type: "array",
+        group: "related",
+        list: false,
+        edit: true,
+        import: false,
+        data: 'products'
+    },
+    
     "price": {
         type: "currency",
+        group: 'price',
         edit: false,
-        list: true
+        list: true,
+        import: true
+    },
+    "sale": {
+        type: "currency",
+        group: 'price',
+        edit: false,
+        list: true,
+        import: true
+    },
+    "price_value": {
+        type: "number",
+        edit: false,
+        list: true,
+        import: false
     },
     "taxCategory":{
         type: "string",
-        edit: true,
-        list: false
+        group: 'price',
+        edit: false,
+        list: false,
+        import: false
     },
     "stockOnHand": {
         type: "number",
+        group: 'stock',
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "trackInventory":{
         type: "boolean",
+        group: 'stock',
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "variantAssets":{
         type: "array",
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "type": {
         type: "array",
         edit: false,
-        list: false
+        list: false,
+        import: false
     },
     "image":{
         type: 'image',
         edit: false,
-        list: false
-    }
+        list: false,
+        import: false
+    },
+    seo_title:{
+        type: 'string',
+        group: 'seo',
+        edit: true,
+        list: false,
+        import: true
+    },
+    seo_description:{
+        type: 'text',
+        group: 'seo',
+        edit: true,
+        list: false,
+        import: true
+    },
 
 }
 // {

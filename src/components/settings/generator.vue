@@ -67,8 +67,9 @@
             <div slot="title">Select a block</div>
             <block-gallery slot="content" @component="setWebsiteTemplate"/>
         </modal>
-        <modal-fullscreen
+        <modal
             v-if="publish"
+            size="lg"
             position="modal"
             buttons="none"
             @close="publish=!publish">
@@ -82,7 +83,7 @@
                     
                 </div>
             </div>
-        </modal-fullscreen>
+        </modal>
         <!-- <pre>{{website}}</pre> -->
 
         <!-- <div v-if="context==='website' && website">
@@ -329,8 +330,8 @@ export default {
             this.website.template_preview = block.image
             this.website.pagesToPublish = block.links
             this.pagesToPublish = block.links
-            !this.website.blocks.hasOwnProperty ( 'seo' ) ?
-                this.website.blocks.seo = { title : this.website.seo_title , description: this.website.seo_description } : null
+            //!this.website.blocks.hasOwnProperty ( 'seo' ) ?
+            //    this.website.blocks.seo = { title : this.website.seo_title , description: this.website.seo_description } : null
             this.$api.service ( 'articles' ).patch ( this.website._id , this.website ).then ( res => {
                 this.reusable = false
                 this.searchLinks()
@@ -347,17 +348,24 @@ export default {
             const start = async () => {
                 asyncForEach ( this.website.blocks.links , async(url) => {
                     //await waitFor(50)
-                    console.log ( url )
-                    this.$pageLinks(url).then ( res => {
-                        let pg = res.data[0]
-                        // let id = res.data[0]._id
-                        //this.$store.dispatch ( 'addPage' ,  { image: res.data[0].template_preview , title: res.data[0].title } )
-                        let dataLinks = [ ...new Set(res.data[0].blocks.links) ] 
-                        return dataLinks
-                    }).then ( data => {
-                        this.allPagesLinks = [ ...new Set(this.allPagesLinks) , ...data ]
-                        this.website.pagesToPublish = [ ...new Set(this.allPagesLinks.filter(url=>url.length>2).map( slug => slug.replace('/','')).sort() ) ]
-                    })
+                    if ( !url.includes('store/category') && url != 'store' && url != '/' && url != '/shop-demo' ){
+                        this.$pageLinks(url).then ( res => {
+                            console.log ( res )
+                            let dataLinks
+                            if ( res.data.length ){
+                                let pg = res.data[0]
+                                // let id = res.data[0]._id
+                                //this.$store.dispatch ( 'addPage' ,  { image: res.data[0].template_preview , title: res.data[0].title } )
+                                dataLinks = [ ...new Set(res.data[0].blocks.links) ] 
+                            }
+                            return dataLinks
+                        }).then ( data => {
+                            if ( data ){
+                                this.allPagesLinks = [ ...new Set(this.allPagesLinks) , ...data ]
+                                this.website.pagesToPublish = [ ...new Set(this.allPagesLinks.filter(url=>url.length>2).map( slug => slug.replace('/','')).sort() ) ]
+                            }
+                        })
+                    }
                 })
                 
             }
@@ -497,6 +505,8 @@ export default {
         this.$api.service ( 'build-nuxt' ).find().then ( res => {
             res.total ?
                 this.website = res.data[0] : null
+                this.website.seo_title = ''
+                this.website.seo_description = ''
             this.searchLinks()
         })
         // this.$api.service ( 'articles' ).find ( {

@@ -1,6 +1,6 @@
 <template>
     <div class="" v-if="products" id="whoobestore">
-        
+
         <!-- cart -->
         <div v-if="settings.general.display.cart.enabled" class="hidden w-full text-xs md:flex flex-row items-center justify-end snipcart-checkout  z-modal -mt-8 cursor-pointer">
             <span class="snipcart-items-count"></span>
@@ -25,22 +25,22 @@
 
                 <!-- categories md: -->                
                 <div class="w-full md:w-5/6 hidden md:flex" >
-                    <store-categories  v-if="!current && !settings.general.sidebar && settings.loop.categories.enabled" :container="settings.loop.categories.container" :css="settings.loop.categories.css" @category="qryByCategory"/>
+                    <store-categories  v-if="!current && !settings.general.sidebar && settings.general.display.categories.enabled" :container="settings.general.display.categories.container" :css="settings.general.display.categories.css" @category="qryByCategory"/>
                 </div>
 
 
                 <!-- categories mobile -->
                 <transition name="slideleft">
-                    <div class="fixed top-0 left-0 h-screen w-screen bg-white z-highest" :class="settings.loop.categories.container" v-if="categories">
+                    <div class="fixed top-0 left-0 h-screen w-screen bg-white z-highest" :class="settings.general.display.categories.container" v-if="categories">
                         
                         <store-categories 
                             :sidebar="true" 
                             :category="category" 
                             :facet="facet"
-                            :facets="settings.loop.categories.facets"  
-                            v-if="settings.loop.categories.enabled" 
-                            :container="settings.loop.categories.container" 
-                            :css="settings.loop.categories.css" 
+                            :facets="settings.general.display.categories.facets"  
+                            v-if="settings.general.display.categories.enabled" 
+                            :container="settings.general.display.categories.container" 
+                            :css="settings.general.display.categories.css" 
                             @category="qryByCategory" 
                             @facet="qryByFacet"/>
                        
@@ -68,20 +68,22 @@
 
             <!-- PRODUCTS LIST -->
             
-            <div class="flex flex-col md:grid" :class="settings.general.sidebar ? 'md:grid-cols-12':'md:grid-cols-1'">
+            <div v-if="!current" class="flex flex-col md:grid" :class="settings.general.sidebar ? 'md:grid-cols-12':'md:grid-cols-1'">
 
                 <!-- sidebar md: -->
-                <div class="hidden md:flex flex-col md:col-span-3 xl:col-span-2 whoobe-store-sidebar">
+                <div v-if="settings.general.sidebar && !current" class="hidden md:flex flex-col md:col-span-3 xl:col-span-2 whoobe-store-sidebar">
+                    <icon name="list" @click="list=!list"/>
+                    <icon name="grid_on" @click="list=!list"/>
                     <div v-if="!products.length"><h3>No products found!</h3></div>
                     <div v-if="settings.general.display.total.enabled" :class="settings.general.display.total.css">{{ settings.general.display.total.name }} {{total}}</div>
                     <store-categories 
                         :sidebar="true" 
                         :category="category" 
                         :facet="facet"
-                        :facets="settings.loop.categories.facets"  
-                        v-if="settings.loop.categories.enabled" 
-                        :container="settings.loop.categories.container" 
-                        :css="settings.loop.categories.css" 
+                        :facets="settings.general.display.categories.facets"  
+                        v-if="settings.general.display.categories.enabled" 
+                        :container="settings.general.display.categories.container" 
+                        :css="settings.general.display.categories.css" 
                         @category="qryByCategory" 
                         @facet="qryByFacet"/>
                     
@@ -95,13 +97,13 @@
                 </div>
 
                 <!-- products loop -->
-                <div class="flex flex-col md:col-span-9 xl:col-span-10 whoobe-store-loop relative" :class="settings.loop.container">
+                <div class="flex flex-col whoobe-store-loop relative" :class="loopContainerClasse">
                     
                     <template v-for="(product,index) in products">
                         <div :key="product._id" class="flex flex-col" :class="productsClasse" @click="scrollTop(),current=product,currentPrice=product.price,currentOption=product.optionValues,variations(product.sku)">
                             <template v-for="field in settings.loop.fields">
                                 <div :class="field.css" v-if="schema[field.name].type!='image_uri' && field.name !='add_to_cart'" :title="product.name">
-                                    <small class="mr-1" v-if="schema[field.name].type==='currency'">{{ settings.general.currency }}</small>
+                                    <small class="mr-1" v-if="schema[field.name].type==='currency'">{{ settings.general.display.currency.symbol }}</small>
                                     {{ schema[field.name].type==='currency' ? parseFloat(product[field.name]).toFixed(2) : product[field.name] }}
                                 </div>
                                 <div v-else>
@@ -121,8 +123,19 @@
                             :limit="limit" 
                             :settings="settings" 
                             @page="setPage"/>
-
-                    <!-- desktop single view -->
+                    
+                    <store-slider 
+                        v-if="settings.loop.slider && pages > 1"
+                        :pages="pages"
+                        :start="start"
+                        :limit="limit"
+                        :max="max"
+                        :settings="settings"
+                        @cursor="setCursor"/>
+                    
+                </div>
+            </div>
+            <!-- desktop single view -->
                     <!-- single view is displayed in the products loop container -->
                     <transition name="fade">
                         <div v-if="current" class="w-full top-0 left-0 invisible md:visible">
@@ -197,9 +210,7 @@
                             </div>
                         </div>
                     </transition>
-                </div>
-            </div>
-            
+
             <!-- mobile single view -->
             <div :id="single_product_id">
                 <transition name="fade">    
@@ -287,7 +298,7 @@
 
             <icon v-if="settings.general.display.navigation.home" label="Home" name="home" @click="$router.push('/')" :css="settings.general.display.navigation.icons_css"/>        
 
-            <icon v-if="settings.loop.categories.enabled" label="Categories" name="list" @click="categories=!categories" :css="settings.general.display.navigation.icons_css"/>    
+            <icon v-if="settings.general.display.categories.enabled" label="Categories" name="list" @click="categories=!categories" :css="settings.general.display.navigation.icons_css"/>    
     
             <icon v-if="settings.general.display.search" label="Filter" name="search" @click="advancedFilter=!advancedFilter" :css="settings.general.display.navigation.icons_css"/>
     
@@ -322,6 +333,7 @@ export default {
         'store-categories' : () => import ( './store.categories.vue' ),
         'store-filter' : () => import ( './store.filter.vue'),
         'store-pagination'  : () => import ( './store.pagination.vue' ),
+        'store-slider'  : () => import ( './store.slider.vue' ),
         'double-range'      : () => import ( '@/components/common/double.range.vue')
     },
     data:()=>({
@@ -345,6 +357,8 @@ export default {
         },
         start: 0,
         total: 0,
+        max:9999,
+        list: false,
         search:'',
         advancedFilter: false,
         categories: false,
@@ -369,12 +383,19 @@ export default {
         facet: '',
         sort: '',
         qryPrice: false,
-        qryFacet: false
+        qryFacet: false,
+        qryIds: ''
     }),
     props:['editor'],
     computed:{
         single_product_id(){
             return this.$randomID()
+        },
+        loopContainerClasse(){
+            return this.settings.general.sidebar ?
+                 'md:col-span-9 xl:col-span-10 ' + this.settings.loop.container.replace('flex-no-wrap','flex-wrap') :
+                    'md:col-span-12 ' + this.settings.loop.container.replace('flex-no-wrap','flex-wrap')
+
         },
         productsClasse(){
             return !this.current ?
@@ -387,7 +408,7 @@ export default {
             return this.settings.single.css + ' ' + this.settings.single.container
         },
         limit(){
-            return parseInt(this.$attrs.plugin.settings.loop.limit)
+            return parseInt(this.$attrs.plugin.settings.loop.records.limit)
         },
         pages(){
             let p = parseInt(( this.total / this.limit ))
@@ -398,7 +419,7 @@ export default {
     },
     watch:{
         start(v){
-            this.scrollTop()
+            //this.scrollTop()
             this.qry()
         },
         
@@ -412,10 +433,16 @@ export default {
     methods:{
 
         setPage(n){
-            if ( !n ) return
+            console.log ( 'page=>' , n )
             this.start = n
         },
-        
+        setCursor(n){
+            if (  parseInt(n) < this.max  && (parseInt(n)+parseInt(this.limit)) <= this.total ){
+                this.start = n
+            } else {
+                this.start = parseInt(n) - parseInt(this.limit)
+            }
+        },
         setPriceRange(min,max){
             console.log ( min , max )
             this.advancedFilter = false
@@ -453,6 +480,7 @@ export default {
                 $skip  : this.start,
                 type   : 'product'
             }
+            
             if ( this.qryPrice ){
                 qry['$and'] = [ 
                     { price_value : { $gte: this.priceRange.min }} , 
@@ -570,7 +598,12 @@ export default {
         this.lang = this.language[navigator.language||'en']
         !this.lang ? this.lang = this.language['en'] : null
         this.settings = this.$attrs.plugin.settings
+        this.settings.loop.hasOwnProperty('max') ?
+            this.max = parseInt(this.settings.loop.max) : null
         this.schema = model
+        if ( this.settings.loop.ids ){
+            this.qryIds = this.settings.loop.ids
+        }
         this.qry()
         
     }

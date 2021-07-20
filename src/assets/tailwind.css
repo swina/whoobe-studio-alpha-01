@@ -252,6 +252,12 @@ pre {
     @apply w-full overflow-auto bg-gray-200 text-xs p-2 my-2 border border-gray-400;
 }
 
+.truncate  {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .whoobe-fullscreen-gallery {
   @apply absolute top-0 left-0 right-0 bottom-0 w-screen h-screen;
 }

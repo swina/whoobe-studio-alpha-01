@@ -85,6 +85,16 @@ const schema = {
             type: "image",
             edit: true,
             list: true
+        },
+        seo_title: {
+            type: 'string',
+            edit: true,
+            list: false
+        },
+        seo_description: {
+            type: 'text',
+            edit: true,
+            list: false
         }
         
     },
@@ -185,6 +195,14 @@ const schema = {
             "title": "homepage", 
             "type": "boolean",
             "default": true,
+            list : true,
+            edit: true
+        },
+        "store": {
+            "$id": "#root/store", 
+            "title": "store", 
+            "type": "boolean",
+            "default": false,
             list : true,
             edit: true
         },

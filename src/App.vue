@@ -6,7 +6,7 @@
     <!-- loading fullscreen -->
     <loading v-if="$mapState().desktop.loading"/>
     <!-- loading icon bottom left -->
-    <icon name="bubble_chart" class="animate-spin fixed bottom-0 left-0 m-2 z-highest text-gray-100" v-if="$mapState().desktop.loading"/>
+    <icon name="bubble_chart" css="animate-spin fixed bottom-0 left-0 m-2 z-highest text-gray-100" v-if="$mapState().desktop.loading"/>
     <!-- actions component: opens modal with relative action -->
     <actions/>
     <main v-if="!logged"/>
@@ -49,6 +49,16 @@ export default {
   }),
   computed:{
     ...mapState ( ['user'] ),
+    islogged(){
+      return this.$api.authenticate().then ( res => {
+        this.$store.dispatch('login',true)
+        console.log ( 'Authenticated !')
+        return true
+        }).catch ( error => {
+          this.$router.push ( '/login' )
+          return false
+      })
+    }
   },
   watch: {
     //when a new message diplay 

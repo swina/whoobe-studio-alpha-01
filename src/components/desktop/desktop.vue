@@ -5,7 +5,7 @@
         <desktop-container :boxed="sidebar"/>
         <desktop-sidebar-right/>
         <div v-if="!$mapState().desktop.tabs.length" class="pl-10 pt-10">
-            <blocks filter="template"/>
+            <desktop-wizard/>
         </div>
         <!--<whoobe-info/>-->
         <!--<desktop-home v-if="$mapState().desktop.tabs.length === 0"/>-->
@@ -35,7 +35,8 @@ export default {
         'desktop-sidebar-right' : () => import ( './desktop.sidebar.right.vue' ),
         'desktop-container' : () => import ( './desktop.container.vue'),
         'desktop-home'      : () => import ( './desktop.home.vue'),
-        'whoobe-info'       : () => import ( '@/components/settings/info.vue' )
+        'whoobe-info'       : () => import ( '@/components/settings/info.vue' ),
+        'desktop-wizard'    : () => import ( './desktop.wizard.vue' )
     },
     methods:{
         datastore(){
@@ -50,7 +51,8 @@ export default {
             this.$find('settings')
             this.$find('setup')
             this.$find('elements')
-            this.$find('workspace')
+            this.$find('categories')
+            //this.$find('workspace')
             this.$api.service('block-elements').find ( { query : { $limit: 200 } } ).then ( res => {
                 this.$store.dispatch ( 'dataset' , { table: 'blocks' , data: res.data } )
                 let categories = jp.query ( res.data , '$..category' )
@@ -59,26 +61,26 @@ export default {
             })
             this.$api.service('articles').find ( 
                 { 
-                query : 
-                {
-                    $limit: 200,
-                    $select : ['_id', 'publish' , 'title' , 'slug' , 'categories' , 'template_id' , 'homepage' , 'active' , 'template_preview'] 
-                }
+                    query : 
+                        {
+                            $limit: 200,
+                            $select : ['_id', 'publish' , 'title' , 'slug' , 'categories' , 'template_id' , 'homepage' , 'active' , 'template_preview'] 
+                        }
                 }
             ).then ( result => {
+                // result.data.forEach ( article => {
+                //     if ( !article.hasOwnProperty('homepage') ){
+                //         article.homepage = false
+                //     }
+                //     if ( !article.hasOwnProperty('store') ){
+                //         article.store = false
+                //     }
+                //     this.$api.service ( 'articles' ).patch ( article._id , article )
+                // })
                 this.$loading()
                 this.$store.dispatch ( 'dataset' , { table: 'articles' , data: result.data })
-                // let elements = this.$mapState().datastore.dataset.elements[0].moka 
-                // Object.keys ( elements ).forEach ( group => {
-                //   if ( group != 'keys' && group != 'categories' ){
-                //     elements[group].forEach ( element => {
-                //       let el = element
-                //       el.category = group
-                //       this.$api.service ( 'block-elements' ).create ( el )
-                //     })
-                //   }
-                // })
             })
+            
         },
         logout(){
             window.localStorage.removeItem ( 'feathers-jwt' )

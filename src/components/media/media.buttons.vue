@@ -6,7 +6,8 @@
         <button class="lg mr-1" @click="$emit('click','url')" title="Upload from URL">From URL</button>
         <button class="lg mr-1" @click="$emit('carousel')" title="Set Carousel">Carousel</button>
         <input class="dark mt-1 ml-2 mr-1" type="text" placeholder="search..." v-model="search" @keydown="searchMedia($event)" title="Enter a keyword and press Return"/>
-        <button v-if="search" @click="search='',$emit('search','')">Reset</button>
+        <button class="lg mr-1" @click="search='',$emit('search','')">Reset</button>
+        <button class="lg mr-1" @click="$emit('folder','products')">Store</button>
         <!-- <label>Import from url</label>
         <input type="text" class="ml-2 w-64" placeholder="url"/> -->
     </div>

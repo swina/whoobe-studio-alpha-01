@@ -2,12 +2,12 @@
     <div class="flex flex-col p-4 bg-white text-black">
         <div class="grid" v-if="schema && importFields">
             <template v-for="field in Object.keys(schema)">
-                <div class="grid grid-cols-2">
+                <div class="grid grid-cols-2" v-if="schema[field].import">
                     <div>{{ field }}</div>
                     <div v-if="importFields">
                         <select @change="setImport(field,$event.target.value)">
                             <option value="">no import</option>
-                            <option v-for="sfield in importFields" :value="sfield">{{sfield}}</option>
+                            <option v-for="sfield in importFields" :value="sfield" :selected="field===sfield.toLowerCase()?true:false">{{sfield}}</option>
                         </select>
 
                     </div>
@@ -18,18 +18,20 @@
         </div>
         <div v-if="schema && importFields">
             <div class="flex flex-col p-2">
-                <!-- <p>You are importing {{ json.length }} products  -->
+                <!-- <p>You are importing {{ json.length }} products 
                 <br>
-                </p>
+                </p> -->
                 Limit 
                 <select v-model="importLimit">
                     <option value="10">First 10 records</option>
-                    <option value="100">First 10 records</option>
+                    <option value="100">First 100 records</option>
                 </select>
                 <input type="number" min="1" max="10000" v-model="importLimit"/>
+                Skip
+                <input type="number" min="0" v-model="importSkip"/>
                 Create new database
                 <input type="text" v-model="importNamespace"/>
-                <button class="warning" @click="importProducts" v-if="!importing">Import Products</button>
+                <button class="warning" @click="importProducts">Import Products</button>
 
                 <div v-if="importOK">
                     Imported: {{ importOK.length }}
@@ -64,6 +66,7 @@ export default {
         toImport: null,
         importFields: null,
         importLimit: null,
+        importSkip:0,
         mapping: {},
         importOK: [],
         importError: [],
@@ -84,7 +87,12 @@ export default {
     watch:{
         json(v){
             if ( v.length ){
-                this.importFields = Object.keys ( v[0] ) 
+                this.importFields = Object.keys ( v[0] )
+                this.importFields.forEach ( field => {
+                    if ( Object.keys(this.schema).includes ( field ) ){
+                        this.mapping[field] = field
+                    }
+                }) 
             }
         }
     },
@@ -93,6 +101,7 @@ export default {
     },
     methods:{ 
         setImport ( field , source ){
+
             this.mapping[field] = source
         },
         loadTextFromFile(ev) {
@@ -112,21 +121,68 @@ export default {
             this.importing = true
             this.importOK = []
             this.importError = []
-            this.json.map ( product => {
-                if ( product.name ){
-                    product.type = "product"
-                } else {
-                    product.type = "variation"
-                }
-                if ( product.assets ){
-                    product.assets = '/uploads/' + product.assets
-                }
-                this.$api.service( 'products' ).create ( product ).then ( res => {
-                    this.importOK.push( product.sku )
-                }).catch ( error => {
-                    this.importError.push ( produc.sku )
+            let start = parseInt(this.importSkip)
+            let max = start + parseInt(this.importLimit)
+            for ( var n = start ; n < max ; n++ ){
+                let importProduct = {}
+                Object.keys(this.mapping).forEach( field => {
+                    if ( field != 'category' ){
+                        importProduct[field] = this.products[n][this.mapping[field]]
+                    }
                 })
-            })
+                let cat = this.products[n].category
+                let facet = []
+                if ( cat.includes ( '|' ) ){
+                    cat = this.products[n].category.split('|')[0]
+                } 
+                if ( cat.includes ( '>' ) ){
+                    cat = this.products[n].category.split('>')[0]
+                    facet = this.products[n].category.split('>')[1].split('|')
+                }
+                importProduct.category = cat
+                importProduct.facets = facet
+                
+                if ( this.products[n].type === 'simple' || this.products[n].type === 'variable' ){
+                    importProduct.type = 'product'
+                    importProduct.parent = ''                    
+                }
+
+                if ( this.products[n].type === 'variable' ){
+                    console.log ( this.variations.filter ( variation => variation.parent_id === this.products[n].id_import))
+                }
+                //         let variations = this.products.filter ( product => product.parent_id === product.id_import )
+                //         console.log ( "variations=>" , variations )
+                //     }
+                // }
+                if ( this.products[n].parent_id != '0' ){
+                    importProduct.type = 'variation'
+                    importProduct.parent = this.products[n].parent_id
+                }
+                importProduct.price_value = parseFloat(importProduct.price)
+                importProduct.active = true
+                this.$api.service ( 'products' ).create ( importProduct ).then ( res => {
+                    console.log ( 'Added => ' , res )
+                    this.importOK.push( importProduct.sku )
+                }).catch ( error => {
+                    console.log ( error )
+                    this.importError.push ( importProduct.sku )
+                })
+            }
+            // this.json.map ( product => {
+            //     if ( product.name ){
+            //         product.type = "product"
+            //     } else {
+            //         product.type = "variation"
+            //     }
+            //     if ( product.assets ){
+            //         product.assets = '/uploads/' + product.assets
+            //     }
+            //     this.$api.service( 'products' ).create ( product ).then ( res => {
+            //         this.importOK.push( product.sku )
+            //     }).catch ( error => {
+            //         this.importError.push ( produc.sku )
+            //     })
+            // })
         },
         csv_to_json(csvData) {
             var data = this.CSVToArray(csvData);
@@ -139,41 +195,42 @@ export default {
                 }
             }
             this.importFields = Object.keys ( objData[0] )
+            
             this.products = objData.filter ( product => product['parent_id'] === '0' )
             this.variations = objData.filter ( product => product['parent_id'] != '0' )
             console.log ( 'Total=>'  , this.products.length )
             console.log ( objData )
-            let cats = [ ...new Set(objData.map ( prod => prod['category'] )) ]
-            console.log ( cats )
-            this.categories = []
-            this.facets = []
-            console.log ( cats )
-            cats.map ( c => {
-                let cat = c
-                let parent = this.$randomID()
-                let fc = ''
-                if ( c.includes ( '|' ) ) {
-                    cat = c.split('|')[0]
-                }
-                let category = cat
+            // let cats = [ ...new Set(objData.map ( prod => prod['category'] )) ]
+            // console.log ( cats )
+            // this.categories = []
+            // this.facets = []
+            // console.log ( cats )
+            // cats.map ( c => {
+            //     let cat = c
+            //     let parent = this.$randomID()
+            //     let fc = ''
+            //     if ( c.includes ( '|' ) ) {
+            //         cat = c.split('|')[0]
+            //     }
+            //     let category = cat
                 
-                if ( cat.includes ( '>' ) ){
-                    category = cat.split('>')[0]
-                    fc = cat.split('>')[1] 
-                    this.facets.push ( fc )
-                    // this.facets.push ( {
-                    //     collection : parent,
-                    //     name: fc,
-                    //     slug: this.$slugify(fc),
-                    //     type: 'facet',
-                    //     active: true
-                    // })
-                    console.log ( 'Facet=>' , fc )
-                }
-                console.log ( 'Category=>' , category )
-                this.categories.push ( category )
+            //     if ( cat.includes ( '>' ) ){
+            //         category = cat.split('>')[0]
+            //         fc = cat.split('>')[1] 
+            //         this.facets.push ( fc )
+            //         // this.facets.push ( {
+            //         //     collection : parent,
+            //         //     name: fc,
+            //         //     slug: this.$slugify(fc),
+            //         //     type: 'facet',
+            //         //     active: true
+            //         // })
+            //         console.log ( 'Facet=>' , fc )
+            //     }
+            //     console.log ( 'Category=>' , category )
+            //     this.categories.push ( category )
 
-            })
+            // })
             return objData
         },
         CSVToArray(csvData, delimiter) {

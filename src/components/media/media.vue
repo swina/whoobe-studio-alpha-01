@@ -5,7 +5,8 @@
                 @click="setMode" 
                 @carousel="carousel=!carousel"
                 @cloudinary="cloudinary=!cloudinary"
-                @search="search"/>
+                @search="search"
+                @folder="setFolder"/>
             
             <transition name="fade">
                 <media-carousel v-if="carousel && $mapState().editor.action==='media'" :files="files" class="theme-dark"/>
@@ -15,7 +16,7 @@
             
             <div class="grid grid-cols-3  items-center justify-center content-center">
                 <div class="text-xs">
-                    Files: {{ total }}
+                   {{ skip+1 }} - {{ (parseInt(skip)+parseInt(limit)) }} of Files: {{ total }}
                 </div>
                 <navigation 
                 size="4xl"
@@ -32,6 +33,7 @@
              @close="mode='gallery'"/>
         
         <media-upload
+            :folder="folder"
             v-if="mode==='upload'"
             @uploaded="mode='gallery',mediaQry()"
             @close="mode='gallery'"
@@ -57,6 +59,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'Media',
     components: {
@@ -74,6 +77,7 @@ export default {
         skip: 0,
         limit: 21,
         total:0,
+        folder: '',
         files: null,
         selected: null,
         pixabayApiKey : null,
@@ -83,13 +87,19 @@ export default {
         plugins: [],
         searchMedia: ''
     }),
+    computed: {
+        ...mapState(['editor','desktop'])
+    },
     watch:{
         skip(v){
-            this.mediaQry()
+            if ( v )
+                this.mediaQry()
         }
     },
     methods:{
         search(search){
+            this.skip = 0
+            this.folder = ''
             this.searchMedia = search
             this.mediaQry()
         },
@@ -97,20 +107,39 @@ export default {
             this.cloudinary = false
             this.mode = mode
         },
+        setFolder(folder){
+            this.skip = 0
+            this.folder = folder
+            this.mediaQry()
+        },
         mediaQry(){
             this.$loading(true)
             console.log ( this.searchMedia )
+            let qry = {
+                $skip : this.skip,
+                $limit: this.limit,
+                $sort: { updatedAt : -1 }
+            }
+            if ( this.searchMedia ){
+                qry['$search'] = this.searchMedia
+            } else {
+                qry.folder = this.folder
+            }
+            
             this.$api.service ( 'media' ).find ( {
-                query : {
-                    $skip: this.skip,
-                    $limit: this.limit,
-                    $search: this.searchMedia ,
-                    $sort: { updatedAt : -1 }
-                }
+                query : qry
             }).then ( res => {
                 this.$loading()
                 this.total = res.total
                 this.files = res.data
+                // res.data.forEach ( media => {
+                //     if ( media.url.includes('/products/') ){
+                //         media.folder = 'products'
+                //     } else {
+                //         media.folder = ''
+                //     }
+                //     this.$api.service ( 'media' ).patch ( media._id , media )
+                // })
             })
         },
         setSelected(image){
@@ -213,6 +242,9 @@ export default {
                 this.plugins.push ( plugin )
             }
         })
+        this.desktop.mode.includes('store') ?
+            this.folder = 'products' : null
+        this.mediaQry()
     }
 }
 </script>

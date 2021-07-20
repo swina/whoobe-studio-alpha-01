@@ -611,7 +611,7 @@ export default {
                 //plugins used
                 let plugins = [...new Set ( jp.query ( json , '$..blocks..path') )]
                 plugins.includes ( 'store/whoobe/store') ? project.store = true : project.store = false
-                
+                console.log ( 'Store => ' , project.store )
                 //store.dispatch('message', 'Plugins used collected')
                 if ( project.store ){
                     //store.dispatch('message', 'Using store plugin')
@@ -621,17 +621,22 @@ export default {
                             type: 'product'
                         }
                     }).then ( res => {
-                        res.data.forEach ( product => {
-                            Array.isArray(product.assets) ?
-                                !product.assets[0].includes('//') ?
-                                    usedImages.push(product.assets[0]) : null :
-                                        !product.assets.includes('//') ?
-                                            usedImages.push ( product.assets ) : null
-                                        
+                        console.log ( res.total )
+                        let uploadsStore = []
+                        res.data.map ( product => {
+                            console.log ( product.name + ' assets array ? ' , Array.isArray ( product.assets ) )
+                            try {
+                                if ( product.assets.length ){
+                                    uploadsStore = [ ...uploadsStore , ...product.assets.filter(asset => !asset.includes('//') ) ]
+                                }
+                            } catch ( error ) {
+                                console.log ( error , product )
+                            }
                         })
+                        console.log ( uploadsStore )
                         project.fonts = [ ...new Set(usedFonts) ]
                         //project.purge = [ ...new Set(purgeClasses) ]
-                        project.uploads = [ ...new Set(usedImages) ]
+                        project.uploads = [ ...new Set(  [ ...usedImages,...uploadsStore] ) ].sort ( (a,b) => a - b )
                         project.plugins = [ ...new Set(plugins) ]
                         project.links = [...new Set(links)]
                     })
