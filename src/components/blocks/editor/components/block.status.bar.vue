@@ -99,6 +99,7 @@ title="Save document">save</i> -->
 </template>
 
 <script>
+import jp from 'jsonpath'
 export default {
     name: 'WhoobeEditorStatusBar',
     data:()=>({
@@ -131,7 +132,21 @@ export default {
             //     component: component
             // }
             let project = this.$buildOptions(component)
+            component.links.forEach ( slug => {
+                if ( slug.length > 2){
+                    let art = this.$mapState().datastore.dataset.articles.filter ( article => article.slug === slug.replace('/','') )
+                    if ( !art.length ){
+                        console.log ( slug , ' page not found!')
+                        let noLink = jp.query ( component.json , '$..blocks[?(@.link=="' + slug + '")]' )
+                        if ( noLink.length ){
+                            noLink[0].link = ''
+                        }
+                        console.log ( noLink )
+                    }
+                }
+            })
             console.log ( component )
+
             this.$api.service ( 'resources' ).create ( { project : project } )
                 .then ( purge => {
                     component.purge = purge.sort()                 
@@ -153,6 +168,7 @@ export default {
             window.localStorage.setItem('whoobe-preview',JSON.stringify(this.doc))
             //)
             window.localStorage.setItem('whoobe-component',JSON.stringify(this.editor.component))
+            window.localStorage.setItem ( 'whoobe-preview-id' , this.editor.component._id )
             let route = this.$router.resolve({path: '/preview'});
             let w = window.open(route.href, 'whoobe','width=' + window.screen.availWidth );
             w.focus()

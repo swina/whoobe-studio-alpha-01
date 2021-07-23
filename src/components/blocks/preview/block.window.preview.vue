@@ -57,6 +57,7 @@ import { mapState } from 'vuex'
 export default {
     name: 'MokaWindowPreview',
     data:()=>({
+        doc:null,
         showContextMenu: false,
         showHtml: false,
         printScreen: false,
@@ -72,12 +73,12 @@ export default {
     },
     computed: {
         ...mapState ( ['editor'] ),
-        doc(){
-            let mydoc = JSON.parse(window.localStorage.getItem('whoobe-preview'))
-            this.$mapState().editor.current = mydoc
-            this.$mapState().editor.component = JSON.parse(window.localStorage.getItem('whoobe-component'))
-            return mydoc
-        },
+        // doc(){
+        //     let mydoc = JSON.parse(window.localStorage.getItem('whoobe-preview'))
+        //     this.$mapState().editor.current = mydoc
+        //     this.$mapState().editor.component = JSON.parse(window.localStorage.getItem('whoobe-component'))
+        //     return mydoc
+        // },
         devMode(){
              if ( typeof webpackHotUpdate === 'undefined' ) {
                  
@@ -120,25 +121,23 @@ export default {
         },
         save(screenshot){
             let component = JSON.parse(window.localStorage.getItem('whoobe-component'))
-
             if ( screenshot ){
                 component.image_uri = screenshot.replace('.jpg','.webp')
                 component.image = screenshot.replace('.jpg','.webp')
-                //this.$mapState().editor.component.image_uri = screenshot.replace('.jpg','.webp')
-                //this.$mapState().editor.component.image = screenshot.replace('.jpg','.webp')
-                
-                    //!screenshot.url.includes('http') ? 
-                        //process.env.VUE_APP_API_URL + screenshot.url.replace('/','') : 
-                            //screenshot.url
+                this.$api.service ( 'components' ).patch ( component._id , component ).then ( res => {
+                    console.log ( 'saved component => ' , component , res )
+                    this.$action()
+                })
             }
-                window.localStorage.setItem('whoobe-image-url',this.$imageURL(screenshot) )
-                this.editScreenshot ? 
-                    this.$action ( 'filerobot' ) :
-                        this.$api.service ( 'components' ).patch ( component._id , component ).then ( res => {
-                            console.log ( 'saved component => ' , component , res )
-                            this.$action()
-                        })
-                        //this.$action('savecomponent')
+
+                // filerobot image editor -> to be implemented
+                // window.localStorage.setItem('whoobe-image-url',this.$imageURL(screenshot) )
+                // this.editScreenshot ? 
+                //     this.$action ( 'filerobot' ) :
+                //         this.$api.service ( 'components' ).patch ( component._id , component ).then ( res => {
+                //             console.log ( 'saved component => ' , component , res )
+                //             this.$action()
+                //         })
             
         },
         //screenshot print
@@ -203,6 +202,20 @@ export default {
         
     },
     mounted(){
+        console.log ( this.$route.params.slug )
+        if ( this.$route.params.slug ){
+            this.$api.service ( 'articles' ).find ( { query : { slug : this.$route.params.slug }} ).then ( res => {
+                let mydoc = res.data[0].blocks.json
+                this.$mapState().editor.current = mydoc
+                this.$mapState().editor.component = JSON.parse(window.localStorage.getItem('whoobe-component'))
+                this.doc = mydoc
+            })
+        } else {
+            let mydoc = JSON.parse(window.localStorage.getItem('whoobe-preview'))
+            this.$mapState().editor.current = mydoc
+            this.$mapState().editor.component = JSON.parse(window.localStorage.getItem('whoobe-component'))
+            this.doc = mydoc
+        }
         let width = window.localStorage.getItem ( 'whoobe-preview-mode')
         if ( width ){
             window.resizeTo (width ? width : window.screen.availWidth , window.screen.availHeight)

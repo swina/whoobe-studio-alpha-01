@@ -67,7 +67,7 @@
 
             <textarea v-if="el.element === 'textarea'" :class="$cssResponsive(el.css)"></textarea>
 
-            <icon name="expand_more" v-if="el.hasOwnProperty('blocks') && el.blocks.length"/>
+            <!--<icon name="expand_more" v-if="el.hasOwnProperty('blocks') && el.blocks.length"/>-->
 
             <!-- <nav v-if="el.element === 'menu'" :class="el.css.container + ' ' + el.css.align"> 
                 <div v-for="(item,i) in el.items" :class="el.css.css + ' cursor-pointer relative pr-4'" :key="el.id + '_' + i"> 

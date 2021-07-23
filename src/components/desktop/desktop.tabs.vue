@@ -52,11 +52,16 @@ export default {
                         this.$api.service ( 'components' ). patch ( comp._id , comp )
                             .then ( res => {
                                 this.$message ( 'Save successfully!' )
+                                this.editor.current = null
+                                this.desktop.mode = null
                             })
                             .catch ( err => {
                                 console.log ( err )
                                 this.$message ( 'An error occurred.')
                             })
+                    } else {
+                        this.desktop.mode = null
+                        this.editor.current = null
                     }
                 }
             } 

@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-0 cursor-pointer h-screen text-xs theme-dark" :data="init">
+    <div class="mt-0 cursor-pointer h-auto overflow-x-hidden text-xs theme-dark" :data="init">
 
         <div v-if="editor.current.type === 'iconify'" class="customizer-item border-gray-900 pl-2" :class="group === 'iconify' ? 'bg-orange-400 text-white' : ''" @click="toggle('iconify')">
             <span class="text-xs">Icon</span>

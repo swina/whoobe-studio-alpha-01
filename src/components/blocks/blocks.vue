@@ -1,6 +1,6 @@
 <template>
     <div v-if="blocks" class="w-full">
-        <blocks-gallery :objects="blocks" class="m-auto" @removed="blocksQry()" @duplicated="blocksQry()"/>
+        <blocks-gallery :objects="blocks" :filter="filter" class="m-auto" @removed="blocksQry()" @duplicated="blocksQry()"/>
     </div>
 </template>
 

@@ -24,27 +24,40 @@ License : MIT
 ### Issues 
 
 Use the Github repo to open an issue https://github.com/swina/whoobe-studio-alpha-01 -->
-<div class="text-purple-500 pl-20 pt-20">
-    <h3 class="col-span-5 flex items-center">Whoobe <button class="ml-2 text-sm bg-purple-500 rounded" content="Show Intro" @click="viewIntro()">Show Intro</button></h3>
+<div class="text-purple-500 mx-20 mt-20">
+    <h3 class="flex items-center">Whoobe Studio<button class="ml-2 text-sm bg-purple-500 rounded" content="Show Intro" @click="viewIntro()">Show Intro</button></h3>
     <div class="my-20">
-        <button>START HERE</button>
+        <button class="lg rounded shadow bg-purple-600" @click="openStartTab()">START HERE</button>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-5 grid-cols-1 gap-10">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 grid-cols-1 gap-10">
         
         
         
          <div class="text-gray-400">
                 <h3>Info</h3>
-                <p>Version: alpha-version <br>May 2021</p>
+                <p>Version: alpha-version <br>July 2021</p>
                 <p>Author: Antonio Nardone</p>
                 <small>MIT License - Open source - Free</small>
+                <h5>Issues</h5>
+                <p>Help to improve Whoobe. Any time you find a bug or an error please open an issue on <a href="https://github.com/swina/whoobejs" target="_blank">Github repository</a></p>
             </div>
             <div class="text-gray-400">
                 <h3>Last updates</h3>
                 <p>- Context menu in the block editor and preview window</p>
                 <p>- Multitabs support</p>
                 <p>- Import media from Pixabay, upload media to Cloudinary, upload images from URL</p>
-                <p>- Image editor</p>
+                
+            </div>
+            
+            <div class="text-gray-400">
+                <h3>Todo List</h3>
+                <p>- Create full documentation (in progress)</p>
+                <p>- PWA support</p>
+                <p>- Add image editor (filerobot in progress)</p>
+                <p>- Improve store products import</p>
+                <p>- Add support for deployment in the cloud</p>
+                <p>- Add support for dynamic content in production (blog, etc.)</p>
+                
             </div>
             <div class="text-gray-400">
                 <h3>Tips</h3>
@@ -53,10 +66,6 @@ Use the Github repo to open an issue https://github.com/swina/whoobe-studio-alph
                     <li>Copy CSS attributes between blocks/elements with Alt+g (copy) and Alt+h (paste)</li>
                     <li>In the Block Editor and the Block preview window click the mouse right button to access to a context menu</li>
                 </ul>
-            </div>
-            <div class="text-gray-400">
-                <h3>Issues</h3>
-                <p>Help to improve Whoobe. Any time you find a bug or an error please open an issue on <a href="https://github.com/swina/whoobe-studio-alpha" target="_blank">Github repository</a></p>
             </div>
     </div>
     </div>
@@ -68,6 +77,25 @@ export default {
     methods:{
         viewIntro(){
             this.$store.dispatch('intro',1)
+        },
+        openStartTab(){
+            //this.desktop.tabs.push ( {
+            let tab = 
+                {
+                    component: 'blocks/blocks' ,
+                    name: 'Homepages' ,
+                    icon: 'widgets',
+                    filter: 'homepage',
+                    mode: 'components',
+                    plugin: null,
+                    resumeAction: null,
+                    blocks: null
+                }
+            //}) 
+            this.$store.dispatch ( 'mode' , tab.mode ) 
+            this.$store.dispatch ( 'add_tab' , tab )
+            //this.desktop.currentTab = this.desktop.tabs.length - 1
+            //window.localStorage.setItem('whoobe-desktop',JSON.stringify(this.desktop.tabs))
         }
     }
 }

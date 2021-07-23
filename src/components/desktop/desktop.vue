@@ -5,7 +5,7 @@
         <desktop-container :boxed="sidebar"/>
         <desktop-sidebar-right/>
         <div v-if="!$mapState().desktop.tabs.length" class="pl-10 pt-10">
-            <desktop-wizard/>
+            <whoobe-info/>
         </div>
         <!--<whoobe-info/>-->
         <!--<desktop-home v-if="$mapState().desktop.tabs.length === 0"/>-->
@@ -51,7 +51,11 @@ export default {
             this.$find('settings')
             this.$find('setup')
             this.$find('elements')
-            this.$find('categories')
+            //this.$find('categories')
+            this.$api.service ( 'categories' ).find ( { query: { $limit: 200 , $sort : { name : 1 } } })
+                .then ( res => {
+                    this.$store.dispatch ( 'dataset' , { table : 'categories' , data: res.data })
+            })
             //this.$find('workspace')
             this.$api.service('block-elements').find ( { query : { $limit: 200 } } ).then ( res => {
                 this.$store.dispatch ( 'dataset' , { table: 'blocks' , data: res.data } )

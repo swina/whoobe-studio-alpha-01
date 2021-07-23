@@ -1,6 +1,6 @@
 <template>
     <div v-if="currentArticle" class="theme-dark relative">
-        <div class="bg-gray-900 top-0 -mt-2 p-2 w-full z-2xtop">
+        <div class="sticky bg-gray-900 top-0 -mt-2 p-2 w-full z-2xtop">
             <button class="lg" @click="$emit('delete',currentArticle._id)">Delete</button> 
             <!--<button class="lg" @click="$emit('close')">Import WP</button>
             <button class="lg" @click="$emit('close')">Export</button>  -->
@@ -16,7 +16,7 @@
         -->
         <transition name="fade">
                      
-            <div v-if="currentArticle" class="flex flex-row  p-1">
+            <div v-if="currentArticle" class="flex flex-row  p-1 relative overflow-y-auto">
                 <section class="w-4/5 container relative text-sm" v-if="currentArticle">
                     
                     <label>Title <span class="text-gray-400">#{{ currentArticle.id }}</span></label>
@@ -162,6 +162,7 @@ export default {
 
             window.localStorage.setItem ( 'whoobe-article' , JSON.stringify(this.currentArticle) )
             window.localStorage.setItem ( 'whoobe-preview' , JSON.stringify ( this.currentArticle.blocks.json ) )
+            window.localStorage.setItem ( 'whoobe-preview-id' , this.currentArticle.blocks._id )
             let route = this.$router.resolve({path: '/preview?mode=article'});
             let w = window.open(route.href, 'whoobe','width=' + window.screen.availWidth );
             w.focus()

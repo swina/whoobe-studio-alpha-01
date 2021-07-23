@@ -46,7 +46,7 @@
                             </div>
                             <div v-else class="flex flex-col">
                                 <template v-for="subitem in item.blocks">
-                                    <a :href="subitem.link" :class="item.css">
+                                    <a :href="'/preview' + subitem.link" :class="el.css.submenu_items">
                                         <span>{{ subitem.content }}</span>
                                     </a>
                                 </template>

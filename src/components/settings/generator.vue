@@ -1,5 +1,5 @@
 <template>
-    <div class="m-4 p-4" :key="newKey">
+    <div class="m-4 p-4" :key="newKey" v-if="website">
         <div class="absolute right-0 top-0 mt-12 w-full flex items-end w-full justify-end mr-8">
             <button class="lg success" @click="buildWebsite()">Generate</button>
             <button v-if="preview" class="ml-2 lg" @click="buildPreview()">Preview</button>
@@ -7,30 +7,29 @@
         <h4>Whoobe Generator</h4>
         <div class="grid grid-cols-5">
 
-            <div class="flex flex-col cursor-pointer" @click="reusable=!reusable" title="Select a template for the homepage" v-if="website">
+            <div class="flex flex-col cursor-pointer" title="Select a template for the homepage" v-if="website">
                 <label>Homepage</label>
-                <img v-if="website.template_preview" :src="$imageURL(website.template_preview)" class="w-40 h-56 object-cover object-top"/>
+                <img v-if="website.template_preview" :src="$imageURL(website.template_preview)" class="w-40 h-56 object-cover object-top" @click="reusable=!reusable"/>
+
+                <div class="flex flex-col " :title="isStore.title + ' [' + isStore.categories + ']'" v-if="isStore.publish && isStore.store"> 
+                    <div class="text-xs truncate">{{isStore.title}}</div>
+                    <img v-if="isStore.template_preview" :src="$imageURL(isStore.template_preview)" class=" h-56 w-40 object-cover object-top"/>
+                    <img v-if="!isStore.template_preview" src="no-image.png"/>
+                </div>
             </div>
 
             <div class="col-span-3">
                 <label>Sitemap : articles {{website.pagesToPublish.filter(url=>url.length >2).length}}</label>
-                <div class="flex flex-row flex-wrap justify-around">
-                    
-                    <template v-for="page in website.pagesToPublish">
-                        <template v-for="article in datastore.dataset.articles">
+                <div class="flex flex-row flex-wrap justify-start">
+                    <!-- website.pagesToPublish"> -->
+                    <template v-for="page in website.pagesToPublish"> 
+                        <template v-for="article in articles">
                             <div class="flex flex-col m-2 h-48 w-40 items-center justify-start shadow" :title="article.title + ' [' + article.categories + ']'" v-if="page === article.slug">
-                                <div class="text-xs">{{article.title.substring(0,20)}}</div>
+                                <div class="text-xs truncate">{{article.title}}</div>
                                 <img v-if="article.template_preview" :src="$imageURL(article.template_preview)" class="w-32 h-40 object-cover object-top"/>
                                 <img v-if="!article.template_preview" src="no-image.png"/>
                             </div>
                         </template>
-                        <!-- <div class="flex flex-col h-56 items-center justify-around" v-if="pages.hasOwnProperty(page)">
-                            <div class="text-xs">{{pages[page]['title']}}</div>
-                            <img v-if="pages[page]['image']" :src="$imageURL(pages[page]['image'])" class="w-32 h-40 object-cover object-top"/>
-                        </div> -->
-                        <!-- <div v-else>
-                            {{ previewPage(page) }}
-                        </div> -->
                     </template>
                     
                 </div>
@@ -210,9 +209,12 @@ export default {
     //'whoobe-website'    : () => import ( './website.vue')
     },
     data: () =>  ({
+        home:null,
+        articles:null,
         newKey: 'generator',
         website: null,
         reusable: false,
+        isStore: false,
         pages:{},
         // start: true,
         // articles: null,
@@ -234,92 +236,14 @@ export default {
     }),
     computed:{
         ...mapState ( ['datastore','editor','generator'] ),
+        toPublish(){
+            return [ ...this.isStore , ...this.website.pagesToPublish ]
+        }
         
-        //...mapActions ( ['generator'] )
-        // ws(){
-        //     return this.website.pagesToPublish
-        // },
-        // cmsurl(){
-        //     return window.localStorage.getItem('whoobe-cms')
-        // },
-        // project(){
-        //     this.component = this.$mapState().editor.component
-        //     return this.$mapState().editor.component
-        //     // return this.generation
-        //     // return JSON.parse ( window.localStorage.getItem ( 'whoobe-workspace') )
-        // },
-        // enabled(){
-        //     if ( typeof webpackHotUpdate === 'undefined') this.$store.dispatch('message','This option is available only in development mode')
-        //     return typeof webpackHotUpdate != 'undefined' ? true : false 
-        // },
-        // options(){
-        //     return this.articles ?  
-        //         this.articles.map ( article => {
-        //             return {      
-        //                 id: article._id,
-        //                 label: article.title
-        //             }
-        //         }) : null
-        // },
-        // linksToPublish(){
-        //     let mergeLinks = [ ...this.website.blocks.links , ...this.allPagesLinks ]
-        //     let cleanLinks = [ ...new Set ( mergeLinks ) ].filter ( url => {
-        //         return url != '' && url != '/' 
-        //     }).sort()
-            
-        //     this.pagesToPublish = cleanLinks.map(url=> { return url.replace('/','')})
-        //     this.website.pagesToPublish = this.pagesToPublish
-        //     this.$api.service ( 'articles' ).find ({
-        //         query: {
-        //             $limit: 100,
-        //             slug : { $in : this.pagesToPublish }
-        //         }
-        //     }).then ( res => {
-        //         console.log ( res )
-        //     })
-        //     return cleanLinks
-        //     // return [ ...new Set ( mergeLinks ) ].filter ( url => {
-        //     //     return url != '' && url != '/' 
-        //     // }).sort()
-        // },
     },
     watch:{
         
         
-        // context(v){
-        //     console.log ( v )
-        //     if ( v === 'website' ){
-        //         this.$api.service ( 'build-nuxt' ).find().then ( res => {
-        //             if ( res.total )
-        //                 this.website_build_id = res.data[0]._id
-        //                 this.website = res.data[0]
-        //        })
-        //         this.$api.service ( 'articles' )
-        //             .find ( {
-        //                 query: {
-        //                     //publish: trueù
-        //                     $limit: 200,
-        //                     $sort: { title: 1 }
-        //                 }
-        //             }).then ( res => {
-        //                 this.articles = res.data
-        //                 let homepage = this.articles.filter ( page => {
-        //                     return page.homepage
-        //                 })[0]
-        //                 this.website.blocks = homepage.blocks
-        //                 this.articles.forEach ( page => {
-        //                     if ( page.publish && !page.homepage ){
-        //                         this.pagesToPublish.push ( page._id )
-        //                     }
-        //                 })
-        //                 this.website.meta = {}
-        //                 !this.website.blocks.hasOwnProperty ( 'seo' ) ?
-        //                     this.website.blocks.seo = { title : this.website.seo_title , description: this.website.seo_description } : null
-        //                 this.searchLinks()
-        //             })
-                
-        //     }
-        // },
         
     },
     
@@ -330,8 +254,7 @@ export default {
             this.website.template_preview = block.image
             this.website.pagesToPublish = block.links
             this.pagesToPublish = block.links
-            //!this.website.blocks.hasOwnProperty ( 'seo' ) ?
-            //    this.website.blocks.seo = { title : this.website.seo_title , description: this.website.seo_description } : null
+            
             this.$api.service ( 'articles' ).patch ( this.website._id , this.website ).then ( res => {
                 this.reusable = false
                 this.searchLinks()
@@ -340,35 +263,54 @@ export default {
 
         },
         async searchLinks(){
-            console.clear()
             this.$store.dispatch ( 'pages' , [])
             let links = this.website.blocks.links.filter ( url => url.length > 2 )
             if ( !links.length ) return 
-            //const test = await this.website.blocks.links.forEach ( url => {
-            const start = async () => {
-                asyncForEach ( this.website.blocks.links , async(url) => {
-                    //await waitFor(50)
-                    if ( !url.includes('store/category') && url != 'store' && url != '/' && url != '/shop-demo' ){
-                        this.$pageLinks(url).then ( res => {
-                            console.log ( res )
-                            let dataLinks
-                            if ( res.data.length ){
-                                let pg = res.data[0]
-                                // let id = res.data[0]._id
-                                //this.$store.dispatch ( 'addPage' ,  { image: res.data[0].template_preview , title: res.data[0].title } )
-                                dataLinks = [ ...new Set(res.data[0].blocks.links) ] 
-                            }
-                            return dataLinks
-                        }).then ( data => {
-                            if ( data ){
-                                this.allPagesLinks = [ ...new Set(this.allPagesLinks) , ...data ]
-                                this.website.pagesToPublish = [ ...new Set(this.allPagesLinks.filter(url=>url.length>2).map( slug => slug.replace('/','')).sort() ) ]
-                            }
-                        })
+
+            this.$api.service( 'articles' ).find ( { query : { store: true , publish: true } } )
+                .then ( res => {
+                    if ( res.data.length ){
+                        this.website.pagesToPublish.push ( res.data[0].slug.replace('/','') )
+                        this.isStore = res.data[0]
                     }
-                })
-                
-            }
+                    return 
+            }).then ( () => {
+                    const start = async () => {
+                        this.allPagesLinks = []
+                        this.website.pagesToPublish = []
+                    asyncForEach ( this.website.blocks.links , async(url) => {
+                        //await waitFor(50)
+                        if ( !url.includes('store/category') && url != 'store' && url != '/' && url != '/shop-demo' ){
+                            this.$pageLinks(url).then ( res => {
+                                console.log ( url )
+                                
+                                let dataLinks
+                                if ( res.data.length ){
+                                    let pg = res.data[0]
+                                    console.log ( pg.title , pg.blocks.links )
+                                    dataLinks = [ ...new Set(res.data[0].blocks.links) ] 
+                                } else {
+                                    console.log ( url , ' page not found!')
+                                }
+                                return dataLinks
+                            }).then ( data => {
+                                if ( data ){
+                                    this.allPagesLinks = [ ...new Set(this.allPagesLinks) , ...data ]
+                                    this.website.pagesToPublish = [ ...new Set(this.allPagesLinks.filter(url=>url.length>2).map( slug => slug.replace('/','')).sort() ) ]
+                                }
+                            })
+                        }
+                    })
+                    delete this.website.blocks.autosave
+                    
+                    if ( !this.website.blocks.plugins.length ){
+                        this.website.blocks.store = false
+                    } else {
+                        
+                    }
+                }
+                start()
+            })
             // for ( var n=0 ; n < this.website.blocks.links.length ; n++ ){
             //     let url = this.website.blocks.links[n]
             //     if ( url.length > 1 ){
@@ -395,7 +337,7 @@ export default {
                 }
                 
             }
-            start()
+            
             return
         },
         async previewPages(){
@@ -451,8 +393,15 @@ export default {
                 this.errors = ''
                 this.preview = false
                 console.log ( this.website )
-                this.$api.service ( 'build-nuxt' ).patch ( this.website._id ,  this.website  ).then ( res => {
-                    console.log ( res )
+                let seo_homepage = {
+                    seo_title : this.website.blocks.seo.title,
+                    seo_description : this.website.blocks.seo.description
+                }
+                this.$api.service ( 'articles' ).patch ( this.website._id , seo_homepage ).then ( res => {
+                    console.log ( 'homepage' , res )
+                    this.$api.service ( 'build-nuxt' ).patch ( this.website._id ,  this.website  ).then ( res => {
+                        console.log ( res )
+                    })
                 })
             } else {
                 this.$api.service ( 'build-nuxt' ).create ( this.website  ).then ( res => {
@@ -501,7 +450,23 @@ export default {
         }
     },
     mounted(){
+        
+        console.clear()
+        let vm = this
         this.context = 'website'
+        this.$api.service ( 'articles' ).find ( {
+            query: {
+                $limit:200
+            }
+        }).then ( articles => {
+            this.articles = articles.data 
+            let hasStore = articles.data.filter ( article => { return article.store && article.publish } )
+            if ( !hasStore ){
+                this.isStore = false
+            }
+            this.home = articles.data.filter ( article => { return article.homepage } )[0]
+        })
+        
         this.$api.service ( 'build-nuxt' ).find().then ( res => {
             res.total ?
                 this.website = res.data[0] : null
@@ -509,6 +474,8 @@ export default {
                 this.website.seo_description = ''
             this.searchLinks()
         })
+
+
         // this.$api.service ( 'articles' ).find ( {
         //     query: {
         //         $limit: 200,
@@ -522,7 +489,7 @@ export default {
         // })
 
         //build process realtime console from feathersjs
-        let vm = this
+        //let vm = this
         this.$api.service('generate').on ( 'created' , (data) => {
             console.log  ( data )
             if ( data.data ){

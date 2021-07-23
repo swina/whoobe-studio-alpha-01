@@ -53,7 +53,7 @@ export default {
             }
         }).then ( res => {
             this.pages = res.total
-            //this.articles = [ ...this.articles , ...res.data ]
+            this.articles = [ ...this.articles , ...res.data ]
         })
     }
 }

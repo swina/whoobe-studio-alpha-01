@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed theme-dark right-0 top-0 z-highest w-sidebar lg:w-little h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview'">
+    <div class="fixed theme-dark right-0 top-0 z-highest w-sidebar lg:w-little h-screen border-l border-gray-900" v-if="(desktop.mode==='editor'||desktop.mode==='block') && editor.action != 'in_editor_preview' && editor.current">
         <div>
             <div class="flex flex-row items-center bg-gray-900">
                 <template v-for="(tab,i) in sidebarToolbar">
@@ -11,17 +11,16 @@
                         <icon name="chevron_right" class="text-gray-300 hover:text-indigo-500" title="more"/>
                     </div> -->
             </div>
-            <div v-if="currentTab.label!='settings' && currentTab.label!='generate'" class="text-white text-xs border-b border-gray-900 flex flex-row items-center p-1 shadow relative p-1">
-                <div class="w-full flex flex-col  text-base" @dblclick="$emit('switch')">
+            <div v-if="currentTab.label!='settings' && currentTab.label!='generate'" class="text-gray-600 text-xs border-t border-gray-900 flex flex-row items-center px-1 shadow absolute bottom-0 z-modal w-full">
+                <div class="w-full flex flex-col " @dblclick="$emit('switch')">
                     
                     <div class="flex flex-row justify-start items-center">
                         <span v-if="editor.current.tag!='menu'" class="text-xs capitalize">{{ editor.current.tag }} {{ editor.current.type }} {{ editor.current.label }}</span>
-                        <!-- <span v-else>Menu <span v-if="customizeDropdown">Dropdown</span></span> -->
                         <i class="material-icons text-sm ml-1">{{editor.current.icon}}</i> 
                     </div>
                     <div class="flex flex-row justify-around w-full">
-                        <div class="text-xs lg:text-xs text-gray-500">{{ size }}</div>
-                        <div class="text-xs lg:text-xs text-gray-500">{{ position }}</div>
+                        <div class="text-xs text-gray-500">{{ size }}</div>
+                        <div class="text-xs text-gray-500">{{ position }}</div>
                     </div>
                 </div>
                 

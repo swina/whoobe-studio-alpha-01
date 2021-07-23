@@ -55,6 +55,41 @@
             @close="cloudinary=!cloudinary"
             :component="cloudinaryPlugin"
             :plugin="cloudinaryPlugin"/>
+
+        <modal 
+            v-if="selectFormat && currentImageFormat"
+            size="lg"
+            position="modal"
+            buttons="none"
+            @close="selectFormat=!selectFormat">
+            <div slot="title">Select format</div>
+            <div slot="content" class="flex flex-col p-2">
+                <div class="relative">
+                    <img :src="$imageURL(currentImageFormat.url)" class="w-full h-1/2 object-cover"/>
+                    <div class="absolute z-top top-0 left-0 p-1 bg-black text-white font-mono text-xs">
+                        {{ currentImageName }} - {{ currentImageFormat.width }}x{{ currentImageFormat.height}} - {{ currentImageFormat.size/1000 }}KB
+                    </div>
+                    <div class="absolute z-top bottom-0 w-full p-2 m-auto text-center">
+                        <button class="lg rounded" @click="setSelectedFormat">Select</button>
+                    </div>
+                </div>
+                <div class="flex flex-row">
+                    <template v-for="format in Object.keys($mapState().editor.image.formats)">
+                        <div class="flex flex-col m-2" @click="currentImageFormat=$mapState().editor.image.formats[format]">
+                            <img :src="$imageURL($mapState().editor.image.formats[format].url)" class="h-40 w-40 object-cover"/>
+                            <div class="text-xs flex flex-col"> 
+                                <div>
+                                    {{ $mapState().editor.image.formats[format].width }}x
+                                    {{ $mapState().editor.image.formats[format].height }}
+                                </div>
+                                {{ $mapState().editor.image.formats[format].size/1000 }}KB
+
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </modal>        
     </div>
 </template>
 
@@ -85,7 +120,10 @@ export default {
         cloudinary:false,
         cloudinaryPlugin: null,
         plugins: [],
-        searchMedia: ''
+        searchMedia: '',
+        selectFormat: false,
+        currentImageFormat: null,
+        currentImageName: ''
     }),
     computed: {
         ...mapState(['editor','desktop'])
@@ -143,6 +181,15 @@ export default {
             })
         },
         setSelected(image){
+            if ( image.hasOwnProperty('formats') && Object.keys(image.formats).length ){
+                this.currentImageFormat = image.formats.full
+                this.currentImageName = image.name
+                this.selectFormat = true
+                return
+            }
+        },
+        setSelectedFormat(){
+            let image = this.currentImageFormat
             if ( this.$mode() === 'articles' ){
                 this.$emit ( 'insertimage' , image )
                 return

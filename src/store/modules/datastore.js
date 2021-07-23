@@ -50,18 +50,33 @@ const datastore = {
             commit ( 'tables' , payload )
         },
         dataset ( { commit } ,   dataset   ){
-            if ( dataset.table === 'setup' ){
-                let categories = dataset.data[0].categories.components.map ( cat => {
-                    return {
-                        label: cat + 's',
-                        icon: 'widgets',
-                        component: 'Blocks',
-                        path: 'blocks/blocks',
-                        filter: cat
-                    }
+            if ( dataset.table === 'categories' ){
+                let cts = dataset.data.sort ( (a,b) => a.name - b.name ) 
+                console.log ( cts )
+                let categories = cts.filter ( category => category.type === 'block' )
+                        .map ( cat => {
+                            return {
+                                label: cat.name + 's',
+                                icon: 'widgets',
+                                component: 'Blocks',
+                                path: 'blocks/blocks',
+                                filter: cat.name
+                            }
                 })
-                commit ( 'components_categories' , categories )
+                commit ( 'components_categories' , categories )     
             }
+            // if ( dataset.table === 'setup' ){
+            //     let categories = dataset.data[0].categories.components.map ( cat => {
+            //         return {
+            //             label: cat + 's',
+            //             icon: 'widgets',
+            //             component: 'Blocks',
+            //             path: 'blocks/blocks',
+            //             filter: cat
+            //         }
+            //     })
+            //     commit ( 'components_categories' , categories )
+            // }
             commit ( 'dataset' ,  dataset  )
         },
         fields ( { commit } , payload ){

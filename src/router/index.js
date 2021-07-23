@@ -36,6 +36,11 @@ const routes = [
     name: 'Preview',
     component: Preview
   },
+  {
+    path: '/preview/:slug',
+    name: 'PreviewSlug',
+    component: Preview
+  },
   /*
   {
     path: '/dashboard',

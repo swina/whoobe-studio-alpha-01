@@ -1,12 +1,11 @@
 <template>
-<div class="z-2xtop h-screen" v-if="schema && schema.keys">
+<div class="z-2xtop h-screen" v-if="schema">
 
         <div class="w-full cursor-pointer pb-20 shadow overflow-y-auto bg-gray-800 text-gray-500">
            
-            <!--<i v-if="!$attrs.importReusable" class="material-icons z-top absolute right-0 m-2 cursor-pointer text-gray-500" @click="$emit('close')">close</i>-->
-            <template v-if="schema && schema.keys && !$attrs.importReusable"  v-for="(group,g) in schema.keys">
+            <template v-if="!$attrs.importReusable"  v-for="(group,g) in Object.keys(schema)">
                 
-                <div class="p-1 border-b border-gray-700 capitalize hover:bg-gray-600" v-if="!$attrs.newblock||group==='container'" :key="group" @click="currentGroup=group">
+                <div class="p-1 border-b border-gray-700 capitalize hover:bg-gray-600" v-if="!$attrs.newblock||group==='containers'" :key="group" @click="currentGroup=group">
                     {{ group }}
                 </div>
                 <div v-if="currentGroup===group" class="w-full border-b border-gray-700 bg-gray-700 flex flex-row flex-wrap p-1 justify-center" :key="group + '_' + g">
@@ -20,14 +19,14 @@
                 </div>
             </template>
 
-            <div>
+            <!-- <div>
                 <template v-for="plugin in $mapState().datastore.dataset.plugins">
                     <div :key="plugin.general.name" class="p-1 border-b border-gray-700 capitalize hover:bg-gray-600" v-if="plugin.component.config.hasOwnProperty('schema') && plugin.component.config.schema" @click="pluginElement(plugin)">
                         {{ plugin.general.name }} [plugin]
                     </div>
                 </template>
-                <!-- <button @click="setCollectionFields('Product')">Product</button> -->
-            </div>
+                
+            </div> -->
             <transition name="fade">
                 <div class="nuxpresso-modal text-xs p-4 z-50 w-1/3 border relative" v-if="columns" @click="columns=!columns">
                     
@@ -202,6 +201,7 @@ export default {
         MokaGrids
     },
     data:()=>({
+        keys: [],
         currentGroup: '',
         media: false,
         columns: false,
@@ -252,7 +252,7 @@ export default {
             return true
         },
         schema(){
-            return this.datastore.dataset.elements[0].moka
+            return this.datastore.dataset.elements[0].elements
         },
         svgs(){
             return waves

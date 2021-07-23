@@ -82,7 +82,8 @@
         <modal
             :fixed="true"
             size="sm"
-            position="modal" 
+            position="modal"
+            buttons="standard" 
             :close="true"
             v-if="confirmModal||editor.action==='delete'"
             @close="confirm=false,confirmModal=false,$action()"

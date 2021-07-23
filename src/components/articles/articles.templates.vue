@@ -2,8 +2,8 @@
 <div class="flex flex-col theme-dark">
     <div class="flex flex-row my-1 p-1 items-center">
         <span>Category</span> 
-        <select v-model="filter" class="ml-2 w-full dark">
-        <option v-for="category in $mapState().datastore.dataset.setup[0].categories.components" :value="category">{{ category }}</option>
+        <select v-model="filter" class="ml-2 w-full dark capitalize">
+        <option v-for="category in $mapState().datastore.components_categories" :value="category.filter">{{ category.label }}</option>
     </select>
     </div>
     <div v-if="loadTemplates" class="flex flex-row flex-wrap justify-around p-4">

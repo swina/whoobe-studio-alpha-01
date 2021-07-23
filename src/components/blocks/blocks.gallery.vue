@@ -11,7 +11,7 @@
       <!-- GALLERY -->
       <div v-for="comp in blocks" class="mx-4 my-4 w-48" :title="comp.name + '-' + comp.description + ' ' + comp.updatedAt" :key="comp._id">
         <!-- <div v-if="comp && comp.hasOwnProperty('name')"> -->
-          <div class="pl-1 h-7 text-xs text-gray-400">
+          <div class="pl-1 h-7 text-xs text-gray-400" @click="editName(comp)">
             {{ comp.name.substring(0,20) }} 
           </div>
 
@@ -23,21 +23,23 @@
                 title="Click to edit"
                 />
               <icon v-if="!comp.image" name="view_quilt" class="text-8xl m-auto"/>
-              <!-- <img v-else src="../../assets/no-image.png" class="object-contain object-top object-left w-48 h-32"/> -->
-                <!-- @click="selectComponent(comp.id, 'preview', comp)" -->
+              
           </div>
-
-          <!-- <div
-            v-else
-            class="h-32"
-            title="Click to preview"
-            @click="$emit('preview', comp)"
-          ></div> -->
 
           <!--ACTIONS-->
           <div class="text-xs text-gray-600 opacity-0 hover:opacity-100" @mouseleave="moreID = null">
             <div>
-              <div v-if="moreID === comp._id" @mouseleave="moreID = null" class="menu absolute -translate-y-24 transform bg-gray-900 w-48">
+              <div v-if="moreID === comp._id" @mouseleave="moreID = null" class="menu absolute -translate-y-48 h-48 transform bg-gray-900 w-48">
+                <div class="pl-1 hover:bg-white" title="Change name" @click="editName(comp)">
+                  Name ...
+                </div>
+
+                <div class="pl-1 hover:bg-white" title="Change category" @click="editCategory(comp)">
+                  Category ...
+                </div>
+                <div class="pl-1 hover:bg-white" title="Change name" @click="component=comp,createArticle=!createArticle">
+                  Create article ...
+                </div>
                 <div class="pl-1 hover:bg-white" :class="comp.hasOwnProperty('autosave') && comp.autosave ? '' : 'italic'" @click="comp.hasOwnProperty('autosave') && comp.autosave ? restoreAutosave(comp) : null" title="Restore from autosave">
                   Restore
                 </div>
@@ -84,6 +86,40 @@
       v-if="confirm" 
       @noconfirm="confirm=!confirm" 
       @confirm="confirmAction"/>
+    <modal
+      v-if="componentName"
+      size="md"
+      @close="componentName=!componentName">
+      <div slot="title">Block name</div>
+      <div slot="content" class="p-4 flex flex-row justify-around">
+        <input type="text" class="dark" v-model="component.name"/><button @click="saveComponent(component)">Save</button>
+      </div>
+    </modal>
+    <modal
+      v-if="componentCategory"
+      size="md"
+      @close="componentCategory=!componentCategory">
+      <div slot="title">Block category</div>
+      <div slot="content" class="p-4 flex flex-row justify-around">
+        <select v-model="component.category" class="dark mr-2">
+          <option v-for="category in $mapState().datastore.components_categories" :value="category.filter" class="capitalize"><span class="capitalize">{{ category.label }}</span></option>
+        </select><button @click="saveComponent(component)">Save</button>
+      </div>
+    </modal>
+    <modal
+      v-if="createArticle"
+      size="md"
+      buttons="standard"
+      @close="createArticle=!createArticle"
+      @click_0="createArticle=!createArticle"
+      @click_1="createNewArticle()"
+      >
+      <div slot="title">Create article</div>
+      <div slot="content" class="p-6">
+        Click OK to create a new article with this block as template
+      </div>
+
+    </modal>
   </div>
 </template>
 
@@ -100,9 +136,32 @@ export default {
         confirmModal: false,
         confirm: false,
         confirmAction : null,
-        search:''
+        search:'',
+        componentName: false,
+        componentCategory: false,
+        component: null,
+        createArticle: false
     }),
     methods:{
+      editName(component){
+        this.component = component
+        this.componentName = true
+      },
+      editCategory(component){
+        this.component = component
+        this.componentCategory = true
+      },
+      saveComponent(component){
+        let vm = this
+        this.$api.service('components').patch ( component._id , component ).then ( res => {
+          vm.blocks = vm.allObjects.filter ( obj => obj.category === this.$attrs.filter )
+        })
+        this.componentName = false
+        this.componentCategory = false
+      },
+      addToLibrary(){
+        return
+      },
       searchComponent(e){
         if ( e.keyCode === 13 && this.search.length > 2){
           
@@ -166,7 +225,30 @@ export default {
           this.$emit('removed')
           this.$loading ( false )
         })
-      }
+      },
+      createNewArticle(){
+            let article = {}
+            article.title = this.component.name
+            article.slug = this.$slugify(this.component.name)
+            article.publish = true
+            article.component = this.component._id
+            article.content = ''
+            article.excerpt = ''
+            article.seo_title = this.component.seo.title
+            article.seo_description = this.component.seo.description
+            article.template_id = this.component._id
+            article.template_preview = this.component.image
+            article.categories = 'page'
+            let blocks = this.component
+            delete blocks.autosave
+            article.blocks = blocks
+            this.$api.service ( 'articles' ).create ( article ).then ( res => {
+                this.$message ( 'Article created!' )
+                this.$mapState().datastore.dataset.articles.push ( res )
+            }).catch ( error => {
+                this.$message ( 'An error occurred. Check you console log')
+            })
+        }
     },
     watch:{
       objects(v){

@@ -41,7 +41,7 @@ export default {
         },
         buttons: {
             type: String,
-            default: 'standard'
+            default: 'none'
         }
     },
     data:()=>({
@@ -94,7 +94,11 @@ export default {
                     ' h-' + this.$attrs.height : ''
         },
         position(){
-           return this.$attrs.position ? ' ' + this.$attrs.position + ' ' + this.$attrs.css : '' + this.$attrs.css
+            let css = ''
+            this.$attrs.css ? css = this.$attrs.css : null
+            let position = ' modal '
+            this.$attrs.position ? position = this.$attrs.position : null
+            return ' ' + position + ' ' + css //this.$attrs.position ? ' ' + this.$attrs.position + ' ' + this.$attrs.css : this.$attrs.css 
         },
         color(){
             return this.$attrs.color ? ' ' + this.$attrs.color : ' bg-gray-800 text-gray-300'
