@@ -56,7 +56,7 @@ const datastore = {
                 let categories = cts.filter ( category => category.type === 'block' )
                         .map ( cat => {
                             return {
-                                label: cat.name + 's',
+                                label: cat.name ,
                                 icon: 'widgets',
                                 component: 'Blocks',
                                 path: 'blocks/blocks',

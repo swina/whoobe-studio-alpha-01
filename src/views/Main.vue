@@ -3,6 +3,7 @@
       <div class="m-auto text-center font-thin  m-auto">
         <img src="../assets/logo.svg" class="w-64 grayscale"/>
         <div class="text-gray-700 text-sm -mt-4w-64 text-right font-hairline">S T U D I O</div>
+        <div v-if=""
         <button v-if="$store.state.user.login" @click="$router.push('desktop')" class="text-2xl p-4">Start</button>
         <!-- <div class="tex-left">
           <login v-if="!logged" @islogged="check" class="m-auto w-64"/>
@@ -40,16 +41,8 @@ export default {
  
   mounted(){
     let vm = this
-    // this.$api.authenticate().then ( resp => {
-    //   vm.login = false
-    //   this.$store.dispatch('login',true)
-    // }).catch ( err => {
-    //   this.$message ( 'Authentication required!' )
-    //   this.login = true
-    //   this.$store.dispatch('login',false)
-    //   console.log ( err )
-    // })
-
+    console.log ( this.$store.state.user )
+   
   },
   methods:{
     datastore(){
@@ -75,17 +68,8 @@ export default {
       ).then ( result => {
         this.$loading()
         this.$store.dispatch ( 'dataset' , { table: 'articles' , data: result.data })
-        // let elements = this.$mapState().datastore.dataset.elements[0].moka 
-        // Object.keys ( elements ).forEach ( group => {
-        //   if ( group != 'keys' && group != 'categories' ){
-        //     elements[group].forEach ( element => {
-        //       let el = element
-        //       el.category = group
-        //       this.$api.service ( 'block-elements' ).create ( el )
-        //     })
-        //   }
-        // })
       })
+      
     },
     doLogin(){
         this.$api.authenticate({

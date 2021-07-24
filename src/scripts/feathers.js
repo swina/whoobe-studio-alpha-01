@@ -20,7 +20,12 @@ const api = feathers()
   }))
   .configure(auth({ storage: window.localStorage }))
 
-
+api.authenticate().then(res=>{
+  console.log ( res )
+  store.dispatch('login',true)
+}).catch ( error => {
+  store.dispatch('login',false)
+})
 const apiserver = api
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div id="app" islogged>
+  <div id="app">
     
     <router-view/>
     
@@ -49,7 +49,9 @@ export default {
   }),
   computed:{
     ...mapState ( ['user'] ),
-    islogged(){
+    async islogged(){
+      const login = await this.$store.state.user.login
+      console.log ( login )
       return this.$api.authenticate().then ( res => {
         this.$store.dispatch('login',true)
         console.log ( 'Authenticated !')

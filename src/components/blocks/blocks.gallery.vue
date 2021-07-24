@@ -4,15 +4,21 @@
       <button class="lg" @click="$action('component_create')">New</button>
       <button class="lg" @click="$action('component_import')">Import</button>
       <button class="lg" @click="$mapState().editor.export='category',$action('component_export')">Export All</button>
-      <input class="dark mt-1 ml-2" type="text" placeholder="search..." v-model="search" @keydown="searchComponent($event)"/>
+      <input class="dark mx-2" type="text" placeholder="search..." v-model="search" @keydown="searchComponent($event)"/>
       <button v-if="search" @click="search='',blocks=objects">Reset</button>
+      <label class="mx-2">Project</label>
+      <select v-model="searchByProject" class="dark mx-2">
+        <option value=""></option>
+        <option v-for="project in projects" :value="project._id">{{ project.name }}</option>
+      </select>
+      <small>Search all blocks of a project</small>
     </div>
     <div v-if="objects" class="px-2 py-4 m-auto whoobe-components-gallery flex flex-row flex-wrap justify-center ">
       <!-- GALLERY -->
       <div v-for="comp in blocks" class="mx-4 my-4 w-48" :title="comp.name + '-' + comp.description + ' ' + comp.updatedAt" :key="comp._id">
         <!-- <div v-if="comp && comp.hasOwnProperty('name')"> -->
           <div class="pl-1 h-7 text-xs text-gray-400" @click="editName(comp)">
-            {{ comp.name.substring(0,20) }} 
+            <span class="truncate">{{ comp.name }}</span>
           </div>
 
           <div class="w-48 h-56 flex flex-col items-center justify-center border border-gray-700" @click="selectComponent(comp.id, 'component', comp)">
@@ -27,15 +33,18 @@
           </div>
 
           <!--ACTIONS-->
-          <div class="text-xs text-gray-600 opacity-0 hover:opacity-100" @mouseleave="moreID = null">
+          <div class="text-xs text-gray-600">
             <div>
-              <div v-if="moreID === comp._id" @mouseleave="moreID = null" class="menu absolute -translate-y-48 h-48 transform bg-gray-900 w-48">
+              <div v-if="moreID === comp._id"  class="menu absolute -translate-y-48 h-48 transform bg-gray-900 w-48 transition-all duration-700 ease-in-out">
                 <div class="pl-1 hover:bg-white" title="Change name" @click="editName(comp)">
                   Name ...
                 </div>
 
                 <div class="pl-1 hover:bg-white" title="Change category" @click="editCategory(comp)">
                   Category ...
+                </div>
+                <div class="pl-1 hover:bg-white" title="Assign to project" @click="editProject(comp)">
+                  Project ...
                 </div>
                 <div class="pl-1 hover:bg-white" title="Change name" @click="component=comp,createArticle=!createArticle">
                   Create article ...
@@ -53,12 +62,12 @@
                   Delete
                 </div>
               </div>
-              <div class="w-full p-1 flex flex-row justify-around">
+              <div class="w-full p-1 flex flex-row justify-around opacity-0 hover:opacity-100">
                 <i class="material-icons xs mr-2 hover:text-blue-500" title="Edit" @click="selectComponent(comp.id, 'component', comp)">edit</i>
                 
                 <i class="material-icons xs ml-2 hover:text-blue-500" title="Preview" @click="openPreview(comp)">preview</i>
 
-                <i class="material-icons" @click="moreID = comp._id">more_vert</i>
+                <i class="material-icons" @click="moreID ? moreID = null : moreID = comp._id">more_vert</i>
               </div>
             </div>
           </div>
@@ -82,10 +91,12 @@
             </div>
         </modal>
     </transition>
+    
     <modal-confirm 
       v-if="confirm" 
       @noconfirm="confirm=!confirm" 
       @confirm="confirmAction"/>
+    
     <modal
       v-if="componentName"
       size="md"
@@ -95,6 +106,7 @@
         <input type="text" class="dark" v-model="component.name"/><button @click="saveComponent(component)">Save</button>
       </div>
     </modal>
+
     <modal
       v-if="componentCategory"
       size="md"
@@ -106,6 +118,7 @@
         </select><button @click="saveComponent(component)">Save</button>
       </div>
     </modal>
+
     <modal
       v-if="createArticle"
       size="md"
@@ -120,6 +133,19 @@
       </div>
 
     </modal>
+
+    <modal
+      v-if="componentProject"
+      size="md"
+      @close="componentProject=!componentProject">
+      <div slot="title">Select a project</div>
+      <div slot="content" class="p-6">
+        <select v-model="component.project" class="dark mr-2">
+          <option v-for="project in projects" :value="project._id">{{ project.name }}</option>
+        </select><button @click="saveComponent(component)">Save</button>
+      </div>
+    </modal>
+    
   </div>
 </template>
 
@@ -140,7 +166,10 @@ export default {
         componentName: false,
         componentCategory: false,
         component: null,
-        createArticle: false
+        createArticle: false,
+        projects: null,
+        componentProject: false,
+        searchByProject: ''
     }),
     methods:{
       editName(component){
@@ -151,6 +180,10 @@ export default {
         this.component = component
         this.componentCategory = true
       },
+      editProject(component){
+        this.component = component
+        this.componentProject = true
+      },
       saveComponent(component){
         let vm = this
         this.$api.service('components').patch ( component._id , component ).then ( res => {
@@ -158,6 +191,7 @@ export default {
         })
         this.componentName = false
         this.componentCategory = false
+        this.componentProject = false
       },
       addToLibrary(){
         return
@@ -254,6 +288,16 @@ export default {
       objects(v){
         this.allObjects = v
         this.blocks = v
+      },
+      searchByProject(id){
+        if ( id ){
+          this.$api.service ( 'components' ).find ( { query: { project: id }} )
+            .then ( res => {
+              this.blocks = res.data
+            })
+        } else {
+          this.blocks = this.objects 
+        }
       }
     },
     mounted(){
@@ -261,6 +305,9 @@ export default {
             return obj.hasOwnProperty ( 'name' )
         })
         this.allObjects = this.objects
+        this.$api.service ( 'projects' ).find ( { query: { $limit: 100 , $sort: { name: 1} } } ).then ( res => {
+          this.projects = res.data
+        })
     }
 
 }

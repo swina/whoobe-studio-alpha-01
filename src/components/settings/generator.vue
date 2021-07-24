@@ -2,23 +2,46 @@
     <div class="m-4 p-4" :key="newKey" v-if="website">
         <div class="absolute right-0 top-0 mt-12 w-full flex items-end w-full justify-end mr-8">
             <button class="lg success" @click="buildWebsite()">Generate</button>
-            <button v-if="preview" class="ml-2 lg" @click="buildPreview()">Preview</button>
+            <button v-if="$attrs.block" class="ml-2 lg" @click="$emit('close')">Close</button>
+            <!-- <button v-if="preview" class="ml-2 lg" @click="buildPreview()">Preview</button> -->
         </div>
         <h4>Whoobe Generator</h4>
-        <div class="grid grid-cols-5">
+        <div class="grid grid-cols-5 gap-5">
 
             <div class="flex flex-col cursor-pointer" title="Select a template for the homepage" v-if="website">
-                <label>Homepage</label>
+                <label class="font-bold">Homepage</label>
                 <img v-if="website.template_preview" :src="$imageURL(website.template_preview)" class="w-40 h-56 object-cover object-top" @click="reusable=!reusable"/>
 
-                <div class="flex flex-col " :title="isStore.title + ' [' + isStore.categories + ']'" v-if="isStore.publish && isStore.store"> 
+                <div class="flex flex-col " :title="isStore.title + ' [' + isStore.categories + ']'" v-if="website.blocks.store && isStore.publish && isStore.store"> 
                     <div class="text-xs truncate">{{isStore.title}}</div>
                     <img v-if="isStore.template_preview" :src="$imageURL(isStore.template_preview)" class=" h-56 w-40 object-cover object-top"/>
                     <img v-if="!isStore.template_preview" src="no-image.png"/>
                 </div>
             </div>
 
-            <div class="col-span-3">
+            
+            <div class="w-full col-span-4 flex flex-col">
+                <div class="grid grid-cols-2 gap-5 mb-10">
+                    <div class="flex flex-col">
+                        <div class="flex flex-col">
+                                <label>SEO Title</label>
+                                <input class="dark w-full" type="text" v-model="website.blocks.seo.title"/>
+                                <label>SEO Description</label>
+                                <textarea class="dark w-full h-32" type="text" v-model="website.blocks.seo.description"/>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <label>Target folder</label>
+                        <input class="dark w-full" type="text" v-model="website.target"/>
+                        <label>Google Analytics</label>
+                        <input class="dark w-full" type="text" v-model="website.analytics"/>
+                        <div class="flex items-center mt-2">
+                            <input class="mr-2" type="checkbox" v-model="website.pwa"/> PWA 
+                            <button v-if="website.pwa" class="ml-2 bg-purple-500 lg" @click="setPWA=!setPWA">Configure PWA</button>
+                        </div>
+                    </div>
+                </div>
+
                 <label>Sitemap : articles {{website.pagesToPublish.filter(url=>url.length >2).length}}</label>
                 <div class="flex flex-row flex-wrap justify-start">
                     <!-- website.pagesToPublish"> -->
@@ -35,27 +58,7 @@
                 </div>
                 
             </div>
-
-            <div class="flex flex-col">
-                <label>Settings</label>
-                <div class="flex flex-col">
-                        <label>SEO Title</label>
-                        <input class="dark w-full" type="text" v-model="website.blocks.seo.title"/>
-                        <label>SEO Description</label>
-                        <textarea class="dark w-full h-32" type="text" v-model="website.blocks.seo.description"/>
-                        <label>Target folder</label>
-                        <input class="dark w-full" type="text" v-model="website.target"/>
-                        <label>Google Analytics</label>
-                        <input class="dark w-full" type="text" v-model="website.analytics"/>
-                        <div class="flex items-center mt-2">
-                            <input class="mr-2" type="checkbox" v-model="website.pwa"/> PWA 
-                            <button v-if="website.pwa" class="ml-2 bg-purple-500 lg" @click="setPWA=!setPWA">Configure PWA</button>
-                        </div>
-                    </div>
-            </div>
-
         </div>
-
         <!--- template selector --->
         <modal 
             v-if="reusable"
@@ -75,10 +78,16 @@
             <div slot="title">Publish {{ website.title }}</div>
             <div slot="content" class="p-4">
                 <div class="grid grid-cols-3 gap-10 h-1/2">
-                    <textarea id="generated" ref="generate_output" v-model="output" style="font-family:monospace" class="text-xs w-full h-full bg-gray-100 text-gray-700 font-light col-span-2">
-                    </textarea>
-                    <textarea id="errors" ref="generate_output" v-model="errors" style="font-family:monospace" class="text-xs w-full h-full bg-gray-100 text-gray-700 font-light">
-                    </textarea>
+                    <div class="flex flex-col col-span-2">
+                        Info
+                        <textarea id="generated" ref="generate_output" v-model="output" style="font-family:monospace" class="text-xs w-full h-full bg-gray-100 text-gray-700 font-light">
+                        </textarea>
+                    </div>
+                    <div class="flex flex-col">
+                        Warnings/Errors
+                        <textarea id="errors" ref="generate_output" v-model="errors" style="font-family:monospace" class="text-xs w-full h-full bg-gray-100 text-gray-700 font-light">
+                        </textarea>
+                    </div>
                     
                 </div>
             </div>
@@ -265,6 +274,11 @@ export default {
         async searchLinks(){
             this.$store.dispatch ( 'pages' , [])
             let links = this.website.blocks.links.filter ( url => url.length > 2 )
+            let hasStore = this.website.blocks.plugins.filter ( plugin => plugin.includes('store') )
+            hasStore.length ?
+                this.website.blocks.store = true : 
+                    this.website.blocks.store = false 
+            console.log ( 'Has store ?' , hasStore )
             if ( !links.length ) return 
 
             this.$api.service( 'articles' ).find ( { query : { store: true , publish: true } } )
@@ -276,9 +290,10 @@ export default {
                     return 
             }).then ( () => {
                     const start = async () => {
-                        this.allPagesLinks = []
-                        this.website.pagesToPublish = []
+                    this.allPagesLinks = []
+                    this.website.pagesToPublish = []
                     asyncForEach ( this.website.blocks.links , async(url) => {
+                        console.log ( url )
                         //await waitFor(50)
                         if ( !url.includes('store/category') && url != 'store' && url != '/' && url != '/shop-demo' ){
                             this.$pageLinks(url).then ( res => {
@@ -472,7 +487,17 @@ export default {
                 this.website = res.data[0] : null
                 this.website.seo_title = ''
                 this.website.seo_description = ''
-            this.searchLinks()
+                this.website.pagesToPublish = []
+            if ( this.$attrs.block ){
+                this.allPagesLinks = []
+                this.pagesToPublish = []
+                this.website.target = this.$attrs.target
+                this.website.pagesToPublish = []
+                this.setWebsiteTemplate ( this.$attrs.block )
+                this.searchLinks()
+            } else {
+                this.searchLinks()
+            }
         })
 
 
@@ -502,7 +527,7 @@ export default {
                 if ( data.data.includes('done') ){
                     vm.preview = true
                 }
-                !data.data.includes('undefined') ? this.output += data.data.normalize().replace('undefined','') : null
+                !data.data.includes('undefined') ? this.output += data.data : null//.normalize().replace('undefined','') : null
             } 
             if ( data.error ){
                 this.errors += data.error.normalize()

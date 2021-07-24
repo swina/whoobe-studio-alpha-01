@@ -84,7 +84,9 @@ export default {
                 this.$loading()
                 this.$store.dispatch ( 'dataset' , { table: 'articles' , data: result.data })
             })
-            
+            this.$api.service ( 'components' ).find ( { query: { $limit: 200 , category: 'widget' } } ).then ( res => {
+                console.log ( 'widgets =>' , res.data )
+            })
         },
         logout(){
             window.localStorage.removeItem ( 'feathers-jwt' )

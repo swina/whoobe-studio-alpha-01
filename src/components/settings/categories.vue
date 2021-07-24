@@ -104,6 +104,9 @@ export default {
         save(category){
             this.$api.service('categories').patch ( category.id , category ).then ( result => {
                 this.$store.dispatch ( 'message' , 'Category saved' )
+                if ( result.type === 'block' ){
+                    this.datastore.components_categories.push ( result )
+                }
                 this.$find('setup')
             })
         },

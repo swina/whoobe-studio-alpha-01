@@ -6,40 +6,7 @@
             </template>
         </div>
         <div class="flex flex-col justify-around">
-            <!-- <div v-if="tab==='projects'">
-                <h5 class="bg-gray-700 text-gray-200 p-1">Projects</h5>
-                <div class="flex flex-row p-2 w-full text-base">
-                    <whoobe-projects/>
-                </div>
-            </div> -->
-            <!-- <div v-if="tab==='website'" class="border border-t-0 relative pb-8">
-                <h5 class="bg-gray-700 text-gray-200 p-1">Site generator settings</h5>
-                <div class="flex flex-row p-2 w-full text-base">
-                        
-                    <div class="w-1/2 flex flex-col">
-                        <label class="font-bold">SEO Title (default)</label>
-                        <input type="text" v-model="$datastore('setup').general.seo_title"/>
-                        <label class="font-bold">SEO Description (default)</label>
-                        <textarea v-model="$datastore('setup').general.seo_description" class="w-3/4"/>
-                        
-                        
-                        <label class="font-bold">Read More text</label>
-                        <input type="text" v-model="$datastore('setup').general.read_more"/>
-
-                        <label class="font-bold">Responsive menu class</label>
-                        <textarea v-model="$datastore('setup').general.responsive_menu_css" class="w-3/4"/>
-
-                        <label class="font-bold">Responsive menu transition</label>
-                        <input type="text" v-model="$datastore('setup').general.responsive_menu_transition"/>
-                        <p class="text-xs">(default fade)</p>
-                    </div>
-                    
-                </div>
-                <button class="absolute bottom-0 right-0 m-2" @click="saveSettings">Save</button>
-            </div>
-            <div v-if="tab==='categories'" class="border border-t-0">
-                <moka-categories></moka-categories>
-            </div> -->
+            
             
             <div v-if="tab==='server'" class="border border-gray-900">
                     <!-- <h5 class="theme-dark p-1">General</h5> -->
@@ -72,7 +39,7 @@
                             </div> -->
                         </div> 
                     
-                </div>
+            </div>
                 
             </div>
             <div v-if="tab==='categories'" class="border border-gray-900">
@@ -223,7 +190,7 @@ export default {
                 this.$store.dispatch('login',false)
                 alert ( 'Changed Whoobe Server')
                 window.location.reload()
-                this.$router.push ( '/' )
+                this.$router.push ( '/login' )
             }).catch ( error => {
                 this.serverError = 'Server URL is not valid or no server responding to the URL submitted'
                 this.$message('Server URL is not valid or no server responding to the URL submitted')

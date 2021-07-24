@@ -8,9 +8,9 @@
     </div>
     <div v-if="loadTemplates" class="relative overflow-y-auto flex flex-row flex-wrap justify-around p-4">
         <template v-for="(template,index) in templates">
-            <div class="w-48 flex flex-col mb-4 cursor-pointer" v-if="index>=start && index < (start+limit)" @click="setTemplate(template)" :title="template.category">
+            <div class="w-48 flex flex-col mb-4 cursor-pointer" v-if="index>=start && index < (start+limit)" @click="setTemplate(template)" :title="template.name + ' - ' + template.category">
                 <div class="flex flex-row items-center justify-between text-gray-600">
-                    <span class="text-xs">{{ template.name }}</span>
+                    <span class="text-xs truncate">{{ template.name }}</span>
                     <i class="material-icons ml-1">{{ template.category === 'page' ? 'web' : 'dynamic_feed'}}</i>
                 </div>
                 
