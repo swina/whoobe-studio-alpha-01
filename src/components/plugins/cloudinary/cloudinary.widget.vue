@@ -103,7 +103,7 @@ export default {
            }
            
         })
-        injectScript(this.$attrs.plugin.component.config)
+        injectScript(this.$attrs.plugin.config)
     }
 } 
 </script>

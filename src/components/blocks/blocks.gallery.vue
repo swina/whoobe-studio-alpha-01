@@ -28,7 +28,7 @@
                 :src="$imageURL(comp.image)"
                 title="Click to edit"
                 />
-              <icon v-if="!comp.image" name="view_quilt" class="text-8xl m-auto"/>
+              <icon v-if="!comp.image" name="view_quilt" css="text-8xl" class="m-auto"/>
               
           </div>
 
@@ -80,11 +80,12 @@
             :fixed="true"
             size="sm"
             position="modal" 
+            buttons="standard"
             :close="true"
             v-if="confirmModal"
             @close="confirm=false,confirmModal=false,$action()"
             @click_0="confirm=false,confirmModal=false,$action()"
-            @click_1="confirm=true,confirmModal=!confirmModal,removeComponent()">
+            @click_1="confirm=true,confirmModal=false,removeComponent()">
             <div slot="title">Delete object</div>
             <div slot="content" class="p-4">
                 Remove <strong>{{current.name}}</strong> ?
@@ -92,10 +93,10 @@
         </modal>
     </transition>
     
-    <modal-confirm 
+    <!-- <modal-confirm 
       v-if="confirm" 
       @noconfirm="confirm=!confirm" 
-      @confirm="confirmAction"/>
+      @confirm="confirmAction"/> -->
     
     <modal
       v-if="componentName"

@@ -12,9 +12,9 @@
 
         <i v-if="doc.type==='element' || doc.type==='button'" class="material-icons hover:text-blue-500  text-base mr-2" @click="$action('block_edit')" title="Edit">edit</i>
 
-        <icon name="edit" v-if="doc.tag==='icon'" class="material-icons hover:text-blue-500  text-base mr-2" @click="$action('block_icon')" title="Edit"/>
+        <icon name="edit" v-if="doc.tag==='icon'" css="hover:text-blue-500  text-base mr-2" @click="$action('block_icon')" title="Edit"/>
 
-        <icon name="settings" v-if="doc.hasOwnProperty('data')" class="hover:text-blue-500  text-base mr-2" title="Link data" @click="$action('block_link_data')"/>
+        <icon name="settings" v-if="doc.hasOwnProperty('data')" css="hover:text-blue-500  text-base mr-2" title="Link data" @click="$action('block_link_data')"/>
 
         <i v-if="doc.type==='image'" class="material-icons hover:text-blue-500  text-base mr-2" @click="$action('media')" title="Add image">photo</i>
 
@@ -22,6 +22,7 @@
 
         <i v-if="doc.hasOwnProperty('collection')" class="mr-2 material-icons hover:text-blue-500 text-base leading-4" @click="editor.action?$action():$action('loopcontrol')" title="Settings">settings</i>
 
+        <icon name="settings" v-if="doc.type==='menu'" css="mr-2 hover:text-blue-500 text-base leading-4" @click="editor.action?$action():$action('block_menu')" title="Settings"/>
 
         <i v-if="doc.tag === 'document' || doc.tag==='blocks' || doc.type==='flex' || doc.type==='grid'" class="mr-2 material-icons hover:text-blue-500 text-base leading-4" @click="$action('block_add_element')" title="Add element">add</i>
 
@@ -30,7 +31,7 @@
 
         <i v-if="doc.tag==='form'" class="mr-2 material-icons hover:text-blue-500 text-base leading-4" @click="$action('formsetting')" title="Settings">settings</i> 
         
-        <i class="mr-2 material-icons hover:text-blue-500 text-sm leading-4 " @click="$action('customize')" title="Customize">brush</i>
+        <i v-if="doc.type != 'menu'" class="mr-2 material-icons hover:text-blue-500 text-sm leading-4 " @click="$action('customize')" title="Customize">brush</i>
         
         <i v-if="doc.tag === 'document' || doc.type==='flex' || doc.type==='grid'" class="mr-2 material-icons hover:text-blue-500 text-base leading-4" @click="editor.current=doc,$action('media')" title="Background image">photo</i>
 

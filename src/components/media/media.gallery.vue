@@ -11,7 +11,7 @@
                 <img v-if="$isFileType(image.mime)==='video'" :src="$imageURL(image)" class="h-32 w-48 object-cover shadow-lg" @click="($mapState().editor.image = image),$emit('image',image)" :title="image.url"/>
 
                 <icon v-if="$isFileType(image.mime)!='video' && $isFileType(image.mime)!='image'"  name="insert_drive_file" class="m-auto text-7xl h-32 flex flex-col items-center justify-center" :title="image.url"/>
-                <div class="relative">{{ image.name.substring(0,30) }} 
+                <div class="relative truncate">{{ image.name }} 
                     <span v-if="image.provider!='local'" class="text-red-500 absolute right-0">ext</span>
                     <span v-else class="text-lime-500 absolute right-0">local</span>
                 </div>

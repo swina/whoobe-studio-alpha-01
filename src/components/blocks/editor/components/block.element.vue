@@ -34,7 +34,7 @@
             <button :class="$cssResponsive(el.css)" v-if="el.type==='file'">{{el.content}}</button>    
             
             <!-- icon -->
-            <icon v-if="el.tag==='icon' && !el.link" :class="$cssResponsive(el.css)" :name="el.content"/>
+            <icon v-if="el.tag==='icon' && !el.link" :css="$cssResponsive(el.css)" :name="el.content"/>
             <bt-icon v-if="el.tag==='icon_bootstrap' && !el.link" :class="$cssResponsive(el.css)" :name="el.content"/>
 
             <!-- iconify -->

@@ -71,7 +71,7 @@ export default {
     computed:{
         ...mapState(['moka','datastore','editor']),
         schema(){
-            return this.datastore.dataset.elements[0].moka //this.moka.elements.moka
+            return this.datastore.dataset.elements[0].elements //this.moka.elements.moka
         },
         
         container(){

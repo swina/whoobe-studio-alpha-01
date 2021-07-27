@@ -8,7 +8,7 @@
         </div>
         <div v-for="(tab,index) in desktop.tabs" :key="tab.label" class="flex flex-row items-center pl-2 pr-1 border-r border-b h-10 border-gray-900 hover:text-white hover:bg-indigo-600" :class="active(index)" @click="desktop.currentTab=index,setMode(index),$action()">
             <div class="flex-row-center mr-2"><icon :name="tab.icon" class="mr-2"/><span class="capitalize">{{ tab.name }}</span></div>
-            <icon name="close" class="text-xs ml-2 text-transparent hover:text-white" @click="removeTab(index),desktop.currentTab--"/>
+            <icon name="close" css="text-xs ml-2 text-transparent hover:text-white" @click="removeTab(index),desktop.currentTab--"/>
         </div>
     </div>
 </template>

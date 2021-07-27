@@ -40,7 +40,7 @@
             <div class="relative overflow-y-auto w-full m-auto">
                 <template v-for="(article,index) in articles">
                     <div class="flex flex-row justify-start items-center border-b border-gray-900 p-1 cursor-pointer hover:bg-gray-700 text-gray-600" @click="addArticle(article,index)">
-                        <icon :name="article.publish?'check':'close'" :class="article.publish?'text-lime-500':'text-red-500'"/> {{ article.title }}
+                        <icon :name="article.publish?'check':'close'" :css="article.publish?'text-lime-500':'text-red-500'"/> {{ article.title }}
                     </div>
                 </template>
             </div>

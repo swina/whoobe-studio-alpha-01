@@ -57,7 +57,7 @@
             :plugin="cloudinaryPlugin"/>
 
         <modal 
-            v-if="selectFormat && currentImageFormat"
+            v-if="selectFormat && currentImageFormat && desktop.mode != 'media'"
             size="lg"
             position="modal"
             buttons="none"
@@ -130,8 +130,7 @@ export default {
     },
     watch:{
         skip(v){
-            if ( v )
-                this.mediaQry()
+            this.mediaQry()
         }
     },
     methods:{
@@ -181,15 +180,20 @@ export default {
             })
         },
         setSelected(image){
-            if ( image.hasOwnProperty('formats') && Object.keys(image.formats).length ){
+            if ( this.desktop.mode != 'media' && image.hasOwnProperty('formats') && Object.keys(image.formats).length ){
                 this.currentImageFormat = image.formats.full
                 this.currentImageName = image.name
-                this.selectFormat = true
+                if ( this.desktop.mode != 'media '){
+                    this.selectFormat = true
+                }
                 return
+            } else {
+                this.setSelectedFormat(image)
             }
         },
-        setSelectedFormat(){
-            let image = this.currentImageFormat
+        setSelectedFormat(image){
+            console.log ( image )
+            !image ? image = this.currentImageFormat : null
             if ( this.$mode() === 'articles' ){
                 this.$emit ( 'insertimage' , image )
                 return
@@ -247,23 +251,28 @@ export default {
             })
             this.cloudinary = false
         },
-        setLimit(width){
+        setLimit(width,height){
+            console.log ( height )
+            let rows = 3
+            let cols = 7
+            height > 900 ? rows = 4 : null
+            
             width > 1450 ?
-                this.limit = 32 :
+                this.limit = cols*rows :
                     width > 1266 ? 
-                        this.limit = 18 :
+                        this.limit = 6*rows :
                             width > 1170 ?
-                                this.limit = 15 :
+                                this.limit = 5*rows :
                                 width > 866 ?
-                                    this.limit = 12 :
-                                        this.limit = 9 
+                                    this.limit = 4*rows :
+                                        this.limit = 3*rows
             this.mediaQry()
         }
     },
     mounted(){
-        this.setLimit ( window.innerWidth )
+        this.setLimit ( window.innerWidth , window.innerHeight )
         window.addEventListener('resize',(event)=>{
-            this.setLimit ( window.innerWidth )  
+            this.setLimit ( window.innerWidth, window.innerHeight )  
         })
         this.$api.service('media').on ( 'created' , () => {
             this.$message ( 'Media updated!' )
@@ -281,7 +290,7 @@ export default {
         this.$mapState().datastore.dataset.plugins.map ( plugin => {
             if ( plugin.general.path === 'pixabay/pixabay' && plugin.component.config.apikey && plugin.general.enabled ){
                 //this.pixabayPlugin = plugin.component
-                this.pixabayApiKey = plugin.component.config.apikey
+                this.pixabayApiKey = plugin.config.apikey
             }
             console.log ( plugin.general.path )
             if ( plugin.general.path === 'cloudinary/cloudinary.widget' && plugin.general.enabled ){

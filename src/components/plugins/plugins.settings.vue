@@ -1,7 +1,22 @@
 <template>
-    <div v-if="current && enabled" class="m-2 p-2 bg-gray-100 text-gray-700">
-        <template v-for="(field,index) in Object.keys(datastore.schema.plugins)">
-                    
+    <div v-if="current && enabled" class="m-2 p-2 dark-theme">
+        <div class="flex flex-row">
+            <template v-for="key in Object.keys(schema)">
+                <button v-if="current.hasOwnProperty(key)" class="capitalize px-2 lg" @click="schemaKey=key">{{ key }}</button>    
+            </template>         
+        </div>
+        <div class="flex flex-col">
+            <template v-for="field in Object.keys(current[schemaKey])">
+                <label class="capitalize">
+                    {{ field }}
+                </label>
+                <input class="dark text-white"  v-if="typeof current[schemaKey][field] === 'string'" type="text" v-model="current[schemaKey][field]"/>
+                <input class="dark text-white"  v-if="typeof current[schemaKey][field] === 'boolean'" type="checkbox" v-model="current[schemaKey][field]"/>
+            </template>
+        </div>
+        <!-- <template v-for="(field,index) in Object.keys(datastore.schema.plugins)">
+
+            
             <details v-if="current.hasOwnProperty(field)">
                 <summary  class="p-1 mt-1 text-lime-600 text-lg outline-none border-0 focus:outline-none cursor-pointer  capitalize font-bold" @click="summary=field">{{ field }}</summary>
                 <div v-if="summary.includes(field)" class="grid grid-cols-2">
@@ -52,7 +67,7 @@
                 </div>
             </details>
             
-        </template>
+        </template> -->
         <div class="flex flex-col w-full items-center justify-center p-2">
             <button v-if="!current.hasOwnProperty('_id')" @click="createPlugin()">Add Plugin</button>
             <button v-else @click="savePlugin()">Save</button>
@@ -77,10 +92,12 @@ class plugin {
     }
 }
 */
+import schema from './plugins.schema.js'
 import { mapState } from 'vuex'
 export default {
     name: 'PluginConfigurator',
     data:()=>({
+        schemaKey: 'general',
         summary: '',
         plugin : null,
         new_key: '',
@@ -92,6 +109,9 @@ export default {
         enabled(){
             if ( typeof webpackHotUpdate === 'undefined') this.$message('This option is available only in development mode')
             return typeof webpackHotUpdate != 'undefined' ? true : false 
+        },
+        schema(){
+            return schema
         }
     },
     

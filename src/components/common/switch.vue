@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-row items-center">
-    <icon :name="status?'toggle_on':'toggle_off'" class="text-5xl transition-color duration-500 ease-in-out" :class="classe" @click="$emit('click',status=!status)"/> {{ $attrs.label }}
+    <icon :name="status?'toggle_on':'toggle_off'" class="text-5xl transition-color duration-500 ease-in-out" :css="classe" @click="$emit('click',status=!status)"/> {{ $attrs.label }}
     </div>
 </template>
 

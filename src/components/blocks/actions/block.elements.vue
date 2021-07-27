@@ -12,7 +12,7 @@
                     <div v-for="(component,c) in schema[group]" class="flex flex-col p-1" :key="'component_' + c">
                         <div class="hover:bg-indigo-700 hover:text-indigo-200 hover:text-black flex-auto flex flex-col justify-center  p-1 text-center text-xs w-16 h-16 cursor-pointer shadow bg-gray-800"  v-if="!$attrs.newblock||component.tag==='container'" @click="setComponent(group,component,schema[group],c)">
                             <span v-if="group==='products'">{{ schema[group] }}</span>
-                            <icon class="material-icons text-indigo-300" :name="component.icon"/>
+                            <icon css="text-indigo-300" :name="component.icon"/>
                             <div class="leading-4">{{ component.label }}</div>
                         </div>
                     </div>

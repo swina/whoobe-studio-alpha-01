@@ -1,7 +1,7 @@
 <template>
 <span>
     <div class="absolute h-full overflow-hidden top-0 left-0 p-2 flex flex-col justify-center z-highest" :class="classe" @click="$emit('prev')">
-        <icon class="z-highest":css="navigation.color + ' ' +  navigation.size" :name="navigation.icons[0]"/>
+        <icon class="z-highest" :css="navigation.color + ' ' +  navigation.size" :name="navigation.icons[0]"/>
     </div>
     <div class="absolute h-full overflow-hidden top-0  right-0 p-2 flex flex-col justify-center z-highest" :class="classe" @click="$emit('next')" >
         <icon class="z-highest" :css="navigation.color + ' ' +  navigation.size" :name="navigation.icons[1]"/>

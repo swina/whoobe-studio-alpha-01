@@ -19,6 +19,7 @@
 
 <script>
 export default {
+    name: 'WhoobePluginWrapper',
     data:()=>({
         component: null,
         enabled: false,
@@ -31,7 +32,7 @@ export default {
     computed:{
     },
     mounted(){
-        let name = this.plugin.general.path 
+        let name = this.plugin.config.path 
         //if ( this.$attrs.editor ) name += '.editor'
         //console.log ( '@/components/plugins/' + name + '.vue' )
         this.component = () =>  import(/* webpackChunkName: 'whoobe_' */ '@/components/plugins/' + name )

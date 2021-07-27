@@ -103,7 +103,7 @@
                     </transition>
             </template>
             <div class="fixed md:hidden bottom-0 left-0 w-full p-1 bg-black h-10 text-white flex flex-row justify-around items-center">
-                <icon name="menu" :class="el.css.responsive_items" @click="menu_responsive=!menu_responsive"/>    
+                <icon name="menu" :css="el.css.responsive_items" @click="menu_responsive=!menu_responsive"/>    
             </div>
             <!-- <span @click="menu_responsive=!menu_responsive" class="fixed top-0 z-modal"><icon-extra v-if="responsive" class="md:hidden z-highest fixed top-0 m-1 text-3xl" :class="menu_responsive?el.css.items+' right-0':el.css.items" :icon="menu_responsive?el.icons.back:el.icons.burger" /></span> -->
         </nav>

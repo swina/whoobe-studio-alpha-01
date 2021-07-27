@@ -44,7 +44,7 @@
             </div>    
         </transition> -->
         
-        <icon v-if="doc.popup.close" name="close" :class="'z-highest absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)"/>
+        <icon v-if="doc.popup.close" name="close" :css="'z-highest absolute top-0 right-0 m-1 ' + doc.popup.css.close_color + ' ' +  doc.popup.css.close_size" @click="modal=!modal,$store.dispatch('popup',null)"/>
     </div>
 
     </transition>

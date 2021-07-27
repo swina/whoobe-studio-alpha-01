@@ -16,7 +16,7 @@
 
         <div class="m-auto text-center text-gray-700 my-8" v-if="editor.action === 'in_editor_preview' && editor.preview_mobile">This is a demo preview. Check fullscreen preview and select Smartphone size for a realistic preview</div>
         
-        <icon  v-if="editor.action==='in_editor_preview'" name="close" class="hover:bg-gray-300 hover:text-black mt-10 mr-2 text-5xl text-gray-400 z-highest fixed top-0 right-0" @click="$action()"/>
+        <icon  v-if="editor.action==='in_editor_preview'" name="close" css="hover:bg-gray-300 hover:text-black mt-10 mr-2 text-5xl text-gray-400 z-highest fixed top-0 right-0" @click="$action()"/>
         
     </div>
 </template> 

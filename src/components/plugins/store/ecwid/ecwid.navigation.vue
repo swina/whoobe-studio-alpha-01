@@ -1,5 +1,5 @@
 <template>
-<div id="loadShop" :key="$randomID()" :ref="$randomID()" :date="now">
+<div id="loadScript" :key="$randomID()" :ref="$randomID()">
     <div :id="'my-store-' + shopID"></div>
 </div>
 </template>
@@ -16,47 +16,29 @@ function injectEcwidScript(storeId) {
     `https://app.ecwid.com/script.js?${storeId}&data_platform=code&data_date=${new Date()}`
   );
   ecwidScript.onload = injectEcwidProductBrowser(storeId);
-  let target = document.querySelector('#loadShop')
+  let target = document.querySelector('#loadScript')
   target.appendChild(ecwidScript);
 }
 
 function injectEcwidProductBrowser(storeId) {
   return function () {
-      console.log ( 'loading shop ...')
+    console.log ( 'loading categories ...')
     const ecwidBrowserScript = document.createElement("script");
     ecwidBrowserScript.setAttribute("type", "text/javascript");
     ecwidBrowserScript.setAttribute("charset", "utf-8");
-    ecwidBrowserScript.text = `xProductBrowser("categoriesPerRow=3","views=grid(20,3) list(60) table(60)","categoryView=grid","searchView=list","id=my-store-${storeId}");`;
-    let target = document.querySelector('#loadShop')
+    ecwidBrowserScript.text = `xCategoriesV2("id=my-categories-${storeId}");`;
+    let target = document.querySelector('#loadScript')
     target.appendChild(ecwidBrowserScript);
   }
-}
-
-function removeScript(){
-  let target = document.querySelector('#loadShop')
-  console.log ( target )
 }
 export default {
     name: 'MokaEcwidshop',
     data:()=>({
         shopID : ''
     }),
-    computed:{
-      now(){
-        return new Date()
-      }
-    },
     mounted(){
-        this.shopID = this.$attrs.plugin.config.storeId
+        this.shopID = this.$attrs.el.plugin.config.storeId
         injectEcwidScript(this.shopID)
-    },
-    beforeDestroy(){
-      removeScript()
     }
 }
 </script>
-<style>
-.grid__categories {
-  display:none;
-}
-</style>

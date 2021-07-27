@@ -1,5 +1,5 @@
 <template>
-  <div class="w-1/2">
+  <div class="w-1/2 p-8">
     <icon name="close" class="top-right m-1" @click="$emit('close')"/>
     <icon :name="theme?'grid_on':'list'" class="top-right m-1 mr-6"/>
     <h3>Media Upload</h3>
@@ -10,12 +10,14 @@
       :theme="theme?'list':''"
       ref="vueFileAgent" v-model="fileRecords"></vue-file-agent>
     
-    <input type="text" v-model="folder" class="dark mr-2" placeholder="target folder"/>
-    <button :disabled="!fileRecords.length" @click="uploadFiles()">
-    Upload {{ fileRecords.length }} files
-    </button>
-    <button @click="$emit('close')">Close</button>
-    
+    <div class="flex flex row p-2 items-center text-lg">
+      <input type="text" v-model="folder" v-if="!cloudinary" class="dark mr-2" placeholder="target folder"/>
+      <input type="checkbox" v-model="cloudinary"> Cloudinary
+      <button class="lg success" :disabled="!fileRecords.length" v-if="fileRecords.length" @click="uploadFiles()">
+        Upload {{ fileRecords.length }} files
+      </button>
+      <button class="lg danger mx-2" @click="$emit('close')">Close</button>
+    </div>
   </div>
 </template>
 
@@ -25,6 +27,7 @@ export default {
   name: 'MokaMediaUpload',
   data:()=>({
       folder: '',
+      cloudinary:false,
       selectedFiles: null,
       currentFile: undefined,
       progress: 0,
@@ -147,6 +150,7 @@ export default {
         let formData = new FormData()
         formData.append("file", file )
         formData.append('folder',this.folder)
+        formData.append('cloudinary',this.cloudinary)
         for (var key of formData.entries()) {
 			    console.log(key[0] + ', ' + key[1])
         }

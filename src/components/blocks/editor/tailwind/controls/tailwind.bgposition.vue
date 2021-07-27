@@ -3,9 +3,7 @@
         
         <div class="w-full flex flex-col">
         <image-placeholder :image="$mapState().editor.current.image" @noimage="$mapState().editor.current.image=null" @media="$action('media')" class="text-center"/>
-        <!-- <div v-if="$mapState().editor.current.image" class="flex flex-col">
-            <img  :src="$imageURL($mapState().editor.current.image)" class="w-3/4 m-auto"/>
-        </div> -->
+        
         </div>
         <div class="w-full grid grid-cols-2" v-if="$mapState().editor.current.image">
             <div class="w-1/2">

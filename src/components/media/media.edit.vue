@@ -1,16 +1,16 @@
 <template>
-    <div class="grid grid-cols-3 relative w-full items-center gap-3 p-8">
+    <div class="grid grid-cols-3 relative w-full items-center gap-3 p-8" v-if="image">
         <div class="col-span-2 justify-start items-center flex flex-col">
-            <img v-if="isImage && !isFile" :src="imageURL(currentImage)" class="h-3/4 object-cover m-auto shadow" @click="$emit('close')"/>
+            <img v-if="isImage && !isFile" :src="$imageURL(currentImage)" class="h-3/4 object-cover m-auto shadow" @click="$emit('close')"/>
             <video v-if="isVideo" controls>
-                <source :src="imageURL(image)">
+                <source :src="$imageURL(image)">
             </video>
             <icon name="insert_drive_file" v-if="isFile" class="text-10xl m-auto"/>
             <div v-if="image.formats" class="flex flex-row items-start w-full mt-2">
                 
                 <template v-for="size in Object.keys(image.formats)">
                     <div class="flex flex-col">
-                        <img :src="imageURL(image.formats[size])" class="h-20 object-cover mr-2" :title="size" @click="currentImage=image.formats[size]"/>
+                        <img :src="$imageURL(image.formats[size])" class="h-20 object-cover mr-2" :title="size" @click="currentImage=image.formats[size]"/>
                         <span class="text-xs"> {{ image.formats[size].width }} x {{ image.formats[size].height }} - {{ parseInt(image.formats[size].size/1000) }}KB</span>
                     </div>
                 </template>

@@ -2,7 +2,7 @@
     <div class="flex flex-row">
         <div v-for="(radio,i) in options" class="flex flex-row items-center text-base m-2" :key="i">
             <div class="flex flex-row items-center text-black bg-transparent border-0 hover:bg-transparent" @click="setOption(radio.value,i,$event)">
-            <icon :name="icon(i)" :class="classe"/>
+            <icon :name="icon(i)" :css="classe"/>
             <span class="ml-1" :class="classe">{{ radio.label }}</span>
             </div>
         </div>

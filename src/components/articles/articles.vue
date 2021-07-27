@@ -21,7 +21,7 @@
                         <span v-if="field.type==='string'" :class="field.title==='title'?'font-bold':''">
                             {{ article[field.title] }}
                         </span>
-                        <icon v-if="field.type==='boolean'" :name="article[field.title]?'check':'close'" class="mx-5" :class="article[field.title]?'text-green-400 font-bold':'text-red-600'"/>
+                        <icon v-if="field.type==='boolean'" :name="article[field.title]?'check':'close'" class="mx-5" :css="article[field.title]?'text-green-400 font-bold':'text-red-600'"/>
                         <img v-if="field.type==='image' && article[field.title]" :src="imageURL(article[field.title])" class="w-24 h-16 object-top object-cover"/>
                         <span v-if="field.type==='date'">
                             {{ article[field.title].split('T')[0] }}
