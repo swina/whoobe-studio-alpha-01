@@ -70,7 +70,7 @@
                         {{ currentImageName }} - {{ currentImageFormat.width }}x{{ currentImageFormat.height}} - {{ currentImageFormat.size/1000 }}KB
                     </div>
                     <div class="absolute z-top bottom-0 w-full p-2 m-auto text-center">
-                        <button class="lg rounded" @click="setSelectedFormat">Select</button>
+                        <button class="lg rounded" @click="setSelectedFormat(currentImageFormat)">Select</button>
                     </div>
                 </div>
                 <div class="flex flex-row">
@@ -180,7 +180,8 @@ export default {
             })
         },
         setSelected(image){
-            if ( this.desktop.mode != 'media' && image.hasOwnProperty('formats') && Object.keys(image.formats).length ){
+            console.log ( image )
+            if ( this.desktop.mode != 'media' && image.hasOwnProperty('formats') && image.formats && Object.keys(image.formats).length ){
                 this.currentImageFormat = image.formats.full
                 this.currentImageName = image.name
                 if ( this.desktop.mode != 'media '){
