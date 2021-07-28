@@ -25,9 +25,9 @@
                     <div class="flex flex-col">
                         <div class="flex flex-col">
                                 <label>SEO Title</label>
-                                <input class="dark w-full" type="text" v-model="website.blocks.seo.title"/>
+                                <input class="dark w-full" type="text" v-model="website.seo_title"/>
                                 <label>SEO Description</label>
-                                <textarea class="dark w-full h-32" type="text" v-model="website.blocks.seo.description"/>
+                                <textarea class="dark w-full h-32" type="text" v-model="website.seo_description"/>
                         </div>
                     </div>
                     <div class="flex flex-col">
@@ -43,9 +43,10 @@
                 </div>
 
                 <label>Sitemap : articles {{website.pagesToPublish.filter(url=>url.length >2).length}}</label>
-                <div class="flex flex-row flex-wrap justify-start">
+                <div class="flex flex-row flex-wrap justify-start" v-if="website.pagesToPublish.length && articles">
                     <!-- website.pagesToPublish"> -->
                     <template v-for="page in website.pagesToPublish"> 
+                        
                         <template v-for="article in articles">
                             <div class="flex flex-col m-2 h-48 w-40 items-center justify-start shadow" :title="article.title + ' [' + article.categories + ']'" v-if="page === article.slug">
                                 <div class="text-xs truncate">{{article.title}}</div>
@@ -263,7 +264,12 @@ export default {
             this.website.template_preview = block.image
             this.website.pagesToPublish = block.links
             this.pagesToPublish = block.links
-            
+            if ( block.hasOwnProperty('seo') ){
+                block.seo.title = block.name
+                block.seo.description = block.description
+                this.website.blocks.seo.title = block.name
+                this.website.blocks.seo.description = block.description
+            }    
             this.$api.service ( 'articles' ).patch ( this.website._id , this.website ).then ( res => {
                 this.reusable = false
                 this.searchLinks()
@@ -273,32 +279,29 @@ export default {
         },
         async searchLinks(){
             this.$store.dispatch ( 'pages' , [])
-            let links = this.website.blocks.links.filter ( url => url.length > 2 )
+            let links = this.website.blocks.links.filter ( url => url.length > 2 ).map ( link => link.replace('/',''))
             let hasStore = this.website.blocks.plugins.filter ( plugin => plugin.includes('store') )
             hasStore.length ?
                 this.website.blocks.store = true : 
                     this.website.blocks.store = false 
             console.log ( 'Has store ?' , hasStore )
+            console.table ( links )
             if ( !links.length ) return 
 
-            this.$api.service( 'articles' ).find ( { query : { store: true , publish: true } } )
-                .then ( res => {
-                    if ( res.data.length ){
-                        this.website.pagesToPublish.push ( res.data[0].slug.replace('/','') )
-                        this.isStore = res.data[0]
-                    }
-                    return 
-            }).then ( () => {
+            // this.$api.service( 'articles' ).find ( { query : { store: true , publish: true } } )
+            //     .then ( res => {
+            //         if ( res.data.length ){
+            //             this.website.pagesToPublish.push ( res.data[0].slug.replace('/','') )
+            //             this.isStore = res.data[0]
+            //         }
+            //         return 
+            // }).then ( () => {
                     const start = async () => {
                     this.allPagesLinks = []
                     this.website.pagesToPublish = []
                     asyncForEach ( this.website.blocks.links , async(url) => {
-                        console.log ( url )
-                        //await waitFor(50)
                         if ( !url.includes('store/category') && url != 'store' && url != '/' && url != '/shop-demo' ){
-                            this.$pageLinks(url).then ( res => {
-                                console.log ( url )
-                                
+                            this.$pageLinks(url.replace('/','')).then ( res => {
                                 let dataLinks
                                 if ( res.data.length ){
                                     let pg = res.data[0]
@@ -325,25 +328,7 @@ export default {
                     }
                 }
                 start()
-            })
-            // for ( var n=0 ; n < this.website.blocks.links.length ; n++ ){
-            //     let url = this.website.blocks.links[n]
-            //     if ( url.length > 1 ){
-            //         this.$pageLinks(url).then ( res => {
-            //             let pg = res.data[0]
-            //             // let id = res.data[0]._id
-            //             //this.$store.dispatch ( 'addPage' ,  { image: res.data[0].template_preview , title: res.data[0].title } )
-            //             //this.pages[pg.slug] = { image: pg.template_preview , title: pg.title }
-            //             let dataLinks = [ ...new Set(res.data[0].blocks.links) ] 
-            //             return dataLinks
-            //         }).then ( data => {
-                        
-            //             this.allPagesLinks = [ ...new Set(this.allPagesLinks) , ...data ]
-            //             this.website.pagesToPublish = [ ...new Set(this.allPagesLinks.filter(url=>url.length>2).map( slug => slug.replace('/','')).sort() ) ]
-            //         })
-            //     }
-                
-            // }
+            
             let vm = this
             async function asyncForEach(array, callback) {
                 for (let index = 0; index < array.length; index++) {
@@ -409,11 +394,16 @@ export default {
                 this.preview = false
                 console.log ( this.website )
                 let seo_homepage = {
-                    seo_title : this.website.blocks.seo.title,
-                    seo_description : this.website.blocks.seo.description
+                    seo_title : this.website.seo_title,
+                    seo_description : this.website.seo_description
                 }
                 this.$api.service ( 'articles' ).patch ( this.website._id , seo_homepage ).then ( res => {
-                    console.log ( 'homepage' , res )
+                    let project = this.$attrs.project
+                    project.seo_title = this.website.seo_title
+                    project.seo_description = this.website.seo_description
+                    project.blocks = this.websites.blocks
+                    this.$api.service ( 'projects' ).patch ( this.$attrs.project._id , project )
+
                     this.$api.service ( 'build-nuxt' ).patch ( this.website._id ,  this.website  ).then ( res => {
                         console.log ( res )
                     })
@@ -437,6 +427,8 @@ export default {
             project.fonts = this.fonts.join('|')
             project.landing = project.component._id 
             project.single = project.component._id
+            project.seo_title = this.website.seo_title
+            project.seo_description = this.website.seo_description
             this.output = 'Starting generation ...\n'
             this.errors = ''
 
@@ -482,23 +474,52 @@ export default {
             this.home = articles.data.filter ( article => { return article.homepage } )[0]
         })
         
-        this.$api.service ( 'build-nuxt' ).find().then ( res => {
-            res.total ?
-                this.website = res.data[0] : null
-                this.website.seo_title = ''
-                this.website.seo_description = ''
-                this.website.pagesToPublish = []
-            if ( this.$attrs.block ){
-                this.allPagesLinks = []
-                this.pagesToPublish = []
-                this.website.target = this.$attrs.target
-                this.website.pagesToPublish = []
-                this.setWebsiteTemplate ( this.$attrs.block )
-                this.searchLinks()
-            } else {
-                this.searchLinks()
-            }
-        })
+        this.website = this.$attrs.project
+        this.website.template_preview = this.$attrs.project.block.image
+        this.website.target = this.$attrs.target
+        //this.website.blocks = res
+        // this.allPagesLinks = []
+        // this.pagesToPublish = []
+        // this.website.pagesToPublish = []  
+        // this.searchLinks()      
+
+        // console.log ( this.$attrs.project )
+        // this.$api.service ( 'components' ).get ( this.$attrs.project.block._id ).then ( res => {
+        //     console.log ( 'Blocks => ' , res )
+        //     delete res.autosave    
+        //     this.website = this.$attrs.project
+        //     this.website.template_preview = res.image
+        //     this.website.blocks = res
+        //     this.allPagesLinks = []
+        //     this.pagesToPublish = []
+        //     this.website.target = this.$attrs.target
+        //     this.website.pagesToPublish = []  
+        //     this.searchLinks()      
+            
+        // })
+
+
+        // this.$api.service ( 'build-nuxt' ).find().then ( res => {
+        //      res.total ?
+        //          this.website = res.data[0] : null
+        //      this.website.pagesToPublish = []
+        //      if ( this.$attrs.block ){
+        //         this.allPagesLinks = []
+        //         this.pagesToPublish = []
+        //         this.website.target = this.$attrs.target
+        //         this.website.pagesToPublish = []
+        //         if ( !this.website.blocks.hasOwnProperty('seo') ){
+        //             this.website.blocks.seo = {
+        //                 title: this.website.blocks.name,
+        //                 description: this.website.blocks.description
+        //             }
+        //         }
+        //         this.setWebsiteTemplate ( this.$attrs.block )
+        //         this.searchLinks()
+        //      } else {
+        //          this.searchLinks()
+        //      }
+        // })
 
 
         // this.$api.service ( 'articles' ).find ( {

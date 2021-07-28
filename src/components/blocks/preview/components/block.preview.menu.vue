@@ -71,7 +71,7 @@
                     </div>
                 </div>    
                     <transition name="fade">
-                    <div :ref="'submenu_'+i" submenu-responsive v-if="submenu===i && item.blocks && item.blocks.length" :class="el.css.submenu + ' absolute fixed flex top-0 flex-col z-highest'" @click="el.css.submenu_behavior?submenu=null:submenu=null">
+                    <div :ref="'submenu_'+i" submenu-responsive v-if="submenu===i && item.blocks && item.blocks.length && menu_responsive" :class="el.css.submenu + ' absolute fixed flex top-0 flex-col z-highest'" @click="el.css.submenu_behavior?submenu=null:submenu=null">
                         
                         <div v-if="item.blocks[0].blocks && submenu===i" @mouseleave="el.css.submenu_behavior?submenu=null:submenu=null" :style="getPos(i)">
                             
@@ -94,7 +94,7 @@
                         </div>
                         <div v-else class="flex flex-col">
                             <template v-for="subitem in item.blocks">
-                                <a :href="subitem.link" :class="item.css">
+                                <a :href="subitem.link" :class="el.css.responsive_items">
                                     <span>{{ subitem.content }}</span>
                                 </a>
                             </template>
@@ -159,9 +159,13 @@ export default {
             this.submenu === i ? this.submenu = null : this.submenu = i
         },
         isOver(i){
+            if ( this.el.css.submenu.includes('relative') ){
+                return i < 0 ? 'hidden' : this.submenu === i ? '' : 'hidden'
+            }
             return i < 0 ? 'invisible' : this.submenu === i ? '' : 'invisible'
         },
         overStyle(i,item_id){
+            if ( this.el.css.submenu.includes ( 'relative') ) return
             let item = document.querySelector('.item_' + item_id)
             let pos = {}
             if ( item ) {
