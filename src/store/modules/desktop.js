@@ -10,7 +10,9 @@ const desktop =  {
         loading: false,
         project: null,
         confirm: false,
-        confirmAction : null
+        confirmAction : null,
+        toolbar : null,
+        menu_responsive: false
     },
     mutations: {
         mode ( state , payload ){
@@ -54,6 +56,12 @@ const desktop =  {
         },
         confirmAction ( state , payload ){
             state.confirmAction = payload
+        },
+        toolbar ( state , payload ){
+            state.toolbar = payload
+        },
+        menu_responsive ( state ){
+            state.menu_responsive =! state.menu_responsive
         }
     },
     actions : {
@@ -95,6 +103,12 @@ const desktop =  {
         },
         confirmAction ( { commit } , payload ){
             commit ( 'confirmAction' , payload )
+        },
+        toolbar ( { commit } , payload ){
+            commit ( 'toolbar' , payload )
+        },
+        menu_responsive ( { commit } ){
+            commit ( 'menu_responsive' )
         },
     }
 }

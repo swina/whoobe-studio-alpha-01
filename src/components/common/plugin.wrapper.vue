@@ -1,5 +1,5 @@
 <template>
-    <div class="relative"> 
+    <!-- <div class="relative">  -->
         <component 
             :is="component"
             :plugin="plugin"
@@ -14,7 +14,7 @@
             v-if="doc.id===editor.selected" 
             :doc="doc" 
             @moveup="$emit('moveup',doc.id)"/> -->
-    </div>
+    <!-- </div> -->
 </template>
 
 <script>

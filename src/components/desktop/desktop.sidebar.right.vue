@@ -86,11 +86,17 @@ export default {
                 component: 'blocks/actions/block.tree.draggable.vue',
                 tooltip: 'Block tree'
             },
+            // { 
+            //     label: 'settings',
+            //     icon: 'offline_bolt',
+            //     component: 'blocks/actions/block.document.settings.vue',
+            //     tooltip: 'Publish'
+            // },
             { 
                 label: 'settings',
                 icon: 'offline_bolt',
-                component: 'blocks/actions/block.document.settings.vue',
-                tooltip: 'Publish'
+                component: 'blocks/actions/block.data.connector.vue',
+                tooltip: 'Data connector'
             },
             // { 
             //     label: 'generate',

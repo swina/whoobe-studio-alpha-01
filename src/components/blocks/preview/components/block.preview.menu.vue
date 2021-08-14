@@ -58,8 +58,8 @@
 
             <!--responsive -->
             
-            <template menu_responsive v-if="responsive" v-for="(item,i) in el.blocks" >
-                <div v-if="responsive" class="md:hidden w-0" :class="opacity">
+            <template menu_responsive  v-for="(item,i) in el.blocks" >
+                <div v-if="responsive" class="md:hidden z-modal" :class="opacity">
                     <a v-if="item.link" :href="$mapState().editor.action!='in_editor_preview'?item.link:'#'">
                         <div :class="el.css.responsive_items">{{ item.content }}</div>
                     </a>
@@ -71,7 +71,7 @@
                     </div>
                 </div>    
                     <transition name="fade">
-                    <div :ref="'submenu_'+i" submenu-responsive v-if="submenu===i && item.blocks && item.blocks.length && menu_responsive" :class="el.css.submenu + ' absolute fixed flex top-0 flex-col z-highest'" @click="el.css.submenu_behavior?submenu=null:submenu=null">
+                    <div :ref="'submenu_'+i" submenu-responsive v-if="submenu===i && item.blocks && item.blocks.length" :class="el.css.submenu + ' absolute fixed flex top-0 flex-col z-highest'" @click="el.css.submenu_behavior?submenu=null:submenu=null">
                         
                         <div v-if="item.blocks[0].blocks && submenu===i" @mouseleave="el.css.submenu_behavior?submenu=null:submenu=null" :style="getPos(i)">
                             
@@ -102,9 +102,9 @@
                     </div>
                     </transition>
             </template>
-            <div class="fixed md:hidden bottom-0 left-0 w-full p-1 bg-black h-10 text-white flex flex-row justify-around items-center">
+            <!-- <div class="whoobe-menu-toolbar fixed md:hidden bottom-0 left-0 w-full p-1 bg-black h-10 text-white flex flex-row justify-around items-center">
                 <icon name="menu" :css="el.css.responsive_items" @click="menu_responsive=!menu_responsive"/>    
-            </div>
+            </div> -->
             <!-- <span @click="menu_responsive=!menu_responsive" class="fixed top-0 z-modal"><icon-extra v-if="responsive" class="md:hidden z-highest fixed top-0 m-1 text-3xl" :class="menu_responsive?el.css.items+' right-0':el.css.items" :icon="menu_responsive?el.icons.back:el.icons.burger" /></span> -->
         </nav>
 </template>
@@ -123,21 +123,24 @@ export default {
         submenu: null,
         submenu_id: null,
         width:0,
-        menu_responsive:false,
+        
         responsive: false,
         clientY: 0,
         clientX: 0
     }),
     computed:{
+        menu_responsive(){
+            return this.$mapState().desktop.menu_responsive
+        },
         menuContainerCSS(){
-            let responsive = this.menu_responsive ? this.el.css.responsive + ' w-full': 'p-0 m-0 h-0 w-0 ' + this.el.css.responsive.replaceAll('p-' , '')
+            let responsive = this.menu_responsive ? this.el.css.responsive + ' w-full': ' ' + this.el.css.responsive.replaceAll('p-' , '')
             this.width > 640 ? this.responsive = false : this.responsive = true
             return this.width > 640 ? 
                 this.el.css.css + ' ' + this.el.css.container + ' ' + this.el.css.align :
-                   'fixed top-0 left-0 z-highest ' + responsive 
+                   'fixed inset-0 z-highest ' + responsive 
         },
         opacity(){
-            return this.menu_responsive ? 'opacity-100 w-full' : 'opacity-0 w-0'
+            return this.menu_responsive ? 'opacity-100 w-full' : ''
         }
     },
    

@@ -11,7 +11,9 @@ const datastore = {
         schema : schema,
         components_categories:[],
         currentArticle: null,
-        selectedCategories: {}
+        selectedCategories: {},
+        whoobe_store: null,
+        shopify: null
     },
     mutations:{
         workspace ( state , payload ){
@@ -40,6 +42,12 @@ const datastore = {
         },
         selectedCategories ( state , payload ){
             state.selectedCategories = payload
+        },
+        whoobe_store ( state , payload ){
+            state.whoobe_store = payload
+        },
+        shopifyClient ( state , payload ){
+            state.shopify = payload
         }
     },
     actions: {
@@ -96,6 +104,12 @@ const datastore = {
         },
         selectedCategories ( { commit } , payload ){
             commit ( 'selectedCategories' , payload )
+        },
+        whoobe_store ( { commit } , payload ){
+            commit ( 'whoobe_store' , payload )
+        },
+        shopifyClient ( { commit } , payload ){
+            commit ( 'shopifyClient' , payload )
         }
     }
 

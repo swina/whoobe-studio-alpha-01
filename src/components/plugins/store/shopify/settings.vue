@@ -36,26 +36,16 @@
                 <div v-else class="col-span-3">    
                     <input class="my-1" :key="group" :class="isType(settings[mode][field][group]) != 'checkbox'?'w-full dark':'dark'" v-if="isType(settings[mode][field][group])" :type="isType(settings[mode][field][group])" v-model="settings[mode][field][group]" @focus="focusField=group"/>
                 </div>
-                <!-- <div v-if="isObject(settings[mode][field]) && !isArray(settings[mode][field])" class="col-span-3 grid grid-cols-3 justify-start"> 
-                    
-                    <template v-for="f in Object.keys(settings[mode][field])">
-                        
-                        <label class="bg-gray-700 w-full mb-1 col-span-1 capitalize cursor-pointer" @click="group=f">
-                            {{ f }} OBJ
-                        </label>
-
-                        <div v-if="isObject(settings[mode][field][f]) && group===f" class="col-span-2 p-2 flex flex-col mb-1 bg-gray-900">
-
-                            <template v-for="ff in Object.keys(settings[mode][field][f])">
-                                <label>{{ ff }} </label>
-                                <input :key="ff" :class="isType(settings[mode][field][f][ff]) != 'checkbox'?'w-full dark':'dark'" v-if="isType(settings[mode][field][f][ff])" :type="isType(settings[mode][field][f][ff])" v-model="settings[mode][field][f][ff]" @focus="focusField=ff"/>
-                            </template>
-                        </div>
-                        <div v-else class="col-span-2">    
-                            <input :key="f" :class="isType(settings[mode][field][f]) != 'checkbox'?'w-full dark':'dark'" v-if="isType(settings[mode][field][f])" :type="isType(settings[mode][field][f])" v-model="settings[mode][field][f]" @focus="focusField=f"/>
-                        </div>
-                    </template> 
-                </div>-->
+                <div v-if="mode==='filter' && field === 'items'" class="col-span-2">
+                    Click to add the option to the filter section
+                    <div  class="flex flex-row">
+                    <template v-for="filter in Object.keys(settings.general.display)">
+                        <button v-if="settings.general.display[filter].filter" class="lg mr-2 rounded capitalize" @click="addFilterOption(settings.general.display[filter])">
+                            {{ filter }}
+                        </button>
+                    </template>
+                    </div>
+                </div>
                 
                 
 
@@ -79,7 +69,7 @@
                     <select v-model="addField" v-if="fields">
                         <option v-for="field in Object.keys(schema)" :value="field">{{ field }}</option>
                     </select>
-                    <button @click="add_to_cart_button" class="lg rounded ml-2 info">Add add to cart button</button>
+                    <button v-if="mode==='loop' || mode==='single'" @click="add_to_cart_button" class="lg rounded ml-2 info">Add add to cart button</button>
                 </div>
 
             </template>
@@ -105,12 +95,8 @@
     </div>
 </template>
 <script>
-import model from '../model.js'
 export default {
-    name: 'WhoobeStorePluginSettings',
-    components: {
-        'single-layouts' : () => import ( './single.layouts.vue' )
-    },
+    name: 'WhoobePluginSettings',
     data:()=>({
         settings:  null,
         mode: null,
@@ -189,10 +175,14 @@ export default {
             }
             this.settings.loop.records.max = ids.length
             this.settings.loop.records.ids = ids.join(',')
+        },
+        addFilterOption(filter){
+            this.settings.filter.items.push ( filter )
+            this.settings.filter.items = [ ...new Set(this.settings.filter.items) ]
         }
     },
     mounted(){
-        this.schema = model
+        this.schema = this.$mapState().datastore.shopify.schema
         this.settings = this.$mapState().editor.current.plugin.settings
         this.layout = this.settings.single.layout
         this.mode = Object.keys(this.settings)[0]

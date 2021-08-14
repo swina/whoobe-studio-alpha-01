@@ -4,6 +4,7 @@
         :data="$attrs.data?$attrs.data:null"
         :is="semantic"
         :id="doc.hasOwnProperty('anchor')? doc.anchor : doc.id"
+        :data-display="hasEventDisplay"
         v-if="doc"
         :key="randomID"
         :class="classe(doc.css)" :style="doc.style + ' ' +  background(doc)" :ref="doc.id" >
@@ -40,8 +41,10 @@
             <block-preview-menu 
                 v-if="block.tag === 'menu' && block.hasOwnProperty('blocks')"
                 :key="block.id"
-                :el="block"/>
-
+                :el="block"
+                :status="$mapState().desktop.menu_responsive"/>
+            
+            
             <block-form
                 v-if="block.tag === 'form'"
                 :key="block.id"
@@ -127,7 +130,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin ( ScrollTrigger )
 const plugins = [ScrollTrigger];
 import js from 'jsonpath' 
-
+import { eventBus } from '@/main'
 export default {
     name: 'BlockPreviewContainer',
     components: { MokaElement , MokaSlider , draggable , MokaFlipbox , MokaPluginsWrapper , MokaLoop , MokaMenu , MokaMenuResponsive, BlockCarousel ,
@@ -145,7 +148,9 @@ export default {
         randomID: null,
         timer: null,
         index: 0,
-        width:0
+        width:0,
+        menu_responsive: false,
+        display: true //for mobile, listen to eventBus => display to remove hidden class 
     }),
     computed:{
         ...mapState(['moka']),
@@ -158,7 +163,26 @@ export default {
         responsive(){
             return this.doc.hasOwnProperty('responsive') && this.doc.responsive && this.width < 640 ? true : false
         },
-        
+        hasEventDisplay(){
+            if ( !this.doc.hasOwnProperty('event_display') ) {
+                this.display = true
+                return
+            }
+            if ( this.doc.event_display.length ) {
+                if ( !this.doc.event_display.includes ( 'xs:') ){
+                    this.display = false
+                } else {
+                    if ( this.width < 400 ){
+                        this.display = false
+                    } else {
+                        this.display = true
+                    }
+                }
+                return 
+            }
+            return
+           
+        }
         /*
         popup(){
             if ( this.doc.hasOwnProperty('popup')  ){
@@ -185,6 +209,8 @@ export default {
             if ( !css ) return
                 let cls = css
                 css.hasOwnProperty('css') ? cls = css.css + ' ' + css.container : cls = css 
+                if ( !this.display ) cls += ' hidden '
+
                 return cls.includes('absolute') || cls.includes('fixed') || cls.includes('modal') ? cls : cls + ' relative '
         },
         stile(block,doc){
@@ -241,12 +267,30 @@ export default {
             //}
         }
     },
+    watch:{
+        width(value){
+            if ( this.doc && this.doc.hasOwnProperty('event_display') ) {
+                if ( this.doc.event_display.length ) {
+                    if ( !this.doc.event_display.includes ( 'xs:') ){
+                        this.display = false
+                    } else {
+                        if ( value < 400 ){
+                            this.display = false
+                        } else {
+                            this.display = true
+                        }
+                    }
+                }
+            }
+        }
+    },
     mounted(){
         //this.randomID = this.$randomID()
         window.scrollTo(0,0)
         this.width = window.innerWidth
         window.addEventListener('resize',()=>{
             this.width = window.innerWidth
+            
         })
         this.doc.type === 'slides' ?
             console.log ( 'Slides detected' ) : null 
@@ -254,6 +298,21 @@ export default {
         if ( this.doc.hasOwnProperty('gsap') && this.doc.gsap.animation  ){
             if ( this.doc.hasOwnProperty ( 'popup') && this.doc.popup.trigger ) return
                 this.$animation( this.doc , this.doc.id , this.$refs )
+        }
+        
+        if ( this.doc.hasOwnProperty ('event_display') ){
+            eventBus.$on( this.doc.event_display , (data) => {
+                if ( !this.doc.event_display.includes('xs:') ){
+                    this.display =! this.display
+                } else {
+                    if ( window.innerWidth < 400 ){
+                        this.display =! this.display
+                    }
+                }
+                if ( this.doc.hasOwnProperty('gsap') && this.doc.gsap.animation  ){
+                    this.$animation( this.doc , this.doc.id , this.$refs )  
+                }
+            })
         }
         return
         

@@ -4,6 +4,7 @@
             <button :class="tab('main')" @click="mode='main'">Main</button>
             <button :class="tab('submenu')" v-if="submenu" @click="mode='submenu'">Submenu/Dropdown</button>
             <button :class="tab('responsive')" v-if="editor.current.responsive" @click="mode='responsive'">Responsive</button>
+            <button :class="tab('toolbar')" v-if="editor.current.responsive" @click="mode='toolbar'">Toolbar</button>
         </div>
         <div class="flex flex-col p-4">
             <template v-for="classe in keys[mode]">
@@ -15,8 +16,9 @@
                 <textarea v-model="editor.current.css[classe.key]" class="h-32 w-full text-black" @focus="cssCurrentKey=classe.key"/>    
                 
             </template>
-            Responsive
-            <input type="checkbox" v-model="editor.current.responsive"/>
+            <div v-if="mode==='main'">Responsive
+                <input type="checkbox" v-if="mode==='main'" v-model="editor.current.responsive"/>
+            </div>
             <div v-if="editor.current.responsive && mode==='responsive'" class="flex flex-col">
                 <div class="flex-row-center mb-2" @click="icon=!icon,iconType='burger'">
                     <icon-extra :key="icon" :icon="editor.current.icons.burger" class="p-1 rounded-full  border border-dashed mr-2 text-xl" title="Click to change" />
@@ -32,6 +34,16 @@
             <div v-if="mode==='submenu'" class="flex-row-center mt-2" @click="icon=!icon,iconType='submenu'">
                 <icon-extra key="submenu_down" :icon="editor.current.icons.submenu" class="p-1 rounded-full  border border-dashed mr-2 text-xl" title="Click to change"/>
                 Submenu/Dropdown Icon 
+            </div>
+            <div v-if="mode==='toolbar'" class="flex flex-col">
+                <div class="flex">
+                    Add Home icon
+                    <input type="checkbox" v-model="editor.current.toolbar_home_icon"/>
+                </div>
+                <div class="flex">
+                Add Labels
+                    <input type="checkbox" v-model="editor.current.toolbar_labels"/>
+                </div>
             </div>
         </div>
         <!--
@@ -124,6 +136,10 @@ export default {
             responsive: [
                 { label: 'Responsive CSS' , key: 'responsive' },
                 { label: 'Responsive Items CSS' , key: 'responsive_items' },
+            ],
+            toolbar : [
+                { label: 'Toolbar CSS' , key: 'toolbar' },
+                { label: 'Toolbar Items CSS' , key: 'toolbar_items' },
             ]
         }
     }),

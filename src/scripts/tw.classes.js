@@ -143,7 +143,7 @@ var classes = {
         { label: 'full',value: 'h-full' } , 
         { label: 'screen' , value: 'h-screen' }
     ],
-    semantics:['article','aside','details','figcaption','figure','footer','header','main','mark','nav','product','section','summary','time'],
+    semantics:['article','aside','details','figcaption','figure','footer','header','label','main','mark','nav','product','section','summary','time'],
     textSize: [
         'text-xs' , 
         'text-sm' , 

@@ -80,7 +80,7 @@
 // import fonts from '@/plugins/icons'
 import { mapState } from 'vuex'
 export default {
-    name: 'MokaCustomizer',
+    name: 'WhoobeTailwindContainer',
     components: {  
         'block-tailwind'    : () => import ( './tailwind.vue' )
         // WhoobeEditContent , 

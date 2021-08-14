@@ -64,7 +64,7 @@ title="Save document">save</i> -->
 
         <!-- <i class="material-icons text-gray-500 hover:bg-black hover:text-blue-400 mx-2" @click="help=!help" title="Hotkeys">keyboard</i> -->
         
-        <div v-if="editor.current" class="lg:w-2/3 w-1/2 border-l border-gray-700 pl-4 mr-10 w-full flex text-sm flex-row items-center" :title="editor.current.id">
+        <div v-if="editor.current && editor.current.type != 'plugin'" class="lg:w-2/3 w-1/2 border-l border-gray-700 pl-4 mr-10 w-full flex text-sm flex-row items-center" :title="editor.current.id">
             
             <i class="material-icons text-sm mx-1" v-if="editor.current.icon">{{editor.current.icon}}</i>
 
@@ -72,12 +72,12 @@ title="Save document">save</i> -->
 
             <span class="capitalize ml-2 cursor-pointer" title="Edit CSS/Style" @click="$action('edit_css')">CSS</span>
             
-            <input v-if="editor.current && !editor.current.css.hasOwnProperty('css')" type="text" class="dark bg-gray-900 ml-2 w-3/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
+            <input v-if="editor.current && editor.current.hasOwnProperty('css') && !editor.current.css.hasOwnProperty('css')" type="text" class="dark bg-gray-900 ml-2 w-3/5 border-0 text-white rounded-none" v-model="editor.current.css"/>
             
-            <input v-else type="text" class="dark ml-2 w-3/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
+            <input v-if="editor.current && editor.current.hasOwnProperty('css')" type="text" class="dark ml-2 w-3/5 text-white border-0 rounded-none bg-gray-900" v-model="editor.current.css.css"/>
 
-            <i class="material-icons moka-icons ml-2" title="Edit CSS classes" @click="$action('edit_css')">edit</i>
-            <div class="flex flex-row bg-purple-600 text-white mx-2 h-5 rounded px-1 text-sm items-center" @click="$action('seo')">SEO</div>
+            <i v-if="editor.current && editor.current.hasOwnProperty('css')" class="material-icons moka-icons ml-2" title="Edit CSS classes" @click="$action('edit_css')">edit</i>
+            <!-- <div class="flex flex-row bg-purple-600 text-white mx-2 h-5 rounded px-1 text-sm items-center" @click="$action('seo')">SEO</div> -->
             <!-- <div v-if="editor.current.coords" class="absolute right-0 mr-1 text-xs md:text-sm text-gray-600 p-1">
                 {{ editor.current.coords.width.toFixed(2) }} x {{ editor.current.coords.height.toFixed(2) }} |
                 x: {{ editor.current.coords.x.toFixed(2) }} y: {{ editor.current.coords.y.toFixed(2) }}

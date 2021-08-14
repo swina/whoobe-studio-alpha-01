@@ -8,6 +8,13 @@ import '@/assets/tailwind.css'
 
 import './scripts'
 import http from "./scripts/axios";
+
+//create an eventBus
+export const eventBus = new Vue();
+
+//create an error eventBus
+export const errorBus = new Vue();
+
 http.defaults.timeout = 10000;
 Vue.prototype.$http = http 
 
@@ -82,6 +89,14 @@ if ( !window.localStorage.getItem('whoobe-cms') ){
   window.localStorage.setItem('whoobe-cms' , process.env.VUE_APP_API_URL )
   window.localStorage.setItem('whoobe-mode' , process.env.VUE_APP_LOCAL )
 }
+
+import Client from 'shopify-buy';
+const client = Client.buildClient({
+  domain: process.env.VUE_APP_SHOPIFY_DOMAIN,
+  storefrontAccessToken: process.env.VUE_APP_SHOPIFY_STOREFRONT
+});
+store.dispatch('shopifyClient', client )
+
 //import WhoobeStore from './components/plugins/store/nuxpresso/custom'
 //Vue.customElement ( 'whoobe-store' , WhoobeStore )
 

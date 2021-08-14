@@ -64,7 +64,7 @@ export default {
                 duration: 1,
                 delay:0
             } :
-            this.current.gsap = Object.assign ( {} , this.editor.current.gsap ) //this.$attrs.element.gsap )
+        this.current.gsap = Object.assign ( {} , this.editor.current.gsap ) //this.$attrs.element.gsap )
     },
     watch: {
         

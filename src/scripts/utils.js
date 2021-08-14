@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import store from '../store'
 
-
+import { eventBus } from '@/main'
 
 function hasProp ( obj , prop ){
     return obj.hasOwnProperty ( prop ) && obj[prop]
@@ -9,6 +9,11 @@ function hasProp ( obj , prop ){
 
 export default {
     install: function (Vue) {
+        Vue.prototype.$emitBus = ( name , e ) => {
+            console.log ( 'Event Bus => ' , name , e )
+            eventBus.$emit ( name , e )
+        }
+
         Vue.prototype.$desktopPadding = () => {
             return document.querySelector('.desktop-tabs-container').getBoundingClientRect().height + 'px;'
         }

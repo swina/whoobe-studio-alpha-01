@@ -17,8 +17,8 @@
 
         <!-- Input -->
         <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'input' && editor.current.tag != 'document'" key="semantic" class="customizer-item border-gray-900 pl-2" :class="group === 'input' ? 'bg-orange-400 text-white' : ''" @click="toggle('input')">
-                 <span class="text-xs">Input field</span>
-                 <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
+            <span class="text-xs">Input field</span>
+            <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
         </div>
         <transition name="slideright">
         <div v-if="!$attrs.mode && group==='input'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
@@ -68,6 +68,16 @@
                 <div class="flex items-center text-base">
                     <input class="w-6 h-6 mr-2" type="radio" v-model="editor.current.display" value="list"> List
                 </div>
+            </div>
+            <div class="p-1 flex flex-col">
+                Emit event on 
+                <select v-model="editor.current.eventName" class="dark">
+                    <option value="click">click</option>
+                    <option value="change">change</option>
+                    <option value="focus">focus</option>
+                    <option value="blur">blur</option>
+                    <option value="keydown">keydown</option>
+                </select>
             </div>
         </div>
         </transition>
@@ -193,7 +203,7 @@
         </transition> 
 
         <!-- Semantic -->
-        <div v-if="!$attrs.mode && editor.current && editor.current.tag === 'container' && editor.current.tag != 'document'" key="semantic" class="customizer-item border-gray-900 pl-2" :class="group === 'semantic' ? 'bg-orange-400 text-white' : ''" @click="toggle('semantic')">
+        <div v-if="!$attrs.mode && editor.current && editor.current.tag != 'document'" :key="$randomID()" class="customizer-item border-gray-900 pl-2" :class="group === 'semantic' ? 'bg-orange-400 text-white' : ''" @click="toggle('semantic')">
                  <span class="text-xs">Semantic</span>
                  <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
         </div>
@@ -233,7 +243,40 @@
                 </div>
             </div>
         </transition>
-        
+        <!-- Behavior -->
+        <div v-if="!$attrs.mode && editor.current" key="behavior" class="flex flex-col border-gray-900 p-2" :class="group === 'behavior' ? 'bg-orange-400 text-white' : ''" @click="toggle('behavior')">
+            <span class="text-xs">Behavior</span>
+            <i class="material-icons absolute right-0 mr-2 text-gray-400">arrow_right</i>
+        </div>
+        <transition name="slideright">
+            <div v-if="!$attrs.mode && group==='behavior'" class="flex flex-col h-full text-gray-500 bg-gray-800 w-full absolute top-0 right-0 z-2xtop cursor-pointer">
+                <div class="bg-orange-400 text-black  flex flex-row p-1 capitalize" @click="group=''">
+                    <i class="material-icons absolute right-0">chevron_right</i>Behavior
+                </div>
+                <div class="flex flex-col p-2">
+                    Display @event
+                    <input type="text" v-model="editor.current.event_display" class="dark"/>
+                    
+                    Hide @event
+                    <input type="text" v-model="editor.current.event_hide" class="dark"/>
+                    
+                    Emit @Click event
+                    <input type="text" v-model="editor.current.event_click" class="dark"/>
+                    
+                    Emit @Change event
+                    <input type="text" v-model="editor.current.event_change" class="dark"/>
+
+                    Emit @Focus event
+                    <input type="text" v-model="editor.current.event_focus" class="dark"/>
+
+                    Emit @Blur event
+                    <input type="text" v-model="editor.current.event_blur" class="dark"/>
+
+                    Data connector @event 
+                    <input type="text" v-model="editor.current.event_data" class="dark"/>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 

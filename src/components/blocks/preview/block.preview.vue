@@ -53,7 +53,9 @@
                 <plugin-wrapper :settings="plugin.editor.settings" :block="null"  :plugin="plugin" :component="plugin.component"/>
             </template>
         </div>
-        
+        <!-- <div v-if="menu_toolbar && menu_toolbar.length" class="whoobe-menu-toolbar fixed md:hidden bottom-0 left-0 w-full p-1 bg-black h-10 text-white flex flex-row z-highest justify-around items-center">
+            <icon name="menu" :css="menu_toolbar[0].css.responsive_items" @click="$emitBus('menu','menu'),$store.dispatch('menu_responsive')"/>    
+        </div> -->
             
     </div>
 </template>
@@ -77,14 +79,15 @@ import { mapState } from 'vuex'
 
 gsap.registerPlugin ( ScrollTrigger )
 const plugins = [ScrollTrigger];
-
+import jp from 'jsonpath'
 export default {
     name: 'WhoobePreview',
     data:()=>({
         printScreen: null,
         refreshID: null,
         plugins: [],
-        previewWidth: 'w-screen'
+        previewWidth: 'w-screen',
+        menu_toolbar: null
     }),
     props: [ 'doc' ],
     components: {
@@ -245,6 +248,7 @@ export default {
         lang.setAttribute ( 'lang' , navigator.language )
         window.scrollTo(0,0)
         this.refreshID = this.$randomID()
+        this.menu_toolbar = jp.query ( this.doc.blocks , '$..blocks[?(@.tag=="menu")]').filter ( menu => menu.responsive )
         this.doc.blocks.forEach ( block => {
             if ( block.hasOwnProperty('gsap') && block.gsap.animation  ){
                 this.animate(block, block.id)

@@ -2,15 +2,15 @@
     <div class="" v-if="products" id="whoobestore">
 
         <!-- cart -->
-        <div v-if="settings.general.display.cart.enabled" class="hidden w-full text-xs md:flex flex-row items-center justify-end snipcart-checkout  z-modal -mt-8 cursor-pointer">
+        <div v-if="settings.general.display.cart.enabled" class="hidden w-full text-xs md:flex flex-row items-center justify-end z-modal cursor-pointer">
             <span class="snipcart-items-count"></span>
-            <icon  :name="settings.general.display.cart.name||'mi:shooping_bag'" :class="settings.general.display.cart.css"/>
+            <icon  :name="settings.general.display.cart.name||'mi:shooping_bag'" :class="settings.general.display.cart.css" class="snipcart-checkout" />
             <span class="snipcart-total-price"></span>  
         </div>
 
         <!-- main container -->
         <div class="relative" :class="settings.general.css">
-        
+            
             <!-- only editor -->
             <div class="z-highest absolute right-0 -mr-10 flex flex-col justify-around items-center" v-if="editor && $mapState().editor.current.hasOwnProperty('plugin') &&  $mapState().editor.current && $mapState().editor.current.plugin._id === $attrs.plugin._id">
                 <icon :name="!current?'web':'collections'" :title="!current?'View Single':'View Loop'" class="text-3xl mr-2" @click="!current?current=products[0]:current=null"/>
@@ -95,18 +95,25 @@
                         @search="qrySearch"
                         @reset="qry"/>
                 </div>
-
+                <div v-if="breadcrumb" class="p-2">Store  
+                    <span v-if="breadcrumb.category">
+                        : {{ breadcrumb.category }}
+                    </span> 
+                    <span v-if="breadcrumb.facet">
+                        : {{ breadcrumb.facet }}
+                    </span>
+                </div>
                 <!-- products loop -->
                 <div class="flex flex-col whoobe-store-loop relative" :class="loopContainerClasse">
                     
                     <template v-for="(product,index) in products">
                         <div :key="product._id" class="flex flex-col" :class="productsClasse" @click="scrollTop(),current=product,currentPrice=product.price,currentOption=product.optionValues,variations(product.sku)">
                             <template v-for="field in settings.loop.fields">
-                                <div :class="field.css" v-if="schema[field.name].type!='image_uri' && field.name !='add_to_cart'" :title="product.name">
+                                <div class="truncate" :class="field.css" v-if="schema[field.name].type!='image_uri' && field.name !='add_to_cart'" :title="product.name">
                                     <small class="mr-1" v-if="schema[field.name].type==='currency'">{{ settings.general.display.currency.symbol }}</small>
                                     {{ schema[field.name].type==='currency' ? parseFloat(product[field.name]).toFixed(2) : product[field.name] }}
                                 </div>
-                                <div v-else>
+                                <div class="w-full" v-else>
                                     <img :src="productImage(product[field.name])" :class="field.css" v-if="field.name != 'add_to_cart'" :title="product.name" :alt="product.name">
                                     <button v-if="field.name==='add_to_cart'" :class="field.css">Add to cart</button>
                                 </div>
@@ -294,13 +301,13 @@
         </div>
 
         <!-- navigation bar responsive only -->
-        <div v-if="settings.general.display.navigation.enabled && !current" :class="settings.general.display.navigation.css" class="md:hidden z-modal cursor-pointer bottom-0">
+        <div v-if="settings.general.display.navigation.enabled && !current" :class="settings.general.display.navigation.css" class="md:hidden z-modal cursor-pointer bottom-0 whoobe-store-toolbar">
 
             <icon v-if="settings.general.display.navigation.home" label="Home" name="home" @click="$router.push('/')" :css="settings.general.display.navigation.icons_css"/>        
 
             <icon v-if="settings.general.display.categories.enabled" label="Categories" name="list" @click="categories=!categories" :css="settings.general.display.navigation.icons_css"/>    
     
-            <icon v-if="settings.general.display.search" label="Filter" name="search" @click="advancedFilter=!advancedFilter" :css="settings.general.display.navigation.icons_css"/>
+            <icon v-if="settings.general.display.search" label="Filter" name="search" @click="$emitBus('xs:sidebar','xs:sidebar')" :css="settings.general.display.navigation.icons_css"/>
     
             <span v-if="settings.general.display.cart" class="snipcart-checkout">
                 <icon :name="settings.general.display.cart.name || 'shooping_bag'" label="Cart" :css="settings.general.display.navigation.icons_css"/>
@@ -326,6 +333,8 @@
 
 <script>
 import model from './model.js'
+import { eventBus } from '@/main'
+
 export default {
     name: 'WhoobeStore',
     components: {
@@ -360,6 +369,7 @@ export default {
         max:9999,
         list: false,
         search:'',
+        breadcrumb: { category: null , facet: null },
         advancedFilter: false,
         categories: false,
         current: null,
@@ -382,9 +392,17 @@ export default {
         category: '',
         facet: '',
         sort: '',
+        sortValues : [
+            { updatedAt : -1}  ,
+            { price_value : 1 } ,
+            { price_value : -1 } ,
+            { name : 1 } ,
+            { name : -1 } 
+        ],
         qryPrice: false,
         qryFacet: false,
-        qryIds: ''
+        qryIds: '',
+        whoobe_store : {}
     }),
     props:['editor'],
     computed:{
@@ -446,13 +464,15 @@ export default {
         setPriceRange(min,max){
             console.log ( min , max )
             this.advancedFilter = false
+
             this.priceRange = {
                 min: min,
                 max: max
             }
-            
-            this.qryPrice = true
-            this.qry()
+            if ( min != 0 && max != 0 ){
+                this.qryPrice = true
+                this.qry()
+            }
         },
 
         productImage ( asset ){
@@ -481,12 +501,14 @@ export default {
                 type   : 'product'
             }
             
-            if ( this.qryPrice ){
-                qry['$and'] = [ 
-                    { price_value : { $gte: this.priceRange.min }} , 
-                    { price_value : { $lte: this.priceRange.max }} , 
-                ]
-            }
+            //if ( this.qryPrice ){
+                if ( this.priceRange.min <= this.priceRange.max ){
+                    qry['$and'] = [ 
+                        { price_value : { $gte: this.priceRange.min }} , 
+                        { price_value : { $lte: this.priceRange.max }} , 
+                    ]
+                }
+            //}
             if ( this.category ){
                 qry['category'] = this.category
             }
@@ -494,11 +516,15 @@ export default {
                 qry['facets'] = this.facet
             }
             if ( this.sort ){
-                this.sort === 'priceASC' ?
-                    qry['$sort'] = { price_value : 1 } :
-                        qry['$sort'] = { price_value : -1 }
+                qry['$sort'] = this.sort
+                // this.sort === 'priceASC' ?
+                //     qry['$sort'] = { price_value : 1 } :
+                //         qry['$sort'] = { price_value : -1 }
             }
-            //console.log ( 'Query=>' , qry )
+            if ( this.search ){
+                qry['$search'] = this.search 
+            }
+            console.log ( 'Query=>' , qry )
             this.$api.service('products').find ( 
                 { 
                     query : qry 
@@ -595,6 +621,13 @@ export default {
         }
     },
     mounted(){
+        var prevScrollpos = window.pageYOffset;
+        window.addEventListener ( 'wheel' , (e) => {
+            console.log ( e )
+            var currentScrollpos = window.pageYOffset
+            document.querySelector(".whoobe-store-toolbar").style.display = "none";
+        })
+
         this.lang = this.language[navigator.language||'en']
         !this.lang ? this.lang = this.language['en'] : null
         this.settings = this.$attrs.plugin.settings
@@ -604,8 +637,54 @@ export default {
         if ( this.settings.loop.ids ){
             this.qryIds = this.settings.loop.ids
         }
+
         this.qry()
-        
+
+        eventBus.$on ( 'search' , (e) => {
+            //if ( e.keyCode === 13 ){
+                if ( e.target.value.length > 2 ){
+                    this.search = e.target.value
+                } else {
+                    this.search = ''
+                }
+                this.$emitBus ( 'store_search' , this.search )
+            //}
+        })
+
+        eventBus.$on ( 'sort' , (e) => {
+            this.sort = this.sortValues[e.target.selectedIndex ]
+        })
+
+        eventBus.$on ( 'minPrice' , (e) => {
+            this.priceRange.min = parseInt(e.target.value)
+            //this.setPriceRange ( parseInt(e.target.value) , this.priceRange.max )
+        })
+        eventBus.$on ( 'maxPrice' , (e) => {
+            this.priceRange.max = parseInt(e.target.value)
+            //this.setPriceRange ( this.priceRange.min , parseInt(e.target.value) )
+        })
+        eventBus.$on ( 'display' , (e) => {
+            this.qry()
+        })
+        eventBus.$on('category' , (e) => {
+            this.search = ''
+            if ( e.hasOwnProperty('facet') ){
+                this.breadcrumb = e
+                this.qryByFacet ( e.facet )
+            } else {
+                this.breadcrumb = { category : e , facet: null }
+                this.qryByCategory(e)
+            }
+        })
+        eventBus.$on('facet' , (data) => {
+            this.search = ''
+            this.breadcrumb = data 
+            this.qryByFacet(data.facet)
+        })
+        eventBus.$on ( 'filter' , (e) => {
+            this.qry()
+            this.$emitBus('xs:filter','xs:filter')
+        })
     }
 }
 </script>

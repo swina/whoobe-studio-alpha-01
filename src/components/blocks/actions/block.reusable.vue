@@ -1,10 +1,11 @@
 <template>
-<div class="w-full overflow-y-auto z-2xtop h-screen text-xs theme-dark p-1 flex flex-col">
+<div class="w-full overflow-y-auto z-modal h-screen text-xs theme-dark flex flex-col">
     <!--<i class="material-icons z-2xtop absolute top-0 right-0 m-1" @click="$emit('close')">close</i>-->
-    <div v-if="components" class="mb-10 flex flex-row flex-wrap justify-around p-1 pb-48">
-        Click on a item to add to the current block
+    Click on a item to add to the current block
+    <div v-if="components" class="mb-10 flex flex-row flex-wrap z-modal theme-dark justify-around p-1 pb-48">
+        
         <template v-for="(template,index) in components">
-            <div class="w-1/2 flex flex-col mb-4 h-36 cursor-pointer relative p-1 justify-center items-center" @click="addReusable(template)" :title="template.name">
+            <div class="w-40 flex flex-col mb-4 h-36 cursor-pointer relative p-1 justify-center items-center" @click="addReusable(template)" :title="template.name">
                 <span class="text-xs p-1">{{ template.name.substring(0,15) }}</span>
                 <div v-if="template.image" :style="'background-image:url(' + $imageURL(template.image) + ')'" class="w-full h-24 bg-top bg-no-repeat bg-cover shadow-lg" ></div>
                 <div v-if="template.image_uri && !template.image" :style="'background-image:url(' + $imageURL(template.image_uri) + ')'" class="w-full h-24 bg-top bg-no-repeat bg-cover shadow" ></div>
@@ -13,19 +14,19 @@
             </div>
         </template>
     </div>
-    <div class="absolute bottom-0 w-full theme-dark h-10 p-2 flex flex-row justify-around items-center text-center">
+    <div class="absolute bottom-0 w-full theme-dark h-10 p-2 flex flex-row justify-around items-center text-center z-modal">
         <i class="material-icons mx-2 text-2xl" @click="prev">chevron_left</i>
         <select v-model="filter" class="dark">
-            <option v-for="cat in $mapState().datastore.components_categories" :value="cat.filter">{{ cat.filter }}</option>
+            <option v-for="cat in datastore.components_categories" :value="cat.filter">{{ cat.filter }}</option>
         </select>
         <i class="material-icons" @click="search=!search">search</i>
         <i class="material-icons mx-2 text-2xl" @click="next">chevron_right</i>
     </div>
     <transition name="fade">
-        <div v-if="search" class="absolute z-2xtop bottom-0 w-full mb-10 theme-dark p-2 grid grid-cols-2 gap-2">
-             <button class="w-full capitalize text-xs border" @click="start=0,tags=''">all</button>
-            <template v-for="tipo in datastore.dataset.elements[0].types.types">
-                <button class="w-full text-xs capitalize " @click="tags=tipo">{{ tipo }}</button>
+        <div v-if="search" class="absolute z-modal bottom-0 w-full mb-10 theme-dark p-2 grid grid-cols-2 gap-2">
+            <button class="w-full capitalize text-xs border" @click="start=0,tags=''">all</button>
+            <template v-for="tipo in types">
+                <button class="w-full text-xs capitalize truncate " @click="tags=tipo.slug">{{ tipo.slug }}</button>
             </template>
         </div>
     </transition>
@@ -53,28 +54,23 @@ export default {
             'starred'
         ],
         loadedComponents: null,
-        components: null
+        components: null,
+        types: null
     }),
     mounted(){
-        this.$api.service('components').find( { query : { category: this.filter , $skip:0 , $limit:200 } } ).then ( result => {
-            this.loadedComponents = result.data
-            this.components = result.data
+        // this.$api.service('components').find( { query : { category: this.filter , $skip:0 , $limit:200 } } ).then ( result => {
+        //     this.loadedComponents = result.data
+        //     this.components = result.data
+        // })
+        this.reusables()
+        this.$api.service('components').on ( 'created' , (component) => {
+            this.resuables()
         })
         //this.tags = this.datastore.dataset.elements[0].types.types
     },
     computed: {
         ...mapState ( ['desktop','datastore'] ),
         
-        /*categories(){
-            let arr = this.$arrayGroup ( this.mokacomponents , 'category' , 'id' )
-            return arr.keys
-        },
-        mokatemplates(){
-            //this.start = 0
-            //this.limit = 8
-            return this.mokacomponents.filter(comp=>{ return comp.category === this.filter || comp.tags === this.filter } )
-        }
-        */
     },
     watch:{
         filter(v){
@@ -93,8 +89,13 @@ export default {
     },
     methods: {
         reusables(){
-            this.$api.service('components').find( { query : { category: this.filter , $skip:0 , $limit:50 } } ).then ( result => {
+            this.$api.service('components').find( { query : { category: this.filter , $skip:0 , $limit:200 } } ).then ( result => {
+                this.loadedComponents = result.data
                 this.components = result.data
+                this.$api.service('categories').find ( { query : { type : 'block-type' , $skip:0 , $limit: 200 }}).then ( response => {
+                    console.log ( response )
+                    this.types = response.data
+                })
             })
         },
         next(){

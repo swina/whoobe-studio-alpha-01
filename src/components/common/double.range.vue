@@ -6,11 +6,12 @@
             <input type="range" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMax">
             <input class="rounded py-2 mx-2 text-sm" type="number" :min="$attrs.min" :max="$attrs.max" step="1" v-model="sliderMax">
         </div>
-        <button class="rounded m-auto mt-6" @click="$emit('range',sliderMin,sliderMax)">Filter</button>
+        <button class="rounded m-auto mt-6" @click="emit">Filter</button>
     </div>
 </template>
 
 <script>
+import { eventBus } from '@/main'
 export default {
     name: 'WhoobeDoubleRange',
     data:()=>( {
@@ -45,14 +46,13 @@ export default {
             }
         }
     },
-    // watch:{
-    //     sliderMin(v){
-    //         this.$emit ( 'range' , v , this.sliderMax )
-    //     },
-    //     sliderMax(v){
-    //         this.$emit ( 'range' , this.sliderMin , v )
-    //     }
-    // },
+    
+    methods: {
+      emit ( event ){
+        this.$emit('range',sliderMin,sliderMax)
+        eventBus.$emit ( 'range' , { min: this.sliderMin , max: this.sliderMax } )
+      }
+    },
     mounted(){
         this.minAngle = this.$attrs.min
         this.maxAngle = this.$attrs.max

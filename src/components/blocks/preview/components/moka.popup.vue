@@ -39,7 +39,9 @@
                         :index="i"
                         :level="parseInt($attrs.level)+1" 
                         v-if="block && block.hasOwnProperty('blocks') && block.hasOwnProperty('blocks_flip')" 
-                        :doc="block"/>    
+                        :doc="block"/> 
+
+                    <plugin-wrapper v-if="block && block.hasOwnProperty('plugin')" :block="block"  :plugin="block.plugin" :component="block.plugin"/>   
                 </template><!-- 
             </div>    
         </transition> -->

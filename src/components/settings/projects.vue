@@ -134,7 +134,11 @@ export default {
                 this.$message ( 'Project created')
             })
         },
-        projectResources(){
+        async projectResources(){
+            const template = await this.$api.service ( 'components' ).get ( this.current.blocks._id )
+            console.log ( template )
+            delete template.autosave
+            this.current.blocks = template
             let links = this.current.blocks.links.map ( link => link.replace('/',''))
             delete this.current.blocks.autosave
             delete this.current.block
@@ -154,6 +158,7 @@ export default {
                     pages: [],
                     store: false
                 }
+                console.log ( resources )
                 const collectData = () => new Promise ( (resolve,reject) =>{
                         res.data.forEach ( article => {
                             
@@ -230,16 +235,28 @@ export default {
                 //console.log ( purge )
             })
            
-        }
-    },
-    mounted(){
-        this.$loading()
-        this.$api.service ( 'projects' ).find ( { query: { $sort: { name: 1}}})
+        },
+        qry(){
+            this.$loading()
+            this.$api.service ( 'projects' ).find ( { query: { $sort: { name: 1}}})
             .then ( res => {
                 this.projects = res.data
                 this.$loading(false)
             })
-        
+        }
+    },
+    mounted(){
+        this.qry()
+        // this.$loading()
+        // this.$api.service ( 'projects' ).find ( { query: { $sort: { name: 1}}})
+        //     .then ( res => {
+        //         this.projects = res.data
+        //         this.$loading(false)
+        //     })
+        this.$api.service ( 'projects' ).on ( 'patched' , (project) => {
+            this.qry()
+            //console.log ( project )
+        })
         
     }
 }

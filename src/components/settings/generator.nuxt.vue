@@ -3,20 +3,25 @@
         
         <div class="absolute right-0 top-0 mt-12 w-full flex items-end w-full justify-end mr-8">
             <button class="lg success" @click="buildWebsite()">Generate</button>
+            <button class="ml-2 lg info" @click="saveProject()">Save</button>
             <button class="ml-2 lg" @click="$emit('close')">Close</button>
             
         </div>
         <h4>Whoobe Generator</h4>
         <div class="grid grid-cols-5 gap-5">
 
-            <div class="flex flex-col cursor-pointer" title="Select a template for the homepage" v-if="project">
+            <div class="flex flex-col cursor-pointer items-center" title="Select a template for the homepage" v-if="project">
                 <label class="font-bold">Homepage</label>
                 <img v-if="project.blocks.image" :src="$imageURL(project.blocks.image)" class="w-40 h-56 object-cover object-top" @click="reusable=!reusable"/>
 
-                <div class="flex flex-col " title="Store" v-if="store "> 
+                <div class="flex flex-col items-center" title="Store" v-if="store && project.resources.store"> 
                     <div class="text-xs truncate">Store</div>
                     <img v-if="store.template_preview" :src="$imageURL(store.template_preview)" class=" h-56 w-40 object-cover object-top"/>
                     <img v-if="!store.template_preview" src="no-image.png"/>
+                    <button class="danger lg m-auto mt-4" @click="disableStore()">Disable Store</button>
+                </div>
+                <div v-else class="flex flex-col">
+                    <button class="success lg m-auto mt-4" @click="enableStore()">Publish Store</button>
                 </div>
             </div>
 
@@ -96,7 +101,8 @@ export default {
         buildNuxt: null,
         output:'',
         errors: '',
-        preview: false
+        preview: false,
+        store : null
     }),
     methods:{
         buildWebsite(){
@@ -106,31 +112,59 @@ export default {
             this.$api.service ( 'build-nuxt' ).patch ( this.buildNuxt._id , this.project  ).then ( res => {
                 console.log ( res )
             })
+        },
+        saveProject(){
+            this.$api.service ( 'projects' ).patch ( this.project._id , this.project ).then ( res => {
+                this.$message ( 'Project saved')
+            })
+        },
+        disableStore(){
+            this.project.resources.store = false
+            this.store = null
+        },
+        enableStore(){
+            this.$api.service ( 'articles' ).find ( { query : { store: true } } ).then ( response => {
+                if ( response.data.length ){
+                    this.project.resources.store = true
+                    this.store = response.data[0]   
+                } else {
+                    this.$message ( 'No Store found. Check you articles and set the store template to true')
+                }
+            })
         }
+
     },
-    computed:{
-        store(){
-            return this.project.resources.store ?
-                this.project.resources.pages.filter ( store => store.store )[0] : null
-        }
-    },
+    // computed:{
+    //     store(){
+    //         return this.project.resources.store ?
+    //             this.project.resources.pages.filter ( store => store.store )[0] : null
+    //     }
+    // },
     mounted(){
-        this.project = this.$attrs.project
-        if ( !this.project.hasOwnProperty('seo_title') ){
-            this.project.seo_title = this.project.blocks.name
-            this.project.seo_description = this.project.blocks.name
-        }
-        if ( !this.project.analytics ){
-            this.project.analytics = ''
-        }
-        if ( !this.project.pwa ){
-            this.project.pwa = null
-        }
+        
+        
         this.$api.service ( 'build-nuxt' ).find ().then ( res => {
+            this.project = this.$attrs.project
+            if ( !this.project.hasOwnProperty('seo_title') ){
+                this.project.seo_title = this.project.blocks.name
+                this.project.seo_description = this.project.blocks.name
+            }
+            if ( !this.project.analytics ){
+                this.project.analytics = ''
+            }
+            if ( !this.project.pwa ){
+                this.project.pwa = null
+            }
             this.buildNuxt = res.data[0]
+            
+            this.$api.service ( 'articles' ).find ( { query : { store: true } } ).then ( response => {
+                if ( response.data.length ){
+                    this.store = response.data[0]   
+                }
+            })
         })
+
         this.$api.service('generate').on ( 'created' , (data) => {
-            console.log  ( data )
             if ( data.data ){
                
                 if ( data.data.includes ( 'Whoobe Site Generation done!' ) ){

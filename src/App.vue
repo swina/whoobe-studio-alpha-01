@@ -16,6 +16,12 @@
         {{ message }}
         </div>
     </transition>
+    <!-- Global error display -->
+    <transition name="fade">
+        <div style="transform: translateX(-50%);left:50%;" class="border-l-4 border-red-500 fixed bottom-0 m-auto shadow-xl mb-12 bg-gray-800 text-gray-200 text-base p-4 w-1/2  z-modal" v-if="error" >   
+        {{ error }}
+        </div>
+    </transition>
     <!-- <transition name="fade">
       <div v-if="!user.login && !logged">
         <div class="z-modal fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-75">
@@ -33,7 +39,6 @@ import { mapState } from 'vuex'
 //const vuexLocal = new VuexPersistence({
 //  storage: window.localStorage
 //})
-
 export default {
   name: 'App',
   components: {
@@ -44,6 +49,7 @@ export default {
  
   data:()=>({ 
     message: '',
+    error: '',
     firstRun: false,
     logged: false
   }),
@@ -80,6 +86,13 @@ export default {
             }, 4000)
         }
     },
+    error(value){
+      if ( value ){
+            window.setTimeout(()=>{ 
+              this.error = ''
+            }, 4000)
+        }
+    }
   },
   methods: {
     setMessage(msg){
@@ -96,6 +109,11 @@ export default {
     this.$api.service ( 'collections' ).find ( { query: { collection: 'help' } } ).then ( res => {
       this.$store.dispatch ( 'dataset' , { table: 'help' , data: res.data[0] }) 
     })
+    window.addEventListener( 'error' , (error) => {
+      this.error = error.message + ' (' + error.lineno + ')'
+      //errorBus.$emit ( 'error' , err )
+    })
+    
   }
 }
 </script>
