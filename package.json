@@ -20,7 +20,7 @@
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "gsap": "^3.5.1",
-    "http-server": "^0.12.3",
+    "http-server": "^0.13.0",
     "jsonpath": "^1.1.0",
     "jszip": "^3.6.0",
     "nedb": "^1.8.0",
