@@ -31,7 +31,7 @@
     "shopify-buy": "^2.11.0",
     "socket.io-client": "1.7.3",
     "tailwindcss": "^1.8.10",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0",
     "vue-blob-json-csv": "^0.1.7",
     "vue-custom-element": "^3.3.0",
     "vue-draggable-resizable": "^2.2.0",
